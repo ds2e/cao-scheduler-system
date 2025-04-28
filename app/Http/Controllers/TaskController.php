@@ -17,10 +17,8 @@ class TaskController extends Controller
 
         // show all tasks with user for admin/moderator interaction
         $tasks = Task::all();
-        $users = User::all();
         return inertia('Schedule/Schedule', [
-            'tasks' => $tasks,
-            'users' => $users
+            'tasks' => $tasks
         ]);
     }
 

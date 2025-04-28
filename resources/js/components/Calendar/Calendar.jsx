@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import './Calendar.css'
 import {
     daysOfWeek,
@@ -11,11 +11,12 @@ import {
     getYearDropdownOptions
 } from "./helpers";
 
-export default function Calendar({
+const Calendar = memo(function CalendarComponent({
     className = "",
     yearAndMonth = [2021, 6],
     onYearAndMonthChange,
-    requestAssignTaskOnDate
+    requestInspectDay,
+    tasks
 }) {
     const [year, month] = yearAndMonth;
 
@@ -76,17 +77,30 @@ export default function Calendar({
     }
 
     function render(day) {
+        const tasksForTheDay = tasks.filter(task => task.time === day.dateString);
+
         return (
-            <div className="day-grid-item-header px-1 pt-1 flex items-center justify-between">
+            <div className="day-grid-item-header p-1 flex flex-col items-start">
                 <p className={`p-1 ${getDayClassName(day)}`}>
                     {day.dayOfMonth}
                 </p>
-                <div>
-
+                <div className='h-full p-1'>
+                    {tasksForTheDay.map(task => (
+                        <div key={task.id} className="text-xs text-white">
+                            {task.description.substring(0, 20)}...
+                            <ul className='list-disc ms-2'>
+                                {task.users.map(user => (
+                                    <li key={user.id}>{user.name}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
                 </div>
             </div>
         );
     }
+
+    console.log("rerender Calendar")
 
     return (
         <>
@@ -144,7 +158,7 @@ export default function Calendar({
                             key={day.dateString}
                             className={`day-grid-item-container bg-theme`}
                         >
-                            <div onClick={() => requestAssignTaskOnDate(day.dateString)} className="day-content-wrapper hover:bg-theme-secondary">{render(day)}</div>
+                            <div onClick={() => requestInspectDay(day.dateString)} className="day-content-wrapper hover:bg-theme-secondary">{render(day)}</div>
                         </div>
                     ))}
                 </div>
@@ -153,4 +167,6 @@ export default function Calendar({
         </>
 
     );
-}
+})
+
+export default Calendar;

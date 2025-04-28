@@ -12,6 +12,7 @@ class ApiUserController extends Controller
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except(['index']);
+        $this->authorizeResource(User::class, 'user');
     }
 
     public function index()

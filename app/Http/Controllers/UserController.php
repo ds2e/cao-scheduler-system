@@ -10,6 +10,10 @@ use Illuminate\Routing\Controller;
 class UserController extends Controller
 {
     use AuthorizesRequests; // <-- THIS LINE!
+    // public function __construct()
+    // {
+    //     $this->authorizeResource(User::class, 'user');
+    // }
 
     public function index(){
         $users = User::latest()->get();

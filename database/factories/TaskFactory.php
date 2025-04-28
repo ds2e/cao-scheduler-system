@@ -17,7 +17,8 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'time' => fake()->dateTimeBetween('-3 days', '+5 days')->format('Y-m-d'),
+            'description' => fake()->paragraphs(3, true),
         ];
     }
 }

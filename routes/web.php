@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +24,7 @@ Route::middleware('auth')->group(function(){
         return inertia('Dashboard/Dashboard');
     })->name('dashboard');
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
-        Route::resource('schedule', TaskController::class);
+        Route::resource('schedule', ScheduleController::class);
         Route::resource('users', UserController::class)->only(['index', 'show']);
     });
 });
