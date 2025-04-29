@@ -59,7 +59,7 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
-        //
+        dd($request);
     }
 
     /**

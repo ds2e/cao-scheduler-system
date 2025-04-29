@@ -24,7 +24,9 @@ Route::middleware('auth')->group(function(){
         return inertia('Dashboard/Dashboard');
     })->name('dashboard');
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
-        Route::resource('schedule', ScheduleController::class);
+        Route::get('schedule',[ScheduleController::class, 'index'])->name('show.schedule');
+        Route::post('schedule', [ScheduleController::class, 'updateSchedule'])->name('update.schedule');
+        Route::resource('tasks', TaskController::class)->only(['update']);
         Route::resource('users', UserController::class)->only(['index', 'show']);
     });
 });
