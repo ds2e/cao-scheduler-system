@@ -92,7 +92,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
         post('/dashboard/schedule');
     }
 
-    console.log(errors)
+    // console.log(errors)
 
     return (
         <Drawer open={isOpen} onOpenChange={setOpen}>

@@ -4,7 +4,6 @@ import MainWebNavbar from "../components/Navbar/MainAppNavbar";
 import DashboardNavbar from "../components/Navbar/DashboardNavbar";
 
 export default function Layout({ children }) {
-    const { url } = usePage();
     const { auth } = usePage().props;
 
     return (

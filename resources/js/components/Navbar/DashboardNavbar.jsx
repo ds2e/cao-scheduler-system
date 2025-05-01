@@ -1,5 +1,5 @@
 import { Link, useForm, usePage } from "@inertiajs/react";
-import mainLogo from '+/images/Cao_Laura_ohneText.png'
+import mainLogo from '+/images/Cao_Laura_ohneText.png';
 
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
@@ -27,7 +27,7 @@ export default function DashboardNavbar() {
     }
 
     return (
-        <Disclosure as="nav" className="bg-gray-800 fixed top-0 left-0 right-0 z-50">
+        <Disclosure as="nav" className="bg-gray-800 fixed top-0 left-0 w-full z-50">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -98,7 +98,7 @@ export default function DashboardNavbar() {
                                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
                             >
                                 <div className="px-4 py-2">
-                                    <h2>{auth.user.name}</h2>
+                                    <h2>{auth.user.name} ({auth.user.role.name})</h2>
                                 </div>
 
                                 <MenuItem>

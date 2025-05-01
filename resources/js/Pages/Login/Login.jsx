@@ -13,8 +13,6 @@ export default function LoginPage() {
         post('/login');
     }
 
-    console.log(errors);
-
     return (
         <div className="flex min-h-screen flex-1 flex-col justify-center px-6 pt-14 lg:px-8 bg-theme">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">

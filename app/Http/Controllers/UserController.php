@@ -9,13 +9,15 @@ use Illuminate\Routing\Controller;
 
 class UserController extends Controller
 {
-    use AuthorizesRequests; // <-- THIS LINE!
+    use AuthorizesRequests;
     // public function __construct()
     // {
     //     $this->authorizeResource(User::class, 'user');
     // }
 
     public function index(){
+        $this->authorize('viewAny', User::class);
+        
         $users = User::latest()->get();
         return inertia('Users/Users', [
             'users' => $users

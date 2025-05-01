@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRoles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -37,18 +38,31 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        return array_merge(parent::share($request), 
-        [
-            'auth' => Auth::check() ? [
-                'user'=> Auth::user() ? [
-                    'uid' => Auth::user()->id,
-                    'name' => Auth::user()->name,
-                    'email' => Auth::user()->email
-                ]: null
-            ] : null
-            // 'auth.user' => fn () => $request->user()
-            //     ? $request->user()->only('id', 'name', 'email')
-            //     : null,
-        ]);
+
+        if (Auth::user()) {
+            $roleEnum = UserRoles::fromId(Auth::user()->role_id);
+
+            return array_merge(
+                parent::share($request),
+                [
+                    'auth' => Auth::check() ? [
+                        'user' => Auth::user() ? [
+                            'uid' => Auth::user()->id,
+                            'name' => Auth::user()->name,
+                            'email' => Auth::user()->email,
+                            'role' => Auth::user()->role_id ? [
+                                'name' => $roleEnum->value,
+                                'rank' => $roleEnum->rank(),
+                            ] : [
+                                'name' => UserRoles::User,
+                                'rank' => UserRoles::User->rank()
+                            ],
+                        ] : null
+                    ] : null
+                ]
+            );
+        }
+
+        return [];
     }
 }

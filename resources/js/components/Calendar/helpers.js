@@ -6,13 +6,13 @@ dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
 
 export const daysOfWeek = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
+  "Mo",
+  "Tu",
+  "We",
+  "Th",
+  "Fr",
+  "Sa",
+  "Su",
 ];
 
 // Get year dropdown options (like 2021, 2022, ..., 2030)

@@ -18,10 +18,6 @@
     --color-theme-secondary-highlight: rgb(203,48,51);
 }
 
-html, body {
-    scrollbar-gutter: stable;
-}
-
 @theme inline {
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
