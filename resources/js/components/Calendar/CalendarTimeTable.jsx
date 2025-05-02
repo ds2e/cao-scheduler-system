@@ -109,8 +109,6 @@ const CalendarTimeTable = memo(function CalendarComponent({
         );
     }
 
-    console.log("rerender Calendar")
-
     return (
         <div className="w-full pt-16">
             <div className="flex flex-col items-center justify-center place-content-center sticky top-16 py-2 z-10 bg-white">
@@ -161,15 +159,24 @@ const CalendarTimeTable = memo(function CalendarComponent({
                 </div>
             </div>
 
-            <div className="days-grid">
-                {calendarGridDayObjects.map((day) => (
-                    <div
-                        key={day.dateString}
-                        className={`day-grid-item-container border-[1px] border-white bg-theme`}
-                    >
-                        <div onClick={() => requestInspectDay(day.dateString)} className="h-full hover:bg-theme-highlight overflow-clip">{render(day)}</div>
-                    </div>
-                ))}
+            <div className="days-grid min-h-screen">
+                {calendarGridDayObjects.map((day) => {
+                    const hasTask = tasks.some(task => task.time === day.dateString);
+
+                    return (
+                        <div
+                            key={day.dateString}
+                            className={`day-grid-item-container border-[1px] border-white bg-theme`}
+                        >
+                            <div
+                                onClick={hasTask || !userID ? () => requestInspectDay(day.dateString) : undefined}
+                                className={`h-full overflow-clip ${hasTask || !userID ? 'hover:bg-theme-highlight cursor-pointer' : ''}`}
+                            >
+                                {render(day)}
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

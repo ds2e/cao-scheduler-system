@@ -7,17 +7,24 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function DashboardNavbar() {
+export default function DashboardNavbar({ auth }) {
     const { url } = usePage();
-    const { auth } = usePage().props;
 
-    const navigation = [
-        { name: 'Users', href: '/dashboard/users', current: false },
-        { name: 'Schedule', href: '/dashboard/schedule', current: false },
-    ].map(item => ({
-        ...item,
-        current: item.href === url,
-    }));
+    const navigation = (auth.user.role.name !== 'User') ?
+        [ // Admin, SuperAdmin Navigation
+            { name: 'Users', href: '/dashboard/users', current: false },
+            { name: 'Schedule', href: '/dashboard/schedule', current: false },
+        ].map(item => ({
+            ...item,
+            current: item.href === url,
+        }))
+        :
+        [ // User Navigation
+            { name: 'Schedule', href: '/dashboard/schedule', current: false },
+        ].map(item => ({
+            ...item,
+            current: item.href === url,
+        }));
 
     const { post, processing, errors } = useForm({});
 
@@ -98,7 +105,7 @@ export default function DashboardNavbar() {
                                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
                             >
                                 <div className="px-4 py-2">
-                                    <h2>{auth.user.name} ({auth.user.role.name})</h2>
+                                    <h2>{auth.user.name} {auth.user.role.name !== 'User' && <span>({auth.user.role.name})</span>}</h2>
                                 </div>
 
                                 <MenuItem>

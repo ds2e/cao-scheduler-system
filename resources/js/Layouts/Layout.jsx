@@ -11,7 +11,7 @@ export default function Layout({ children }) {
             <header>
                 {
                     auth ? 
-                    <DashboardNavbar />
+                    <DashboardNavbar auth={auth} />
                     :
                     <MainWebNavbar />                   
                 }

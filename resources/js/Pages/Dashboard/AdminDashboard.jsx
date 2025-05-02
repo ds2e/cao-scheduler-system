@@ -1,8 +1,12 @@
+import { usePage } from "@inertiajs/react";
+
 export default function AdminDashboard() {
+    const { auth } = usePage().props;
+
     return (
         <div className="p-4 mt-16">
-            <h1 className="mb-4">Welcome <span className="text-red-500">Admin</span></h1>
-            <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">       
+            <h1 className="mb-4">Welcome <span className="text-red-500 font-semibold">{auth.user.name} (Admin)</span></h1>
+            <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
                 <div className="grid grid-cols-3 gap-4 mb-4">
                     <div className="flex items-center justify-center h-24 rounded-sm bg-gray-50 dark:bg-gray-800">
                         <p className="text-2xl text-gray-400 dark:text-gray-500">
