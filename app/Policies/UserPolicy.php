@@ -12,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): Response
     {
-        if($user->isAdmin()){
+        if ($user->isAdmin()) {
             return Response::allow();
         }
 
@@ -24,53 +24,79 @@ class UserPolicy
      */
     public function view(User $user, User $profile): Response
     {
-        if($user->isAdmin()){
+        if ($user->isAdmin()) {
             return Response::allow();
         }
 
-        return $user->id === $profile->id ? 
-        Response::allow() 
-        : 
-        Response::denyWithStatus(404);
+        return $user->id === $profile->id ?
+            Response::allow()
+            :
+            Response::denyWithStatus(404);
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user): Response
     {
-        return false;
+        if ($user->isAdmin()) {
+            return Response::allow();
+        }
+
+        return Response::denyWithStatus(403);
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user, User $profile): Response
     {
-        return false;
+        if ($user->isAdmin()) {
+            return Response::allow();
+        }
+
+        return $user->id === $profile->id ?
+            Response::allow()
+            :
+            Response::denyWithStatus(403);
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, User $profile): Response
     {
-        return false;
+        if ($user->isAdmin()) {
+            return Response::allow();
+        }
+
+        return $user->id === $profile->id ?
+            Response::allow()
+            :
+            Response::denyWithStatus(403);
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, User $model): bool
+    public function restore(User $user): Response
     {
-        return false;
+        if ($user->isAdmin()) {
+            return Response::allow();
+        }
+
+        return Response::denyWithStatus(403);
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, User $model): bool
+    public function forceDelete(User $user): Response
     {
-        return false;
+        if ($user->isAdmin()) {
+            return Response::allow();
+        }
+
+        return Response::denyWithStatus(403);
     }
 }

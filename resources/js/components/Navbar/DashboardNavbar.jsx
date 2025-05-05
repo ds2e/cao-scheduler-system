@@ -10,7 +10,7 @@ function classNames(...classes) {
 export default function DashboardNavbar({ auth }) {
     const { url } = usePage();
 
-    const navigation = (auth.user.role.name !== 'User') ?
+    const navigation = (auth.user.role.name !== 'Mitarbeiter') ?
         [ // Admin, SuperAdmin Navigation
             { name: 'Users', href: '/dashboard/users', current: false },
             { name: 'Schedule', href: '/dashboard/schedule', current: false },
@@ -105,7 +105,7 @@ export default function DashboardNavbar({ auth }) {
                                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
                             >
                                 <div className="px-4 py-2">
-                                    <h2>{auth.user.name} {auth.user.role.name !== 'User' && <span>({auth.user.role.name})</span>}</h2>
+                                    <h2>{auth.user.name} {auth.user.role.name !== 'Mitarbeiter' && <span>({auth.user.role.name})</span>}</h2>
                                 </div>
 
                                 <MenuItem>

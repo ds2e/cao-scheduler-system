@@ -2,23 +2,28 @@ import { Link } from "@inertiajs/react";
 
 export default function ErrorPage({ status }) {
     console.log(status);
-    const title = {
+    const titleMap = {
         503: '503 | Service Unavailable',
         500: '500 | Server Error',
         404: '404 | Page Not Found',
         403: '403 | Forbidden',
         419: '419 | Page Expired',
-        406: '406 | Not Acceptable'
-    }[status]
+        406: '406 | Not Acceptable',
+        405: '405 | Method Not Allowed'
+    }
 
-    const description = {
+    const descriptionMap = {
         503: 'Sorry, we are doing some maintenance. Please check back soon.',
         500: 'Whoops, something went wrong on our servers.',
         404: 'Sorry, the page you are looking for could not be found.',
         403: 'Sorry, you are forbidden from accessing this page.',
         419: 'Sorry, your session is expired',
-        406: 'Sorry, somehow we detected malicious request'
-    }[status]
+        406: 'Sorry, somehow we detected malicious request',
+        405: 'Sorry, it seems the endpoint doesn\'t support this method'
+    }
+
+    const title = titleMap[status] || `${status} | Unknown Error`;
+    const description = descriptionMap[status] || 'An unexpected error occurred. Please try again later.';
 
     return (
         <div className="h-screen w-full bg-theme place-content-center text-center">

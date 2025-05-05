@@ -1,17 +1,14 @@
 
 import { router, usePage } from "@inertiajs/react";
 import ScheduleTimeTable from "./ScheduleTimeTable";
-import ScheduleTimeLine from "./ScheduleTimeLine";
 
-export default function SchedulePage({ tasks, users }) {
+export default function SchedulePage({ tasks, users, taskCategories }) {
     const { props } = usePage();
     const view = props.view;
 
-    if (view == 'timeTable') {
-        return (
-            <ScheduleTimeTable tasks={tasks} users={users} />
-        )
-    }
+    console.log(tasks);
 
-    return <ScheduleTimeLine/>
+    return (
+        <ScheduleTimeTable tasks={tasks} users={users} viewYearAndMonthInterval={view} taskCategories={taskCategories}/>
+    )
 }

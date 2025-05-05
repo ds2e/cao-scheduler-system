@@ -60,4 +60,20 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            // Get all tasks the user is attached to
+            $taskIds = $user->tasks()->pluck('tasks.id');
+
+            // Detach user from tasks
+            $user->tasks()->detach();
+
+            // Delete tasks that now have no users
+            Task::whereIn('id', $taskIds)
+                ->doesntHave('users')
+                ->delete();
+        });
+    }
 }

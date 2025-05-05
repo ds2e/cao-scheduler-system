@@ -1,5 +1,4 @@
 import { memo, useState } from 'react';
-import './Calendar.css'
 import {
     daysOfWeek,
     createDaysForCurrentMonth,
@@ -10,13 +9,15 @@ import {
     getMonthDropdownOptions,
     getYearDropdownOptions
 } from "./helpers";
+import {TaskCategoriesColor} from '@/lib/enums'
 import { Link } from '@inertiajs/react';
 
 const CalendarTimeTable = memo(function CalendarComponent({
-    yearAndMonth = [2021, 6],
+    yearAndMonth,
     onYearAndMonthChange,
     requestInspectDay,
     tasks,
+    taskCategories,
     userID = undefined
 }) {
     const [year, month] = yearAndMonth;
@@ -68,13 +69,19 @@ const CalendarTimeTable = memo(function CalendarComponent({
 
     function getDayClassName(day) {
         if (isToday(day.dateString)) {
-            return "text-white font-semibold bg-theme-secondary rounded-full";
+            return "text-white font-semibold bg-theme-secondary rounded-sm";
         } else {
             if (day.isCurrentMonth) {
                 return "text-white";
             }
             return "text-gray-500";
         }
+    }
+
+    function renderTaskCategoryBackground(day, taskIndex) {
+        const tasksForTheDay = tasks.filter(task => task.time === day.dateString);
+        const item = taskCategories.find(cat => cat.id === tasksForTheDay[taskIndex].task_category_id)?.name
+        return TaskCategoriesColor[item];
     }
 
     function render(day) {
@@ -85,15 +92,16 @@ const CalendarTimeTable = memo(function CalendarComponent({
                 <p className={`p-1 ${getDayClassName(day)}`}>
                     {day.dayOfMonth}
                 </p>
-                <div className='h-full p-1'>
-                    {tasksForTheDay.map(task => (
-                        <div key={task.id} className="text-xs my-1 text-white">
-                            {task.description && <h6 className='mb-1'>{task.description.substring(0, 20)}</h6>}
-                            <div className='flex flex-wrap gap-1 justify-start'>
+                <div className='h-full w-full p-1'>
+                    {tasksForTheDay.map((task, taskInd) => (
+                        <div key={task.id} className={`text-xs my-1 text-white rounded-sm p-1 bg-amber-500 ${renderTaskCategoryBackground(day, taskInd)}`}>
+                            {task.description && <h6 className='mb-1'>{task.task_category_id}</h6>}
+                            <div className='sm:hidden block bg-gray-100 rounded-sm text-black text-center'>+{task.users.length}</div>
+                            <div className='hidden sm:flex flex-wrap gap-1 justify-start'>
                                 {task.users.map(user => {
                                     if (!userID || user.id !== userID) {
                                         return (
-                                            <div key={user.id} className='rounded-full px-2 py-1 bg-theme-secondary-highlight'>{user.name}</div>
+                                            <div key={user.id} className='rounded-sm px-2 py-1 bg-theme-secondary'>{user.name}</div>
                                         )
                                     }
 
@@ -111,47 +119,47 @@ const CalendarTimeTable = memo(function CalendarComponent({
 
     return (
         <div className="w-full pt-16">
-            <div className="flex flex-col items-center justify-center place-content-center sticky top-16 py-2 z-10 bg-white">
+            <div className="flex flex-col items-center justify-center place-content-center sticky top-16 pt-2 z-10 bg-gray-800">
                 <div className='flex items-center justify-center gap-4'>
-                    <button onClick={handleMonthNavBackButtonClick} className='cursor-pointer'>
+                    <button onClick={handleMonthNavBackButtonClick} className='cursor-pointer fill-white'>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25}>
                             <path d="M512 256A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM271 135c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-87 87 87 87c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L167 273c-9.4-9.4-9.4-24.6 0-33.9L271 135z" />
                         </svg>
                     </button>
                     <select
-                        className="month-select"
+                        className="month-select text-white"
                         value={month}
                         onChange={handleMonthSelect}
                     >
                         {getMonthDropdownOptions().map(({ label, value }) => (
-                            <option value={value} key={value}>
+                            <option value={value} key={value} className='text-black'>
                                 {label}
                             </option>
                         ))}
                     </select>
-                    <button onClick={handleMonthNavForwardButtonClick} className='cursor-pointer'>
+                    <button onClick={handleMonthNavForwardButtonClick} className='cursor-pointer fill-white'>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25}>
                             <path d="M0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM241 377c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l87-87-87-87c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0L345 239c9.4 9.4 9.4 24.6 0 33.9L241 377z" />
                         </svg>
                     </button>
                     <select
-                        className="year-select"
+                        className="year-select text-white"
                         value={year}
                         onChange={handleYearSelect}
                     >
                         {getYearDropdownOptions(year).map(({ label, value }) => (
-                            <option value={value} key={value}>
+                            <option value={value} key={value} className='text-black'>
                                 {label}
                             </option>
                         ))}
                     </select>
-                    <Link href="/dashboard/schedule?view=timeLine" className="px-2 py-1 text-theme border-[1px] border-theme rounded-full">Timeline</Link>
+                    <Link href="/dashboard/schedule?view=timeLine" className="px-2 py-1 text-white border-[1px] border-white rounded-full">Timeline</Link>
                 </div>
-                <div className="days-of-week border-t-[1px] border-theme pt-2 mt-2">
+                <div className="days-of-week grid grid-cols-7 w-full border-y-[1px] border-white py-2 mt-2">
                     {daysOfWeek.map((day, index) => (
                         <div
                             key={day}
-                            className={`day-grid-item-container border-x border-theme text-center ${[5, 6].includes(index) ? "text-theme-secondary-highlight" : ""}`}
+                            className={`day-grid-item-container border-x border-white text-center ${[5, 6].includes(index) ? "text-theme-secondary-highlight" : "text-white"}`}
                         >
                             {day}
                         </div>
@@ -159,7 +167,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
                 </div>
             </div>
 
-            <div className="days-grid min-h-screen">
+            <div className="days-grid grid grid-cols-7 min-h-screen w-full">
                 {calendarGridDayObjects.map((day) => {
                     const hasTask = tasks.some(task => task.time === day.dateString);
 

@@ -35,7 +35,7 @@ class ApiUserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // return response()->json(['message' => 'User updated successfully', 'user' => $user]);
     }
 
         /**
@@ -43,7 +43,7 @@ class ApiUserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        // return response()->json(['message' => 'User updated successfully', 'user' => $user]);
     }
 
     /**
@@ -51,7 +51,7 @@ class ApiUserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        // return response()->json(['message' => 'User updated successfully', 'user' => $user]);
     }
 
     /**
@@ -59,6 +59,6 @@ class ApiUserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        // return response()->json(['message' => 'User updated successfully', 'user' => $user]);
     }
 }

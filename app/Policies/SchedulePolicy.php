@@ -18,6 +18,7 @@ class SchedulePolicy
     public function viewAny(User $user): bool
     {
         return in_array($user->role?->name, [
+            UserRoles::Moderator->value,
             UserRoles::Admin->value,
             UserRoles::SuperAdmin->value,
         ]);
@@ -26,6 +27,7 @@ class SchedulePolicy
     public function update(User $user): bool
     {
         return in_array($user->role?->name, [
+            UserRoles::Moderator->value,
             UserRoles::Admin->value,
             UserRoles::SuperAdmin->value,
         ]);

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\TaskCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +19,7 @@ class TaskFactory extends Factory
     {
         return [
             'time' => fake()->dateTimeBetween('-3 days', '+5 days')->format('Y-m-d'),
+            'task_category_id' => TaskCategory::where('name', 'Bar')->first()->id,
             'description' => fake()->paragraphs(3, true),
         ];
     }

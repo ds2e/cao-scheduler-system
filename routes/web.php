@@ -27,7 +27,8 @@ Route::middleware('auth')->group(function () {
         $user = Auth::user();
         $role = UserRoles::fromId($user->role_id);
         return match ($role) {
-            UserRoles::User => Inertia::render('Dashboard/UserDashboard'),
+            UserRoles::Mitarbeiter => Inertia::render('Dashboard/UserDashboard'),
+            UserRoles::Moderator => Inertia::render('Dashboard/AdminDashboard'),
             UserRoles::Admin => Inertia::render('Dashboard/AdminDashboard'),
             UserRoles::SuperAdmin => Inertia::render('Dashboard/AdminDashboard'),
             default => Inertia::render('Error', ['status' => 406]),
@@ -37,13 +38,10 @@ Route::middleware('auth')->group(function () {
         Route::get('schedule', [ScheduleController::class, 'handleRoleBasedView'])->name('show.schedule');
         Route::post('schedule', [ScheduleController::class, 'updateSchedule'])->name('update.schedule');
         // Route::resource('tasks', TaskController::class)->only(['update']);
-        Route::resource('users', UserController::class)->only(['index', 'show']);
+        Route::resource('users', UserController::class)->except(['create', 'edit']);
     });
 });
 
 Route::fallback(function () {
     return Inertia::render('Error', ['status' => 404]);
 });
-
-// Route::resource('users', UserController::class);
-// Route::get('/user/{id}', [UserController::class, 'show']);

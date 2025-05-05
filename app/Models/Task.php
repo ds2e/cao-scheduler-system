@@ -12,11 +12,17 @@ class Task extends Model
 
     protected $fillable = [
         'time',
-        'description'
+        'description',
+        'task_category_id'
     ];
 
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(TaskCategory::class, 'task_category_id');
     }
 }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controller;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -15,12 +17,15 @@ class UserController extends Controller
     //     $this->authorizeResource(User::class, 'user');
     // }
 
-    public function index(){
+    public function index()
+    {
         $this->authorize('viewAny', User::class);
-        
+
         $users = User::latest()->get();
+        $roles = Role::all();
         return inertia('Users/Users', [
-            'users' => $users
+            'users' => $users,
+            'roles' => $roles
         ]);
     }
     /**
@@ -35,7 +40,43 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(Request $request){
-        dd($request);
+    public function update(Request $request, User $user)
+    {
+        $this->authorize('update', $user);
+
+        // Validate the request
+        $validated = $request->validate([
+            'id' => ['required', 'integer', Rule::exists('users', 'id')],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'role_id' => ['required', 'integer', Rule::exists('roles', 'id')],
+        ]);
+
+        // Find the user
+        $user = User::findOrFail($validated['id']);
+
+        // Update the user's data
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->role_id = $validated['role_id'];
+        $user->updated_at = now();
+
+        $user->save();
+
+        return back()->with('success', 'User updated.');
+    }
+
+    public function destroy(Request $request, User $user)
+    {
+        $this->authorize('delete', $user);
+
+        $validated = $request->validate([
+            'id' => ['required', 'integer', Rule::exists('users', 'id')]
+        ]);
+
+        $user = User::findOrFail($validated['id']);
+        $user->delete(); // ✅ This triggers model events
+
+        return back()->with('success', 'User deleted.');
     }
 }

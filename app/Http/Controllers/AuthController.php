@@ -36,7 +36,7 @@ class AuthController extends Controller
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
-        $validated['role_id'] = Role::where('name', UserRoles::User->value)->first()->id;
+        $validated['role_id'] = Role::where('name', UserRoles::Mitarbeiter->value)->first()->id;
 
         $user = User::create($validated);
 

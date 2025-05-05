@@ -54,8 +54,8 @@ class HandleInertiaRequests extends Middleware
                                 'name' => $roleEnum->value,
                                 'rank' => $roleEnum->rank(),
                             ] : [
-                                'name' => UserRoles::User,
-                                'rank' => UserRoles::User->rank()
+                                'name' => UserRoles::Mitarbeiter,
+                                'rank' => UserRoles::Mitarbeiter->rank()
                             ],
                         ] : null
                     ] : null

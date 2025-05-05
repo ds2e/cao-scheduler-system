@@ -1,9 +1,0 @@
-.days-of-week,
-.days-grid {
-  width: 100%;
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-column-gap: var(--grid-gap);
-  grid-row-gap: var(--grid-gap);
-}

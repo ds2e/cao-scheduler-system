@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import UserInspectDayTasksDrawer from "@/components/Calendar/UserInspectDayTasksDrawer";
+import UserInspectDayTasksDrawer from "@/components/Drawer/UserInspectDayTasksDrawer";
 import CalendarTimeTable from "@/components/Calendar/CalendarTimeTable";
 
 export default function UserScheduleTimeTable({ tasks, userID }) {

@@ -11,16 +11,6 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer";
 
-// import {
-//     Select,
-//     SelectContent,
-//     SelectGroup,
-//     SelectItem,
-//     SelectLabel,
-//     SelectTrigger,
-//     SelectValue,
-// } from "@/components/ui/select";
-
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -28,24 +18,42 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useEffect } from "react";
-import { router, useForm } from "@inertiajs/react";
+} from "@/components/ui/dropdown-menu";
 
-export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, currentSelectedDate }) {
-    const { data, setData, post, processing, errors } = useForm({
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
+import { useEffect, useState } from "react";
+import { router, useForm } from "@inertiajs/react";
+import {TaskCategoriesColor} from '@/lib/enums'
+
+export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, currentSelectedDate, taskCategories }) {
+    const [formSubmitSuccess, setFormSubmitSuccess] = useState(null); // using extra field for form submission success because reset() in Inertia doesn't reset wasSuccessful nor isDirty
+    const { data, setData, post, processing, errors, clearErrors } = useForm({
         tasks: [],
         date: ''
     });
 
     useEffect(() => {
-        setData('tasks', tasks.filter(task => task.time === currentSelectedDate));
-        setData('date', currentSelectedDate);
-        console.log(data)
+        setData({
+            tasks: tasks.filter(task => task.time === currentSelectedDate),
+            date: currentSelectedDate
+        });
+
+        return () => {
+            clearErrors();
+            setFormSubmitSuccess(null);
+        }
     }, [currentSelectedDate, isOpen])
 
     function assignUserToTask(userEntry, existedTaskID, taskID) {
-        console.log(existedTaskID, taskID)
         if (!existedTaskID) {
             const newDayTasks = data.tasks.map((task, ind) =>
                 ind === taskID
@@ -77,7 +85,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
     }
 
     function addTaskToDate(date) {
-        const newTasks = [...data.tasks, { users: [], description: '', time: date }]
+        const newTasks = [...data.tasks, { users: [], description: '', time: date, task_category_id: taskCategories.length }]
         setData('tasks', newTasks)
     }
 
@@ -87,12 +95,17 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
     }
 
     function handleAssignTasksDate(data) {
-        // console.log(tasks);
-        // console.log(data)
-        post('/dashboard/schedule');
+        post('/dashboard/schedule', {
+            onSuccess: () => {
+                setFormSubmitSuccess(true)
+            }
+        });
     }
 
-    // console.log(errors)
+    function renderTaskCategoryBackground(taskIndex){
+        const item = taskCategories.find(cat => cat.id === data.tasks[taskIndex].task_category_id)?.name
+        return TaskCategoriesColor[item];
+    }
 
     return (
         <Drawer open={isOpen} onOpenChange={setOpen}>
@@ -105,13 +118,42 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                 <div className="w-full px-4">
                     <div className="max-h-[70dvh] overflow-y-scroll">
                         {data.tasks.map((taskEntry, taskInd) => (
-                            <div key={taskInd} className="mb-8 border p-4 rounded-lg bg-gray-50">
+                            <div key={taskInd} className={`mb-8 border p-4 rounded-lg ${renderTaskCategoryBackground(taskInd)}`}>
                                 <div className="mb-5">
-                                    <div className="flex items-center justify-between">
-                                        <h2 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">Task Carrier</h2>
-                                        <svg onClick={() => removeTaskFromDate(taskInd)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={20} height={20} className="m-2 cursor-pointer fill-theme-secondary">
-                                            <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
-                                        </svg>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h2 className="text-lg font-medium text-white dark:text-gray-900">Task Carrier</h2>
+                                        <div className="flex items-center justify-center">
+                                            <Select 
+                                            defaultValue={String(taskCategories[taskCategories.length - 1].id)} 
+                                            value={String(taskEntry.task_category_id)}
+                                            onValueChange={(e) => {
+                                                const updatedTasks = [...data.tasks];
+                                                updatedTasks[taskInd] = {
+                                                    ...updatedTasks[taskInd],
+                                                    task_category_id: Number(e),
+                                                };
+                                                setData({
+                                                    ...data,
+                                                    tasks: updatedTasks,
+                                                });             
+                                            }}
+                                            >
+                                                <SelectTrigger className="text-white">
+                                                    <SelectValue placeholder="Task Category" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Categories</SelectLabel>
+                                                        {taskCategories.map((cat, cat_ind) => (
+                                                            <SelectItem key={taskInd + cat.id} value={String(cat.id)}>{cat.name}</SelectItem>
+                                                        ))}
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                            <svg onClick={() => removeTaskFromDate(taskInd)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={20} height={20} className="m-2 cursor-pointer fill-theme-secondary">
+                                                <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
+                                            </svg>
+                                        </div>
                                     </div>
                                     <div className="flex justify-start gap-2">
                                         {
@@ -134,7 +176,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                                                     users
                                                         .filter(user => !taskEntry.users.some(taskUser => taskUser.id === user.id))
                                                         .map((restUser, restUserInd) => {
-                                                            return <DropdownMenuItem onClick={() => assignUserToTask(restUser, taskEntry.id, taskInd)} key={"rest-user" + taskInd + restUserInd}>{restUser.name}</DropdownMenuItem>
+                                                            return <DropdownMenuItem onClick={() => assignUserToTask(restUser, taskEntry.id, taskInd)} key={"rest-user" + taskInd + restUser.id}>{restUser.name}</DropdownMenuItem>
                                                         })
                                                 }
                                             </DropdownMenuContent>
@@ -143,7 +185,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                                 </div>
 
                                 <div className="mb-5">
-                                    <label htmlFor={`description-${taskInd}`} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    <label htmlFor={`description-${taskInd}`} className="block mb-2 text-sm font-medium text-white dark:text-gray-900">
                                         Description
                                     </label>
                                     <textarea
@@ -163,45 +205,36 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                         ))}
                     </div>
                     <div className="flex flex-row items-center justify-between">
-                        {Object.keys(errors).length > 0 && (
-                            <div className="space-y-1 overflow-y-scroll h-10">
-                                {Object.entries(errors).map(([field, message]) => (
-                                    <p className="text-red-500 font-semibold" key={field}>
-                                        {field}: {message}
-                                    </p>
-                                ))}
-                                {/* {Object.entries(errors).map(([field, message]) => (
-                                    Array.isArray(message)
-                                        ? message.map((m, i) => <p key={`${field}-${i}`}>{field}: {m}</p>)
-                                        : <p key={field}>{field}: {message}</p>
-                                ))} */}
-                                {/* {Object.entries(errors).reduce((grouped, [key, message]) => {
-                                    const match = key.match(/^tasks\.(\d+)\.(.+)$/);
-                                    if (match) {
-                                        const [_, taskIndex, field] = match;
-                                        grouped[taskIndex] = grouped[taskIndex] || [];
-                                        grouped[taskIndex].push({ field, message });
-                                    } else {
-                                        // Global error or not tied to a task
-                                        grouped['global'] = grouped['global'] || [];
-                                        grouped['global'].push({ field: key, message });
-                                    }
-                                    return grouped;
-                                })} */}
-                            </div>
-                        )}
+                        {formSubmitSuccess == null ?
+                            (
+                                <div className="space-y-1 overflow-y-scroll h-10">
+                                    {Object.entries(errors).map(([field, message]) => (
+                                        <p className="text-red-500 font-semibold" key={field}>
+                                            {field}: {message}
+                                        </p>
+                                    ))}
+                                </div>
+                            )
+                            :
+                            (
+                                <p className="text-green-500 font-semibold">
+                                    Assign Day Tasks successfully!
+                                </p>
+                            )
+
+                        }
                         <button
                             type="button"
                             onClick={() => addTaskToDate(currentSelectedDate)}
-                            className="cursor-pointer float-right text-theme rounded-full border-theme border-2 px-4 py-2 hover:bg-gray-100"
+                            className="cursor-pointer ms-auto text-theme rounded-full border-theme border-2 px-4 py-2 hover:bg-gray-100"
                         >
                             Add Task
                         </button>
                     </div>
 
                     <DrawerFooter className="flex flex-row items-center justify-center gap-4">
-                        <button type="button" onClick={() => handleAssignTasksDate(data)} className='cursor-pointer bg-theme text-white rounded-full px-4 py-2 hover:bg-theme-highlight'>
-                            Submit
+                        <button disabled={processing} type="button" onClick={() => handleAssignTasksDate(data)} className={`text-white rounded-full px-4 py-2 select-none ${(processing) ? "bg-muted" : "cursor-pointer bg-theme hover:bg-theme-highlight"}`}>
+                            {processing ? 'Submitting...' : 'Submit'}
                         </button>
                         <DrawerClose className='cursor-pointer text-theme-secondary rounded-full border-theme-secondary border-2 px-4 py-2 hover:bg-gray-100'>
                             Cancel

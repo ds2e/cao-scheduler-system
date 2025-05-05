@@ -13,7 +13,7 @@ trait HasRole
 
     public function isAdmin(): bool
     {
-        return $this->hasRole(UserRoles::Admin) || $this->hasRole(UserRoles::SuperAdmin);
+        return $this->hasRole(UserRoles::Moderator) || $this->hasRole(UserRoles::Admin) || $this->hasRole(UserRoles::SuperAdmin);
     }
 
     public function isSuperAdmin(): bool
