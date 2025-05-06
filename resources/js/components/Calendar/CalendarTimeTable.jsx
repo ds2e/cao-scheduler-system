@@ -9,8 +9,8 @@ import {
     getMonthDropdownOptions,
     getYearDropdownOptions
 } from "./helpers";
-import {TaskCategoriesColor} from '@/lib/enums'
-import { Link } from '@inertiajs/react';
+import { TaskCategoriesColor } from '@/lib/enums'
+import TaskCategoriesIcon from './TaskCategoriesIcon';
 
 const CalendarTimeTable = memo(function CalendarComponent({
     yearAndMonth,
@@ -18,6 +18,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
     requestInspectDay,
     tasks,
     taskCategories,
+    requestSwitchView,
     userID = undefined
 }) {
     const [year, month] = yearAndMonth;
@@ -78,14 +79,13 @@ const CalendarTimeTable = memo(function CalendarComponent({
         }
     }
 
-    function renderTaskCategoryBackground(day, taskIndex) {
-        const tasksForTheDay = tasks.filter(task => task.time === day.dateString);
-        const item = taskCategories.find(cat => cat.id === tasksForTheDay[taskIndex].task_category_id)?.name
+    function renderTaskCategoryBackground(taskEntry) {
+        const item = taskCategories.find(cat => cat.id === taskEntry.task_category_id)?.name
         return TaskCategoriesColor[item];
     }
 
     function render(day) {
-        const tasksForTheDay = tasks.filter(task => task.time === day.dateString);
+        const tasksForTheDay = tasks.filter(task => task.time === day.dateString).sort((a, b) => a.task_category_id - b.task_category_id);
 
         return (
             <div className="day-grid-item-header p-1 flex flex-col items-start">
@@ -93,20 +93,25 @@ const CalendarTimeTable = memo(function CalendarComponent({
                     {day.dayOfMonth}
                 </p>
                 <div className='h-full w-full p-1'>
-                    {tasksForTheDay.map((task, taskInd) => (
-                        <div key={task.id} className={`text-xs my-1 text-white rounded-sm p-1 bg-amber-500 ${renderTaskCategoryBackground(day, taskInd)}`}>
-                            {task.description && <h6 className='mb-1'>{task.task_category_id}</h6>}
-                            <div className='sm:hidden block bg-gray-100 rounded-sm text-black text-center'>+{task.users.length}</div>
-                            <div className='hidden sm:flex flex-wrap gap-1 justify-start'>
+                    {tasksForTheDay.map(task => (
+                        <div key={task.id} className={`text-xs my-1 text-white rounded-sm p-1 ${renderTaskCategoryBackground(task)}`}>
+                            {task.task_category_id && <div className='grid place-content-center mb-1'><TaskCategoriesIcon categoryId={task.task_category_id} /></div>}
+                            {
+                                (userID && task.users.some(user => user.id === userID)) ?
+                                    <div className='sm:hidden block bg-theme-secondary rounded-sm text-theme border-[1px] border-black text-center font-bold'>+{task.users.length}</div>
+                                    :
+                                    <div className='sm:hidden block bg-gray-100 rounded-sm text-black text-center'>+{task.users.length}</div>
+                            }
+                            <div className='hidden sm:grid gap-1'>
                                 {task.users.map(user => {
                                     if (!userID || user.id !== userID) {
                                         return (
-                                            <div key={user.id} className='rounded-sm px-2 py-1 bg-theme-secondary'>{user.name}</div>
+                                            <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 text-center text-black'>{user.name}</div>
                                         )
                                     }
 
                                     return (
-                                        <div key={user.id} className='rounded-full px-2 py-1 bg-green-900 border-[1px] border-green-500'>You</div>
+                                        <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 border-[1px] border-black shadow-sm shadow-black text-theme-secondary font-bold text-center'>You</div>
                                     )
                                 })}
                             </div>
@@ -153,7 +158,11 @@ const CalendarTimeTable = memo(function CalendarComponent({
                             </option>
                         ))}
                     </select>
-                    <Link href="/dashboard/schedule?view=timeLine" className="px-2 py-1 text-white border-[1px] border-white rounded-full">Timeline</Link>
+                    <button onClick={() => requestSwitchView()} className="px-2 py-1 text-white border-[1px] border-white rounded-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width={20} height={20} className='fill-white'>
+                            <path d="M128 72a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm32 97.3c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80S48 51.8 48 96c0 32.8 19.7 61 48 73.3L96 224l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0 54.7c-28.3 12.3-48 40.5-48 73.3c0 44.2 35.8 80 80 80s80-35.8 80-80c0-32.8-19.7-61-48-73.3l0-54.7 256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-54.7c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 32.8 19.7 61 48 73.3l0 54.7-320 0 0-54.7zM488 96a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM320 392a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
+                        </svg>
+                    </button>
                 </div>
                 <div className="days-of-week grid grid-cols-7 w-full border-y-[1px] border-white py-2 mt-2">
                     {daysOfWeek.map((day, index) => (

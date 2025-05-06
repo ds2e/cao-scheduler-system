@@ -6,8 +6,6 @@ export default function SchedulePage({ tasks, users, taskCategories }) {
     const { props } = usePage();
     const view = props.view;
 
-    console.log(tasks);
-
     return (
         <ScheduleTimeTable tasks={tasks} users={users} viewYearAndMonthInterval={view} taskCategories={taskCategories}/>
     )

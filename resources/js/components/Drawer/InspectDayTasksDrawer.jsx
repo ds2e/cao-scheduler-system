@@ -32,7 +32,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { router, useForm } from "@inertiajs/react";
-import {TaskCategoriesColor} from '@/lib/enums'
+import { TaskCategoriesColor } from '@/lib/enums'
 
 export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, currentSelectedDate, taskCategories }) {
     const [formSubmitSuccess, setFormSubmitSuccess] = useState(null); // using extra field for form submission success because reset() in Inertia doesn't reset wasSuccessful nor isDirty
@@ -85,7 +85,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
     }
 
     function addTaskToDate(date) {
-        const newTasks = [...data.tasks, { users: [], description: '', time: date, task_category_id: taskCategories.length }]
+        const newTasks = [{ users: [], description: '', time: date, task_category_id: taskCategories.length }, ...data.tasks]
         setData('tasks', newTasks)
     }
 
@@ -102,7 +102,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
         });
     }
 
-    function renderTaskCategoryBackground(taskIndex){
+    function renderTaskCategoryBackground(taskIndex) {
         const item = taskCategories.find(cat => cat.id === data.tasks[taskIndex].task_category_id)?.name
         return TaskCategoriesColor[item];
     }
@@ -121,22 +121,27 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                             <div key={taskInd} className={`mb-8 border p-4 rounded-lg ${renderTaskCategoryBackground(taskInd)}`}>
                                 <div className="mb-5">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-lg font-medium text-white dark:text-gray-900">Task Carrier</h2>
+                                        {
+                                            taskEntry.id ?
+                                                <h2 className="text-lg font-medium text-white dark:text-gray-900">Task Carrier</h2>
+                                                :
+                                                <h2 className="text-lg font-medium text-theme-secondary dark:text-gray-900 text-shadow-black text-shadow-lg">Newly Created Task</h2>
+                                        }
                                         <div className="flex items-center justify-center">
-                                            <Select 
-                                            defaultValue={String(taskCategories[taskCategories.length - 1].id)} 
-                                            value={String(taskEntry.task_category_id)}
-                                            onValueChange={(e) => {
-                                                const updatedTasks = [...data.tasks];
-                                                updatedTasks[taskInd] = {
-                                                    ...updatedTasks[taskInd],
-                                                    task_category_id: Number(e),
-                                                };
-                                                setData({
-                                                    ...data,
-                                                    tasks: updatedTasks,
-                                                });             
-                                            }}
+                                            <Select
+                                                defaultValue={String(taskCategories[taskCategories.length - 1].id)}
+                                                value={String(taskEntry.task_category_id)}
+                                                onValueChange={(e) => {
+                                                    const updatedTasks = [...data.tasks];
+                                                    updatedTasks[taskInd] = {
+                                                        ...updatedTasks[taskInd],
+                                                        task_category_id: Number(e),
+                                                    };
+                                                    setData({
+                                                        ...data,
+                                                        tasks: updatedTasks,
+                                                    });
+                                                }}
                                             >
                                                 <SelectTrigger className="text-white">
                                                     <SelectValue placeholder="Task Category" />
@@ -159,7 +164,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                                         {
                                             taskEntry.users.map((user, userInd) => {
                                                 return (
-                                                    <button onClick={() => unassignUserFromTask(user, taskEntry.id)} key={taskInd + userInd} className="cursor-pointer px-2 py-1 w-auto rounded-full bg-theme-secondary text-white hover:bg-theme-secondary-highlight">{user.name}</button>
+                                                    <button onClick={() => unassignUserFromTask(user, taskEntry.id)} key={taskInd + userInd} className="cursor-pointer px-2 py-1 w-auto rounded-sm md:rounded-full bg-theme-secondary text-white hover:bg-theme-secondary-highlight">{user.name}</button>
                                                 )
                                             })
                                         }
@@ -228,16 +233,16 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                             onClick={() => addTaskToDate(currentSelectedDate)}
                             className="cursor-pointer ms-auto text-theme rounded-full border-theme border-2 px-4 py-2 hover:bg-gray-100"
                         >
-                            Add Task
+                            + Task
                         </button>
                     </div>
 
                     <DrawerFooter className="flex flex-row items-center justify-center gap-4">
-                        <button disabled={processing} type="button" onClick={() => handleAssignTasksDate(data)} className={`text-white rounded-full px-4 py-2 select-none ${(processing) ? "bg-muted" : "cursor-pointer bg-theme hover:bg-theme-highlight"}`}>
+                        <button disabled={processing} type="button" onClick={() => handleAssignTasksDate(data)} className={`rounded-full px-4 py-2 select-none ${(processing) ? "bg-muted text-theme" : "cursor-pointer bg-theme text-white hover:bg-theme-highlight"}`}>
                             {processing ? 'Submitting...' : 'Submit'}
                         </button>
                         <DrawerClose className='cursor-pointer text-theme-secondary rounded-full border-theme-secondary border-2 px-4 py-2 hover:bg-gray-100'>
-                            Cancel
+                            Close
                         </DrawerClose>
                     </DrawerFooter>
                 </div>

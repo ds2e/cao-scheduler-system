@@ -3,15 +3,15 @@ import { usePage } from "@inertiajs/react";
 import UserScheduleTimeLine from "./UserScheduleTimeLine";
 import UserScheduleTimeTable from "./UserScheduleTimeTable";
 
-export default function UserSchedulePage({ tasks, userID }) {
+export default function UserSchedulePage({ tasks, userID, taskCategories }) {
     const { props } = usePage();
     const view = props.view;
 
-    if (view == 'timeTable') {
+    // if (view == 'timeTable') {
         return (
-            <UserScheduleTimeTable tasks={tasks} userID={userID}/>
+            <UserScheduleTimeTable tasks={tasks} userID={userID} viewYearAndMonthInterval={view} taskCategories={taskCategories}/>
         )
-    }
+    // }
 
-    return <UserScheduleTimeLine/>
+    // return <UserScheduleTimeLine/>
 }

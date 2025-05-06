@@ -17,3 +17,5 @@ export enum TaskCategoriesColor{
     Springer = 'bg-green-900',
     Sonstiges = 'bg-gray-900'
 }
+
+export const TaskCategoryKeys = Object.keys(TaskCategoriesColor);

@@ -144,17 +144,23 @@ class ScheduleController extends Controller
 
         // show all tasks within 7 days with their assigned users
         $startDate = now()->subDays(7)->toDateString(); // 7 days ago
-        $endDate = now()->addDays(7)->toDateString();   // 7 days ahead
+        $endDate = now()->addDays(14)->toDateString();   // 14 days ahead
+
+        $view = $request->query('view', now()->format('Y-m')); // Default to current month
+
+        if (!preg_match('/^\d{4}-\d{2}$/', $view) || !self::isValidYearMonth($view)) {
+            $view = now()->format('Y-m');
+        }
+
+        $taskCategories = TaskCategory::all();
 
         $tasks = Task::with('users')
             ->whereBetween('time', [$startDate, $endDate])
-            ->whereHas('users', function ($query) use ($userID) {
-                $query->where('users.id', $userID);
-            })
             ->get();
 
         return inertia('Schedule/UserSchedule', [
-            'view' => $request->query('view', 'timeTable'), // optional default
+            'view' => $view,
+            'taskCategories' => $taskCategories,
             'tasks' => $tasks,
             'userID' => $userID
         ]);
