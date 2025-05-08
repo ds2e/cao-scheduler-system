@@ -17,10 +17,16 @@ class TaskFactory extends Factory
      */
     public function definition(): array
     {
+        $startDateTime = fake()->dateTimeBetween('-3 days', '+5 days');
+        $endDateTime = fake()->dateTimeBetween($startDateTime, $startDateTime->modify('+8 hours')); // max 8 hours later
+
         return [
-            'time' => fake()->dateTimeBetween('-3 days', '+5 days')->format('Y-m-d'),
+            'date_start' => $startDateTime->format('Y-m-d'),
+            'time_start' => $startDateTime->format('H:i:s'),
+            'date_end' => $endDateTime->format('Y-m-d'),
+            'time_end' => $endDateTime->format('H:i:s'),
             'task_category_id' => TaskCategory::where('name', 'Bar')->first()->id,
-            'description' => fake()->paragraphs(3, true),
+            'description' => fake()->paragraphs(1, true),
         ];
     }
 }

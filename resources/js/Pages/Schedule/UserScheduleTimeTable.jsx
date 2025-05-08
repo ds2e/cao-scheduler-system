@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { useCallback, useState } from "react";
 
 import UserInspectDayTasksDrawer from "@/components/Drawer/UserInspectDayTasksDrawer";
@@ -48,6 +49,22 @@ export default function UserScheduleTimeTable({ tasks, userID, viewYearAndMonthI
         setCurrentSelectedDate(dateString);
     }, [])
 
+    const [date, setDate] = useState(today);
+
+    function requestPrevDay(date) {
+        const prev = dayjs(date).subtract(1, "day").toDate();
+        setDate(prev);
+    }
+
+    function requestNextDay(date) {
+        const next = dayjs(date).add(1, "day").toDate();
+        setDate(next);
+    }
+
+    function handleDateSelect(date) {
+        setDate(date)
+    }
+
     if (view == false) {
         return (
             <>
@@ -75,31 +92,16 @@ export default function UserScheduleTimeTable({ tasks, userID, viewYearAndMonthI
 
     return (
         <>
-            <CalendarTimeLine 
-              date={new Date()}
-              renderCellContent={(row, col) => {
-                if (row === 8 && col === 10) return "Meeting";
-                return null;
-              }}
-              requestSwitchView={requestSwitchView}
-            />
-            {/* <CalendarTimeTable
-                yearAndMonth={yearAndMonth}
-                onYearAndMonthChange={requestViewYearAndMonth}
-                requestInspectDay={handleInspectDay}
-                tasks={tasks}
-                taskCategories={taskCategories}
+            <CalendarTimeLine
+                date={date}
+                requestTasksPrevDay={requestPrevDay}
+                requestTasksNextDay={requestNextDay}
+                handleDateSelect={handleDateSelect}
                 requestSwitchView={requestSwitchView}
-                userID={userID}
-            />
-            <UserInspectDayTasksDrawer
-                isOpen={open}
-                setOpen={setOpen}
                 tasks={tasks}
                 taskCategories={taskCategories}
-                currentSelectedDate={currentSelectedDate}
                 userID={userID}
-            /> */}
+            />
         </>
     )
 }

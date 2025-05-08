@@ -15,7 +15,7 @@ import { TaskCategoriesColor } from '@/lib/enums'
 
 export default function InspectDayTasksDrawer({ isOpen, setOpen, tasks, userID, currentSelectedDate, taskCategories }) {
 
-    const currentDayTasks = [...tasks].filter(task => task.time === currentSelectedDate);
+    const currentDayTasks = [...tasks].filter(task => task.date_start === currentSelectedDate);
 
     function renderTaskCategoryBackground(taskIndex) {
         const item = taskCategories.find(cat => cat.id === currentDayTasks[taskIndex].task_category_id)?.name
@@ -35,10 +35,23 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, tasks, userID, 
                         {currentDayTasks.map((taskEntry, taskInd) => (
                             <div key={taskInd} className={`mb-8 border p-4 rounded-lg ${renderTaskCategoryBackground(taskInd)}`}>
                                 <div className="mb-5">
-                                    <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center justify-between mb-2">
                                         {taskCategories.find(cat => cat.id === taskEntry.task_category_id) &&
-                                            <h6 className="font-bold text-white">{taskCategories.find(cat => cat.id === taskEntry.task_category_id).name}</h6>
+                                            <h6 className="font-bold text-white text-xl">{taskCategories.find(cat => cat.id === taskEntry.task_category_id).name}</h6>
                                         }
+                                    </div>
+                                    <div className="flex w-fit items-center justify-between mb-4 text-white gap-2">
+                                        <div>
+                                            {dayjs(taskEntry.date_start).format('YYYY-MM-DD') === currentSelectedDate
+                                                ? `${dayjs(taskEntry.date_start + " " + taskEntry.time_start).format("HH:mm")}`
+                                                : `${dayjs(taskEntry.date_start + " " + taskEntry.time_start).format("DD/MM/YYYY HH:mm")}`}
+                                        </div>
+                                        <span>-</span>
+                                        <div>
+                                            {dayjs(taskEntry.date_end).format('YYYY-MM-DD') === currentSelectedDate
+                                                ? `${dayjs(taskEntry.date_end + " " + taskEntry.time_end).format("HH:mm")}`
+                                                : `${dayjs(taskEntry.date_end + " " + taskEntry.time_end).format("DD/MM/YYYY HH:mm")}`}
+                                        </div>
                                     </div>
                                     <div className="flex justify-start gap-2">
                                         {

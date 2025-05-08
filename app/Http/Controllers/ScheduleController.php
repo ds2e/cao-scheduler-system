@@ -56,7 +56,7 @@ class ScheduleController extends Controller
         // Parse the start and end of the selected month
         try {
             $baseDate = Carbon::createFromFormat('Y-m', $view)->startOfMonth();
-        
+
             $startDate = $baseDate->copy()->subMonth()->startOfMonth()->toDateString();
             $endDate = $baseDate->copy()->addMonth()->endOfMonth()->toDateString();
         } catch (\Exception $e) {
@@ -69,7 +69,7 @@ class ScheduleController extends Controller
         $taskCategories = TaskCategory::all();
 
         $tasks = Task::with('users')
-            ->whereBetween('time', [$startDate, $endDate])
+            ->whereBetween('date_start', [$startDate, $endDate])
             ->get();
 
         // show all users for admin to assign task
@@ -93,10 +93,29 @@ class ScheduleController extends Controller
             'tasks.*.users' => 'required|array|min:1',
             'tasks.*.users.*.id' => 'required|exists:users,id',
             'tasks.*.description' => 'nullable|string',
-            'tasks.*.time' => 'required|date',
+            'tasks.*.date_start' => 'required|date',
+            'tasks.*.date_end' => 'required|date',
+            'tasks.*.time_start' => ['required', 'date_format:H:i:s'],
+            'tasks.*.time_end' => ['required', 'date_format:H:i:s'],
             'tasks.*.task_category_id' => 'required|exists:task_categories,id',
-            'date' => 'required|date', // explicitly validate `date`
-        ])->validate();
+            'date' => 'required|date',
+        ])->after(function ($validator) use ($request) {
+            foreach ($request->input('tasks', []) as $index => $task) {
+                $ds = $task['date_start'] ?? null;
+                $de = $task['date_end'] ?? null;
+                $ts = $task['time_start'] ?? null;
+                $te = $task['time_end'] ?? null;
+
+                if ($ds && $de && $ts && $te) {
+                    $start = strtotime("$ds $ts");
+                    $end = strtotime("$de $te");
+
+                    if ($start > $end) {
+                        $validator->errors()->add("tasks.$index.time_end", 'The end datetime must be after the start datetime.');
+                    }
+                }
+            }
+        })->validate();
 
         $tasks = $request->tasks ?? [];
 
@@ -107,7 +126,7 @@ class ScheduleController extends Controller
             ->toArray();
 
         // Delete tasks not present in the request but exist for the date
-        Task::where('time', $validated['date'])
+        Task::where('date_start', $validated['date'])
             ->when(
                 $taskIdsInRequest,
                 fn($query) =>
@@ -123,7 +142,10 @@ class ScheduleController extends Controller
 
             $task->fill([
                 'description' => $taskData['description'] ?? '',
-                'time' => $taskData['time'],
+                'date_start' => $taskData['date_start'],
+                'date_end' => $taskData['date_end'],
+                'time_start' => $taskData['time_start'],
+                'time_end' => $taskData['time_end'],
                 'task_category_id' => $taskData['task_category_id'],
             ])->save();
 
@@ -155,7 +177,7 @@ class ScheduleController extends Controller
         $taskCategories = TaskCategory::all();
 
         $tasks = Task::with('users')
-            ->whereBetween('time', [$startDate, $endDate])
+            ->whereBetween('date_start', [$startDate, $endDate])
             ->get();
 
         return inertia('Schedule/UserSchedule', [

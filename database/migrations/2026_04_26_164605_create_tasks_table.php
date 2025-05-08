@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('time');
+            $table->string('date_start');
+            $table->string('date_end');
+            $table->string('time_start');
+            $table->string('time_end');
             $table->text('description')->nullable();
             $table->foreignId('task_category_id')->constrained()->onDelete('restrict');
 

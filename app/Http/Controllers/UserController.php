@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -34,9 +35,21 @@ class UserController extends Controller
     public function show(User $user)
     {
         $this->authorize('view', $user);
-        $user = User::findOrFail($user->id);
+
+        $user = User::with('role')->findOrFail($user->id);
+        $startDate = now()->subMonth()->startOfMonth()->toDateString();
+        $endDate = now()->addMonth()->endOfMonth()->toDateString();
+
+        $tasks = Task::with('users')
+        ->whereBetween('date_start', [$startDate, $endDate])
+        ->whereHas('users', function ($query) use ($user) {
+            $query->where('users.id', $user->id);
+        })
+        ->get();
+
         return inertia('Users/Index/Index', [
-            'user' => $user
+            'user' => $user,
+            'tasks' => $tasks
         ]);
     }
 

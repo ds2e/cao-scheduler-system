@@ -11,7 +11,10 @@ class Task extends Model
     use HasFactory;
 
     protected $fillable = [
-        'time',
+        'date_start',
+        'date_end',
+        'time_start',
+        'time_end',
         'description',
         'task_category_id'
     ];

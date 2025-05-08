@@ -73,7 +73,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
             return "text-white font-semibold bg-theme-secondary rounded-sm";
         } else {
             if (day.isCurrentMonth) {
-                return "text-white";
+                return "text-theme";
             }
             return "text-gray-500";
         }
@@ -85,7 +85,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
     }
 
     function render(day) {
-        const tasksForTheDay = tasks.filter(task => task.time === day.dateString).sort((a, b) => a.task_category_id - b.task_category_id);
+        const tasksForTheDay = tasks.filter(task => task.date_start === day.dateString).sort((a, b) => a.task_category_id - b.task_category_id);
 
         return (
             <div className="day-grid-item-header p-1 flex flex-col items-start">
@@ -100,7 +100,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
                                 (userID && task.users.some(user => user.id === userID)) ?
                                     <div className='sm:hidden block bg-theme-secondary rounded-sm text-theme border-[1px] border-black text-center font-bold'>+{task.users.length}</div>
                                     :
-                                    <div className='sm:hidden block bg-gray-100 rounded-sm text-black text-center'>+{task.users.length}</div>
+                                    <div className='sm:hidden block bg-gray-100 rounded-sm text-black text-center font-semibold'>+{task.users.length}</div>
                             }
                             <div className='hidden sm:grid gap-1'>
                                 {task.users.map(user => {
@@ -178,16 +178,16 @@ const CalendarTimeTable = memo(function CalendarComponent({
 
             <div className="days-grid grid grid-cols-7 min-h-screen w-full">
                 {calendarGridDayObjects.map((day) => {
-                    const hasTask = tasks.some(task => task.time === day.dateString);
+                    const hasTask = tasks.some(task => task.date_start === day.dateString);
 
                     return (
                         <div
                             key={day.dateString}
-                            className={`day-grid-item-container border-[1px] border-white bg-theme`}
+                            className={`day-grid-item-container border-[1px] border-theme bg-gray-50`}
                         >
                             <div
                                 onClick={hasTask || !userID ? () => requestInspectDay(day.dateString) : undefined}
-                                className={`h-full overflow-clip ${hasTask || !userID ? 'hover:bg-theme-highlight cursor-pointer' : ''}`}
+                                className={`h-full overflow-clip ${hasTask || !userID ? 'hover:bg-gray-200 cursor-pointer' : ''}`}
                             >
                                 {render(day)}
                             </div>
