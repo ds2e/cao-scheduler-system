@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserRoles;
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,11 +10,6 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function showRegister()
-    {
-        return inertia('Register/Register');
-    }
-
     public function showLogin()
     {
         if (Auth::check()) {
@@ -27,34 +20,16 @@ class AuthController extends Controller
         return inertia('Login/Login');
     }
 
-    public function requestRegister(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed'
-        ]);
-
-        $validated['password'] = Hash::make($validated['password']);
-        $validated['role_id'] = Role::where('name', UserRoles::Mitarbeiter->value)->first()->id;
-
-        $user = User::create($validated);
-
-        Auth::login($user);
-
-        return redirect()->route('dashboard');
-    }
-
     public function requestLogin(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string'
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $validated['email'])->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($validated['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'error' => 'Incorrect Credentials'
             ]);
@@ -73,6 +48,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('show.login');
+        return redirect()->route('home');
     }
 }

@@ -125,41 +125,43 @@ const CalendarTimeTable = memo(function CalendarComponent({
     return (
         <div className="w-full pt-16">
             <div className="flex flex-col items-center justify-center place-content-center sticky top-16 pt-2 z-10 bg-gray-800">
-                <div className='flex items-center justify-center gap-4'>
-                    <button onClick={handleMonthNavBackButtonClick} className='cursor-pointer fill-white'>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25}>
-                            <path d="M512 256A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM271 135c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-87 87 87 87c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L167 273c-9.4-9.4-9.4-24.6 0-33.9L271 135z" />
-                        </svg>
-                    </button>
-                    <select
-                        className="month-select text-white"
-                        value={month}
-                        onChange={handleMonthSelect}
-                    >
-                        {getMonthDropdownOptions().map(({ label, value }) => (
-                            <option value={value} key={value} className='text-black'>
-                                {label}
-                            </option>
-                        ))}
-                    </select>
-                    <button onClick={handleMonthNavForwardButtonClick} className='cursor-pointer fill-white'>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25}>
-                            <path d="M0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM241 377c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l87-87-87-87c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0L345 239c9.4 9.4 9.4 24.6 0 33.9L241 377z" />
-                        </svg>
-                    </button>
-                    <select
-                        className="year-select text-white"
-                        value={year}
-                        onChange={handleYearSelect}
-                    >
-                        {getYearDropdownOptions(year).map(({ label, value }) => (
-                            <option value={value} key={value} className='text-black'>
-                                {label}
-                            </option>
-                        ))}
-                    </select>
-                    <button onClick={() => requestSwitchView()} className="px-2 py-1 text-white border-[1px] border-white rounded-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width={20} height={20} className='fill-white'>
+                <div className='w-full flex items-center justify-between px-4'>
+                    <div className='flex items-center justify-center gap-4'>
+                        <button onClick={handleMonthNavBackButtonClick} className='cursor-pointer group'>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25} className='fill-white group-hover:fill-theme bg-transparent group-hover:bg-white transition-all duration-300 rounded-full'>
+                                <path d="M512 256A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM271 135c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-87 87 87 87c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L167 273c-9.4-9.4-9.4-24.6 0-33.9L271 135z" />
+                            </svg>
+                        </button>
+                        <select
+                            className="month-select text-white"
+                            value={month}
+                            onChange={handleMonthSelect}
+                        >
+                            {getMonthDropdownOptions().map(({ label, value }) => (
+                                <option value={value} key={value} className='text-black'>
+                                    {label}
+                                </option>
+                            ))}
+                        </select>
+                        <button onClick={handleMonthNavForwardButtonClick} className='cursor-pointer group'>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25} className='fill-white group-hover:fill-theme bg-transparent group-hover:bg-white transition-all duration-300 rounded-full'>
+                                <path d="M0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM241 377c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l87-87-87-87c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0L345 239c9.4 9.4 9.4 24.6 0 33.9L241 377z" />
+                            </svg>
+                        </button>
+                        <select
+                            className="year-select text-white"
+                            value={year}
+                            onChange={handleYearSelect}
+                        >
+                            {getYearDropdownOptions(year).map(({ label, value }) => (
+                                <option value={value} key={value} className='text-black'>
+                                    {label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <button onClick={() => requestSwitchView()} className="cursor-pointer px-2 py-1 text-white border-[1px] border-white rounded-sm group hover:bg-white transition-all duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width={20} height={20} className='fill-white group-hover:fill-theme transition-all duration-300'>
                             <path d="M128 72a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm32 97.3c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80S48 51.8 48 96c0 32.8 19.7 61 48 73.3L96 224l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0 54.7c-28.3 12.3-48 40.5-48 73.3c0 44.2 35.8 80 80 80s80-35.8 80-80c0-32.8-19.7-61-48-73.3l0-54.7 256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-54.7c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 32.8 19.7 61 48 73.3l0 54.7-320 0 0-54.7zM488 96a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM320 392a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
                         </svg>
                     </button>

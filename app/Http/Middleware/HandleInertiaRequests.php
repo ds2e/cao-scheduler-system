@@ -63,6 +63,6 @@ class HandleInertiaRequests extends Middleware
             );
         }
 
-        return [];
+        return parent::share($request);
     }
 }

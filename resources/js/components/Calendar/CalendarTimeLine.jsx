@@ -141,38 +141,39 @@ export default function CalendarTimeLine({
     return (
         <>
             <div className="flex flex-col items-center justify-center place-content-center sticky top-16 py-2 z-10 bg-gray-800">
-                <div className='flex items-center justify-center gap-4'>
-                    <button
-                        onClick={() => requestTasksPrevDay(date)}
-                        className='cursor-pointer fill-white'>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25}>
-                            <path d="M512 256A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM271 135c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-87 87 87 87c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L167 273c-9.4-9.4-9.4-24.6 0-33.9L271 135z" />
-                        </svg>
-                    </button>
-                    <Popover modal={true} open={isOpen} onOpenChange={setOpen}>
-                        <PopoverTrigger asChild>
-                            <button
-                                className="w-full justify-start text-center font-normal"
-                            >
-                                {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
-                                {date ? (
-                                    <span className="text-white">{dayjs(date).format('DD/MM/YYYY')}</span>
-                                ) : (
-                                    <span className="text-white">DD/MM/YYYY</span>
-                                )}
-                            </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                            <div className="sm:flex">
-                                <Calendar
-                                    mode="single"
-                                    selected={date}
-                                    onSelect={handleDateSelect}
-                                    initialFocus
-                                    disabled={{ before: minDate, after: maxDate }}
-                                />
-                                <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
-                                    {/* <ScrollArea className="w-64 sm:w-auto">
+                <div className='w-full flex items-center justify-between px-4'>
+                    <div className='flex items-center justify-center gap-4'>
+                        <button
+                            onClick={() => requestTasksPrevDay(date)}
+                            className='cursor-pointer group'>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25} className="fill-white group-hover:fill-theme bg-transparent group-hover:bg-white transition-all duration-300 rounded-full">
+                                <path d="M512 256A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM271 135c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-87 87 87 87c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L167 273c-9.4-9.4-9.4-24.6 0-33.9L271 135z" />
+                            </svg>
+                        </button>
+                        <Popover modal={true} open={isOpen} onOpenChange={setOpen}>
+                            <PopoverTrigger asChild>
+                                <button
+                                    className="w-full justify-start text-center font-normal"
+                                >
+                                    {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
+                                    {date ? (
+                                        <span className="text-white">{dayjs(date).format('DD/MM/YYYY')}</span>
+                                    ) : (
+                                        <span className="text-white">DD/MM/YYYY</span>
+                                    )}
+                                </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                                <div className="sm:flex">
+                                    <Calendar
+                                        mode="single"
+                                        selected={date}
+                                        onSelect={handleDateSelect}
+                                        initialFocus
+                                        disabled={{ before: minDate, after: maxDate }}
+                                    />
+                                    <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
+                                        {/* <ScrollArea className="w-64 sm:w-auto">
                                         <div className="flex sm:flex-col p-2">
                                             {hours.reverse().map((hour) => (
                                                 <Button
@@ -204,19 +205,20 @@ export default function CalendarTimeLine({
                                         </div>
                                         <ScrollBar orientation="horizontal" className="sm:hidden" />
                                     </ScrollArea> */}
+                                    </div>
                                 </div>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-                    <button
-                        onClick={() => requestTasksNextDay(date)}
-                        className='cursor-pointer fill-white'>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25}>
-                            <path d="M0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM241 377c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l87-87-87-87c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0L345 239c9.4 9.4 9.4 24.6 0 33.9L241 377z" />
-                        </svg>
-                    </button>
-                    <button onClick={() => requestSwitchView()} className="px-2 py-1 text-white border-[1px] border-white rounded-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width={20} height={20} className='fill-white'>
+                            </PopoverContent>
+                        </Popover>
+                        <button
+                            onClick={() => requestTasksNextDay(date)}
+                            className='cursor-pointer group'>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25} className="fill-white group-hover:fill-theme bg-transparent group-hover:bg-white transition-all duration-300 rounded-full">
+                                <path d="M0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM241 377c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l87-87-87-87c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0L345 239c9.4 9.4 9.4 24.6 0 33.9L241 377z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <button onClick={() => requestSwitchView()} className="cursor-pointer px-2 py-1 text-white border-[1px] border-white rounded-sm group hover:bg-white transition-all duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width={20} height={20} className='fill-white group-hover:fill-theme transition-all duration-300'>
                             <path d="M128 72a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm32 97.3c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80S48 51.8 48 96c0 32.8 19.7 61 48 73.3L96 224l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0 54.7c-28.3 12.3-48 40.5-48 73.3c0 44.2 35.8 80 80 80s80-35.8 80-80c0-32.8-19.7-61-48-73.3l0-54.7 256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-54.7c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 32.8 19.7 61 48 73.3l0 54.7-320 0 0-54.7zM488 96a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM320 392a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
                         </svg>
                     </button>
@@ -226,7 +228,6 @@ export default function CalendarTimeLine({
                 ref={containerRef}
                 className="w-full relative overflow-auto cursor-grab active:cursor-grabbing select-none border rounded-md mt-16"
             >
-
                 <div className="grid grid-cols-24 min-w-[1200px] sticky top-0">
                     {hours.map((hour, i) => (
                         <div
@@ -238,63 +239,58 @@ export default function CalendarTimeLine({
                     ))}
                 </div>
 
-                <div className={`min-h-screen grid grid-cols-48 ${rowHeightFraction(todayTasks)} min-w-[1200px] border-b-[1px] border-black`}
-                    style={{
-                        backgroundImage: `repeating-linear-gradient(
+                <div className="grid">
+                    <div
+                        className="min-w-[1200px] h-screen col-start-1 row-start-1"
+                        style={{
+                            backgroundImage: `repeating-linear-gradient(
                       to right,
                       transparent,
                       transparent calc(100% / 24 - 1px),
                       #e5e7eb calc(100% / 24 - 1px),
                       #e5e7eb calc(100% / 24)
                     )`,
-                        backgroundSize: '100% 100%',
-                    }}
-                >
-                    {/* {rows.map((row) =>
-                        hoursSubCounter.map((_, col) => (
-                            <div
-                                key={`${row}-${col}`}
-                                className="w-[25px] border border-gray-200 bg-white text-sm text-gray-800"
-                            >
-                                {renderCellContent ? renderCellContent(row, col) : null}
-                            </div>
-                        ))
-                    )} */}
+                            backgroundSize: '100% 100%',
+                        }}
+                    >
 
-                    {todayTasks.map((task, i) => {
-                        const colStart = timeToColIndex(task.time_start) + 1;
-                        const colEnd = timeToColIndex(task.time_end) + 1;
-                        // const colSpan = Math.max(colEnd - colStart, 1);
-                        const row = i + 1; // grid row is 1-based
+                    </div>
+                    <div className={`h-fit grid grid-cols-48 ${rowHeightFraction(todayTasks)} min-w-[1200px] col-start-1 row-start-1`}>
+                        {todayTasks.map((task, i) => {
+                            const colStart = timeToColIndex(task.time_start) + 1;
+                            const colEnd = timeToColIndex(task.time_end) + 1;
+                            // const colSpan = Math.max(colEnd - colStart, 1);
+                            const row = i + 1; // grid row is 1-based
 
-                        return (
-                            <div
-                                key={task.id}
-                                style={{
-                                    gridColumnStart: colStart,
-                                    gridColumnEnd: colEnd,
-                                    gridRowStart: row,
-                                    gridRowEnd: row+1,
-                                }}
-                                className={`${renderTaskCategoryBackground(task)} text-white p-2 flex flex-col items-center justify-center rounded-sm`}
-                            >
-                                {task.task_category_id && <div className='grid place-content-center mb-1'><TaskCategoriesIcon categoryId={task.task_category_id} /></div>}
-                                <div className='flex flex-wrap items-center justify-center gap-1'>
-                                    {task.users.map(user => {
-                                        if (!userID || user.id !== userID) {
+                            return (
+                                <div
+                                    key={task.id}
+                                    style={{
+                                        gridColumnStart: colStart,
+                                        gridColumnEnd: colEnd,
+                                        gridRowStart: row,
+                                        gridRowEnd: row + 1,
+                                    }}
+                                    className={`${renderTaskCategoryBackground(task)} text-white p-2 flex flex-col items-center justify-center rounded-sm`}
+                                >
+                                    {task.task_category_id && <div className='grid place-content-center mb-1'><TaskCategoriesIcon categoryId={task.task_category_id} /></div>}
+                                    <div className='flex flex-wrap items-center justify-center gap-1'>
+                                        {task.users.map(user => {
+                                            if (!userID || user.id !== userID) {
+                                                return (
+                                                    <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 text-center text-black text-xs'>{user.name}</div>
+                                                )
+                                            }
+
                                             return (
-                                                <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 text-center text-black text-xs'>{user.name}</div>
+                                                <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 border-[1px] border-black shadow-sm shadow-black text-theme-secondary font-bold text-center text-sm'>You</div>
                                             )
-                                        }
-
-                                        return (
-                                            <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 border-[1px] border-black shadow-sm shadow-black text-theme-secondary font-bold text-center text-sm'>You</div>
-                                        )
-                                    })}
+                                        })}
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    })}
+                            )
+                        })}
+                    </div>
                 </div>
 
                 <div className="fixed bottom-4 right-4">

@@ -11,9 +11,9 @@ export enum UserRoles {
 
 export enum TaskCategoriesColor{
     None = 'bg-white',
-    Bar = 'bg-theme-highlight',
+    Bar = 'bg-blue-900',
     Küche = 'bg-yellow-900',
-    Service = 'bg-theme-secondary-highlight',
+    Service = 'bg-red-900',
     Springer = 'bg-green-900',
     Sonstiges = 'bg-gray-900'
 }

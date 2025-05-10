@@ -13,6 +13,8 @@ export default function LoginPage() {
         post('/login');
     }
 
+    console.log(errors)
+
     return (
         <div className="flex min-h-screen flex-1 flex-col justify-center px-6 pt-14 lg:px-8 bg-theme">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -83,13 +85,6 @@ export default function LoginPage() {
                         </button>
                     </div>
                 </form>
-
-                <p className="mt-10 text-center text-sm/6 text-gray-500">
-                    Not a member?{' '}
-                    <Link href="/register" className="font-semibold text-theme-secondary hover:text-white">
-                        Sign up here.
-                    </Link>
-                </p>
             </div>
         </div>
     )

@@ -18,7 +18,8 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         $startDateTime = fake()->dateTimeBetween('-3 days', '+5 days');
-        $endDateTime = fake()->dateTimeBetween($startDateTime, $startDateTime->modify('+8 hours')); // max 8 hours later
+        $maxEndDateTime = (clone $startDateTime)->modify('+8 hours');
+        $endDateTime = fake()->dateTimeBetween($startDateTime, $maxEndDateTime);
 
         return [
             'date_start' => $startDateTime->format('Y-m-d'),
