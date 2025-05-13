@@ -13,7 +13,7 @@ Route::get('/', function () {
     return Inertia::render('Home');
 })->name('home');
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('show.login');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'requestLogin'])->name('request.login');
 
 Route::middleware('auth')->group(function () {

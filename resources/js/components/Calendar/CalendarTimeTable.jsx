@@ -15,8 +15,9 @@ import TaskCategoriesIcon from './TaskCategoriesIcon';
 const CalendarTimeTable = memo(function CalendarComponent({
     yearAndMonth,
     onYearAndMonthChange,
-    requestInspectDay,
+    // requestInspectDay,
     tasks,
+    todoJobs,
     taskCategories,
     requestSwitchView,
     userID = undefined
@@ -75,7 +76,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
             if (day.isCurrentMonth) {
                 return "text-theme";
             }
-            return "text-gray-500";
+            return "text-gray-400";
         }
     }
 
@@ -89,9 +90,19 @@ const CalendarTimeTable = memo(function CalendarComponent({
 
         return (
             <div className="day-grid-item-header p-1 flex flex-col items-start">
-                <p className={`p-1 ${getDayClassName(day)}`}>
-                    {day.dayOfMonth}
-                </p>
+                <div className='w-full px-1 flex flex-col sm:flex-row items-center justify-between gap-y-1'>
+                    <p className={`p-1 ${getDayClassName(day)}`}>
+                        {day.dayOfMonth}
+                    </p>
+                    {
+                        todoJobs.find((job) => job.date === day.dateString) ? 
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={20} height={20} className="fill-theme-secondary animate-pulse me-0 sm:me-1">
+                            <path d="M152.1 38.2c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 113C-2.3 103.6-2.3 88.4 7 79s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zm0 160c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 273c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zM224 96c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zm0 160c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zM160 416c0-17.7 14.3-32 32-32l288 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-288 0c-17.7 0-32-14.3-32-32zM48 368a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
+                        </svg>
+                        :
+                        <></>
+                    }
+                </div>
                 <div className='h-full w-full p-1'>
                     {tasksForTheDay.map(task => (
                         <div key={task.id} className={`text-xs my-1 text-white rounded-sm p-1 ${renderTaskCategoryBackground(task)}`}>
@@ -125,7 +136,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
     return (
         <div className="w-full pt-16">
             <div className="flex flex-col items-center justify-center place-content-center sticky top-16 pt-2 z-10 bg-gray-800">
-                <div className='w-full flex items-center justify-between px-4'>
+                <div className='w-full flex items-center justify-center sm:justify-start px-2 sm:px-6 lg:px-8'>
                     <div className='flex items-center justify-center gap-4'>
                         <button onClick={handleMonthNavBackButtonClick} className='cursor-pointer group'>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25} className='fill-white group-hover:fill-theme bg-transparent group-hover:bg-white transition-all duration-300 rounded-full'>
@@ -160,11 +171,11 @@ const CalendarTimeTable = memo(function CalendarComponent({
                             ))}
                         </select>
                     </div>
-                    <button onClick={() => requestSwitchView()} className="cursor-pointer px-2 py-1 text-white border-[1px] border-white rounded-sm group hover:bg-white transition-all duration-300">
+                    {/* <button onClick={() => requestSwitchView()} className="cursor-pointer px-2 py-1 text-white border-[1px] border-white rounded-sm group hover:bg-white transition-all duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width={20} height={20} className='fill-white group-hover:fill-theme transition-all duration-300'>
                             <path d="M128 72a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm32 97.3c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80S48 51.8 48 96c0 32.8 19.7 61 48 73.3L96 224l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0 54.7c-28.3 12.3-48 40.5-48 73.3c0 44.2 35.8 80 80 80s80-35.8 80-80c0-32.8-19.7-61-48-73.3l0-54.7 256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-54.7c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 32.8 19.7 61 48 73.3l0 54.7-320 0 0-54.7zM488 96a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM320 392a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
                         </svg>
-                    </button>
+                    </button> */}
                 </div>
                 <div className="days-of-week grid grid-cols-7 w-full border-y-[1px] border-white py-2 mt-2">
                     {daysOfWeek.map((day, index) => (
@@ -188,7 +199,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
                             className={`day-grid-item-container border-[1px] border-theme bg-gray-50`}
                         >
                             <div
-                                onClick={hasTask || !userID ? () => requestInspectDay(day.dateString) : undefined}
+                                onClick={hasTask || !userID ? () => requestSwitchView(day.dateString) : undefined}
                                 className={`h-full overflow-clip ${hasTask || !userID ? 'hover:bg-gray-200 cursor-pointer' : ''}`}
                             >
                                 {render(day)}

@@ -24,7 +24,7 @@ function parseYearMonth(viewStr) {
     return [year, month];
 }
 
-export default function ScheduleTimeTable({ tasks, users, viewYearAndMonthInterval, taskCategories }) {
+export default function ScheduleTimeTable({ tasks, users, todos, todoJobs, viewYearAndMonthInterval, taskCategories }) {
 
     const yearAndMonth = parseYearMonth(viewYearAndMonthInterval);
 
@@ -38,7 +38,8 @@ export default function ScheduleTimeTable({ tasks, users, viewYearAndMonthInterv
 
     const [view, setView] = useState(false);
 
-    function requestSwitchView() {
+    function requestSwitchView(day) {
+        setDate(day)
         setView((prev) => !prev);
     }
 
@@ -49,19 +50,21 @@ export default function ScheduleTimeTable({ tasks, users, viewYearAndMonthInterv
 
     const [date, setDate] = useState(today);
 
-    function requestPrevDay(date){
+    function requestPrevDay(date) {
         const prev = dayjs(date).subtract(1, "day").toDate();
         setDate(prev);
     }
 
-    function requestNextDay(date){
+    function requestNextDay(date) {
         const next = dayjs(date).add(1, "day").toDate();
         setDate(next);
     }
 
-    function handleDateSelect(date){
+    function handleDateSelect(date) {
         setDate(date)
     }
+
+    // console.log(todos)
 
     if (view == false) {
         return (
@@ -69,18 +72,11 @@ export default function ScheduleTimeTable({ tasks, users, viewYearAndMonthInterv
                 <CalendarTimeTable
                     yearAndMonth={yearAndMonth}
                     onYearAndMonthChange={requestViewYearAndMonth}
-                    requestInspectDay={handleInspectDay}
                     tasks={tasks}
+                    // todos={todos}
+                    todoJobs={todoJobs}
                     taskCategories={taskCategories}
                     requestSwitchView={requestSwitchView}
-                />
-                <InspectDayTasksDrawer
-                    isOpen={open}
-                    setOpen={setOpen}
-                    users={users}
-                    tasks={tasks}
-                    taskCategories={taskCategories}
-                    currentSelectedDate={currentSelectedDate}
                 />
             </>
         )
@@ -90,13 +86,25 @@ export default function ScheduleTimeTable({ tasks, users, viewYearAndMonthInterv
         <>
             <CalendarTimeLine
                 date={date}
+                requestInspectDay={handleInspectDay}
                 requestTasksPrevDay={requestPrevDay}
                 requestTasksNextDay={requestNextDay}
                 handleDateSelect={handleDateSelect}
-                requestSwitchView={requestSwitchView}     
+                requestSwitchView={requestSwitchView}
                 users={users}
                 tasks={tasks}
+                todos={todos}
+                todoJobs={todoJobs}
                 taskCategories={taskCategories}
+            />
+            <InspectDayTasksDrawer
+                isOpen={open}
+                setOpen={setOpen}
+                users={users}
+                tasks={tasks}
+                todos={todos}
+                taskCategories={taskCategories}
+                currentSelectedDate={currentSelectedDate}
             />
         </>
     )

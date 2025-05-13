@@ -20,8 +20,12 @@ class RoleFactory extends Factory
 
     public function definition(): array
     {
+        $role = fake()->randomElement(UserRoles::cases());
+
         return [
-            'name' => fake()->randomElement(UserRoles::cases())->value,
+            'name' => $role->value,
+            'rank' => $role->rank(),
+            'requires_confirmation' => $role->requiresConfirmation(),
         ];
     }
 }

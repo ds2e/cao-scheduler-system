@@ -10,7 +10,7 @@ class Role extends Model
     /** @use HasFactory<\Database\Factories\RoleFactory> */
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'rank', 'requires_confirmation'];
 
     public function users()
     {

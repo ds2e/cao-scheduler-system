@@ -6,6 +6,8 @@ use App\Enums\UserRoles;
 use App\Models\Schedule;
 use App\Models\Task;
 use App\Models\TaskCategory;
+use App\Models\Todo;
+use App\Models\TodoJob;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -67,18 +69,24 @@ class ScheduleController extends Controller
         }
 
         $taskCategories = TaskCategory::all();
+        $todos = Todo::all();
 
         $tasks = Task::with('users')
             ->whereBetween('date_start', [$startDate, $endDate])
+            ->get();
+
+        $todoJobs = TodoJob::whereBetween('date', [$startDate, $endDate])
             ->get();
 
         // show all users for admin to assign task
         $users = User::whereIn('role_id', UserRoles::taskAssignable())->get();
 
         return inertia('Schedule/Schedule', [
-            'view' => $view, // optional default
+            'view' => $view,
             'taskCategories' => $taskCategories,
             'tasks' => $tasks,
+            'todoJobs' => $todoJobs,
+            'todos' => $todos,
             'users' => $users,
         ]);
     }

@@ -113,7 +113,8 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
     function handleAssignTasksDate(data) {
         post('/dashboard/schedule', {
             onSuccess: () => {
-                setFormSubmitSuccess(true)
+                setOpen(false);
+                setFormSubmitSuccess(true);
             }
         });
     }
@@ -134,7 +135,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                 </DrawerHeader>
 
                 <div className="w-full px-4">
-                    <div className="max-h-[70dvh] overflow-y-scroll">
+                    <div className="max-h-[70dvh] overflow-y-auto">
                         {data.tasks.map((taskEntry, taskInd) => {
                             const startDateTime = `${taskEntry.date_start} ${taskEntry.time_start}`;
                             const endDateTime = `${taskEntry.date_end} ${taskEntry.time_end}`;
@@ -143,12 +144,6 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                                 <div key={taskInd} className={`mb-8 border p-4 rounded-lg ${renderTaskCategoryBackground(taskInd)}`}>
                                     <div className="mb-5">
                                         <div className="flex flex-col md:flex-row items-center justify-between mb-4">
-                                            {
-                                                taskEntry.id ?
-                                                    <h2 className="hidden md:block text-lg font-medium text-white dark:text-gray-900">Task Carrier</h2>
-                                                    :
-                                                    <h2 className="text-lg font-medium text-theme-secondary dark:text-gray-900 text-shadow-black text-shadow-lg">Newly Created Task</h2>
-                                            }
                                             <div className="flex flex-col md:flex-row items-center justify-center gap-2">
                                                 <div className="flex items-center justify-center gap-x-2">
                                                     <span className="text-white font-bold">Start</span>
@@ -194,39 +189,44 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                                                         }}
                                                     />
                                                 </div>
-
-                                                <div className="flex items-center justify-center gap-x-2">
-                                                    <Select
-                                                        defaultValue={String(taskCategories[taskCategories.length - 1].id)}
-                                                        value={String(taskEntry.task_category_id)}
-                                                        onValueChange={(e) => {
-                                                            const updatedTasks = [...data.tasks];
-                                                            updatedTasks[taskInd] = {
-                                                                ...updatedTasks[taskInd],
-                                                                task_category_id: Number(e),
-                                                            };
-                                                            setData({
-                                                                ...data,
-                                                                tasks: updatedTasks,
-                                                            });
-                                                        }}
-                                                    >
-                                                        <SelectTrigger className="text-white">
-                                                            <SelectValue placeholder="Task Category" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectGroup>
-                                                                <SelectLabel>Categories</SelectLabel>
-                                                                {taskCategories.map((cat, cat_ind) => (
-                                                                    <SelectItem key={taskInd + cat.id} value={String(cat.id)}>{cat.name}</SelectItem>
-                                                                ))}
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <svg onClick={() => removeTaskFromDate(taskInd)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={20} height={20} className="cursor-pointer fill-theme-secondary">
-                                                        <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
-                                                    </svg>
-                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-center gap-x-2">
+                                                <Select
+                                                    defaultValue={String(taskCategories[taskCategories.length - 1].id)}
+                                                    value={String(taskEntry.task_category_id)}
+                                                    onValueChange={(e) => {
+                                                        const updatedTasks = [...data.tasks];
+                                                        updatedTasks[taskInd] = {
+                                                            ...updatedTasks[taskInd],
+                                                            task_category_id: Number(e),
+                                                        };
+                                                        setData({
+                                                            ...data,
+                                                            tasks: updatedTasks,
+                                                        });
+                                                    }}
+                                                >
+                                                    <SelectTrigger className="text-white">
+                                                        <SelectValue placeholder="Task Category" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            <SelectLabel>Categories</SelectLabel>
+                                                            {taskCategories.map((cat, cat_ind) => (
+                                                                <SelectItem key={taskInd + cat.id} value={String(cat.id)}>{cat.name}</SelectItem>
+                                                            ))}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                                {
+                                                    taskEntry.id ?
+                                                        <></>
+                                                        :
+                                                        <h2 className="text-lg font-medium text-theme-secondary dark:text-gray-900 text-shadow-black text-shadow-lg">(New)</h2>
+                                                }
+                                                <svg onClick={() => removeTaskFromDate(taskInd)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={20} height={20} className="cursor-pointer fill-theme-secondary">
+                                                    <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
+                                                </svg>
                                             </div>
                                         </div>
                                         <div className="flex justify-start gap-2">
@@ -282,7 +282,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                     <div className="flex flex-row items-center justify-between">
                         {formSubmitSuccess == null ?
                             (
-                                <div className="space-y-1 overflow-y-scroll h-10">
+                                <div className="space-y-1 overflow-y-auto h-10">
                                     {Object.entries(errors).map(([field, message]) => (
                                         <p className="text-red-500 font-semibold" key={field}>
                                             {field}: {message}

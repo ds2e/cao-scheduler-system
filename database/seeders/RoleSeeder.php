@@ -15,7 +15,13 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         foreach (UserRoles::cases() as $role) {
-            Role::firstOrCreate(['name' => $role->value]);
+            Role::updateOrCreate(
+                ['name' => $role->value],
+                [
+                    'rank' => $role->rank(),
+                    'requires_confirmation' => $role->requiresConfirmation()
+                ]
+            );
         }
-    }  
+    }
 }

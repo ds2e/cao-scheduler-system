@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserRoles;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\Task;
 use Illuminate\Http\Request;
@@ -13,6 +14,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -26,18 +29,24 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $users = User::latest()->paginate(5)->through(function ($user) {
+        $roles = Role::all()->keyBy('id');
+
+        $users = User::latest()->paginate(5)->through(function ($user) use ($roles) {
             try {
                 $user->PIN = Crypt::decryptString($user->PIN);
             } catch (\Exception $e) {
                 $user->PIN = null; // fallback if decryption fails
             }
+
+            // $user->role_name = $roles[$user->role_id]->name ?? 'Unknown';
+            $user->role_rank = $roles[$user->role_id]->rank ?? 1;
+
             return $user;
         });
-        $roles = Role::all();
+        
         return inertia('Users/Users', [
             'users' => $users,
-            'roles' => $roles
+            'roles' => $roles->values()
         ]);
     }
     /**
@@ -77,23 +86,21 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
         $this->authorize('update', $user);
 
+        // $validator = Validator::make($request->all(), $request->rules());
         // Validate the request
-        $validated = $request->validate([
-            'id' => ['required', 'integer', Rule::exists('users', 'id')],
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'PIN' => ['required', 'digits:4'],
-            'role_id' => ['required', 'integer', Rule::exists('roles', 'id')],
-        ]);
+        // $validated = $validator->validated();
+        $validated = $request->validated();
 
-        $enteredPIN = $validated['PIN'];
+        $userData = $validated['currentSelectedUserData'];
+
+        $enteredPIN = $userData['PIN'];
 
         // Find the user
-        $user = User::findOrFail($validated['id']);
+        $user = User::findOrFail($userData['id']);
 
         // Decrypt current user's PIN for comparison
         try {
@@ -117,14 +124,17 @@ class UserController extends Controller
             return back()->withErrors(['PIN' => 'This PIN is already in use.']);
         }
 
-        // Update the user's data
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-        $user->PIN = Crypt::encryptString($enteredPIN);
-        $user->role_id = $validated['role_id'];
-        $user->updated_at = now();
+        // Update the user's userData
+        DB::transaction(function () use ($user, $userData, $enteredPIN) {
 
-        $user->save();
+            $user->name = $userData['name'];
+            $user->email = $userData['email'];
+            $user->PIN = Crypt::encryptString($enteredPIN);
+            $user->role_id = $userData['role_id'];
+            $user->updated_at = now();
+
+            $user->save();
+        });
 
         return back()->with('success', 'User updated.');
     }

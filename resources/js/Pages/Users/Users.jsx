@@ -6,18 +6,29 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-import { Link, router, useForm } from "@inertiajs/react";
+import { Link, router, useForm, usePage } from "@inertiajs/react";
 import mainLogo from '+/images/Cao_Laura_ohneText.png'
 import { useEffect, useState } from "react";
 import UserDeleteDialog from "@/components/Dialog/UserDeleteDialog";
 import UserRegisterDialog from "@/components/Dialog/UserRegisterDialog";
+import UserUpdatePromotionDialog from "@/components/Dialog/UserUpdatePromotionDialog";
 
 export default function UsersPage({ users, roles }) {
-    const { data: currentSelectedUserData, setData: setCurrentSelectedUserData, patch, delete: destroy, processing, errors } = useForm({});
+    const rolesNeedConfirmation = roles.filter((role) => role.requires_confirmation == true);
+    const { auth } = usePage().props;
+
+    const { data, setData, patch, delete: destroy, processing, errors, transform } = useForm({
+        currentSelectedUserData: {},
+        authorData: {
+            id: auth.user.uid,
+            password: ''
+        }
+    });
     const [currentPage, setCurrentPage] = useState(users.current_page);
 
     const [isOpenDeleteUserDialog, setOpenDeleteUserDialog] = useState(false);
     const [isOpenRegisterUserDialog, setOpenRegisterUserDialog] = useState(false);
+    const [isOpenPromotionUserDialog, setOpenPromotionUserDialog] = useState(false);
 
     const goToPage = (page) => {
         // Inertia automatically handles page requests
@@ -26,19 +37,48 @@ export default function UsersPage({ users, roles }) {
     };
 
     function toggleEditUser(user) {
-        if (Object.keys(currentSelectedUserData).length == 0 || currentSelectedUserData.id !== user.id) {
-            setCurrentSelectedUserData(user);
+        if (Object.keys(data.currentSelectedUserData).length == 0 || data.currentSelectedUserData.id !== user.id) {
+            setData({
+                ...data,
+                currentSelectedUserData: user
+            });
         } else {
-            setCurrentSelectedUserData({});
+            setData({
+                ...data,
+                currentSelectedUserData: {}
+            });
         }
     }
 
     function requestDoneEditUser() {
-        patch(`/dashboard/users/${currentSelectedUserData.id}`, {
-            onSuccess: () => {
-                setCurrentSelectedUserData({});
-            }
-        });
+        const selectedRank = data.currentSelectedUserData.new_role_rank ?? data.currentSelectedUserData.role_rank;
+
+        const needConfirmation = rolesNeedConfirmation.some(
+            (role) => role.rank === selectedRank
+        );
+
+        // console.log(data);
+
+        if (data.currentSelectedUserData.new_role_rank > data.currentSelectedUserData.role_rank && needConfirmation) {
+            setOpenPromotionUserDialog(true);
+        }
+        else {
+            transform((data) => ({
+                ...data,
+                currentSelectedUserData: {
+                    ...data.currentSelectedUserData,
+                    role_id: roles.find(role => role.rank === selectedRank)?.id
+                }
+            }))
+            patch(`/dashboard/users/${data.currentSelectedUserData.id}`, {
+                onSuccess: () => {
+                    setData({
+                        ...data,
+                        currentSelectedUserData: {}
+                    });
+                }
+            });
+        }
     }
 
     function requestDeleteUser() {
@@ -46,13 +86,42 @@ export default function UsersPage({ users, roles }) {
     }
 
     function confirmDeleteUser() {
-        destroy(`/dashboard/users/${currentSelectedUserData.id}`, {
+        destroy(`/dashboard/users/${data.currentSelectedUserData.id}`, {
             onSuccess: () => {
-                setCurrentSelectedUserData({});
+                setData({
+                    ...data,
+                    currentSelectedUserData: {}
+                });
                 setOpenDeleteUserDialog(false);
             }
         })
     }
+
+    function confirmPromotionUser(authorPassword) {
+        setOpenPromotionUserDialog(false);
+        transform((data) => ({
+            ...data,
+            currentSelectedUserData: {
+                ...data.currentSelectedUserData,
+                role_id: roles.find(role => role.rank === data.currentSelectedUserData.new_role_rank)?.id
+            },
+            authorData: {
+                ...data.authorData,
+                password: authorPassword
+            }
+        }));
+        patch(`/dashboard/users/${data.currentSelectedUserData.id}`, {
+            onSuccess: () => {
+                setData({
+                    ...data,
+                    currentSelectedUserData: {}
+                });
+            }
+        });
+    }
+
+    // console.log(users.data);
+    // console.log(roles);
 
     return (
         <>
@@ -64,8 +133,8 @@ export default function UsersPage({ users, roles }) {
                                 Object.keys(errors).length > 0 ?
                                     <div className="space-y-1 overflow-y-scroll h-10 px-6 py-2">
                                         {Object.entries(errors).map(([field, message]) => (
-                                            <p className="text-red-500 font-semibold" key={field}>
-                                                {field}: {message}
+                                            <p className="text-red-500 font-semibold" key={field + "password"}>
+                                                {message}
                                             </p>
                                         ))}
                                     </div>
@@ -103,37 +172,50 @@ export default function UsersPage({ users, roles }) {
                         <tbody>
                             {users.data.map((user, user_ind) => {
                                 return (
-                                    <tr key={user_ind} className={`${currentSelectedUserData.id == user.id ? "bg-red-100" : "bg-white hover:bg-gray-50"} border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600`}>
+                                    <tr key={user_ind} className={`${data.currentSelectedUserData.id == user.id ? "bg-red-100" : "bg-white hover:bg-gray-50"} border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600`}>
                                         <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                             <img className="w-10 h-10 rounded-full bg-theme p-1.5" src={mainLogo} alt="Jese image" />
                                             <div className="ps-3">
                                                 {
-                                                    (Object.keys(currentSelectedUserData).length > 0 && currentSelectedUserData.id == user.id) ?
+                                                    (Object.keys(data.currentSelectedUserData).length > 0 && data.currentSelectedUserData.id == user.id) ?
                                                         <input
-                                                            value={currentSelectedUserData.name}
-                                                            onChange={(e) => setCurrentSelectedUserData({
-                                                                ...currentSelectedUserData,
-                                                                name: e.target.value
-                                                            })}
+                                                            value={data.currentSelectedUserData.name}
+                                                            onChange={(e) => {
+                                                                const updatedCurrentSelectedUserData = { ...data.currentSelectedUserData };
+                                                                updatedCurrentSelectedUserData.name = e.target.value;
+                                                                setData({
+                                                                    ...data,
+                                                                    currentSelectedUserData: updatedCurrentSelectedUserData
+                                                                })
+                                                            }}
                                                             autoFocus
                                                             className="p-2 border-[1px] border-theme"
                                                         />
                                                         :
-                                                        <Link href={`/dashboard/users/${user.id}`} className="text-base font-semibold">{user.name}</Link>
+                                                        <div className="flex gap-x-2 items-center">
+                                                            <Link href={`/dashboard/users/${user.id}`} className="text-base font-semibold">{user.name}</Link>
+                                                            {
+                                                                user.id == auth.user.uid ? <span className="text-theme-secondary">(You)</span> : <></>
+                                                            }
+                                                        </div>
                                                 }
                                                 <div className="font-normal text-gray-500">{user.email}</div>
                                                 {
-                                                    (Object.keys(currentSelectedUserData).length > 0 && currentSelectedUserData.id == user.id) ?
+                                                    (Object.keys(data.currentSelectedUserData).length > 0 && data.currentSelectedUserData.id == user.id) ?
                                                         <input
                                                             type="text"
                                                             maxLength="4"
                                                             pattern="\d{4}"
                                                             required
-                                                            value={currentSelectedUserData.PIN}
-                                                            onChange={(e) => setCurrentSelectedUserData({
-                                                                ...currentSelectedUserData,
-                                                                PIN: e.target.value
-                                                            })}
+                                                            value={data.currentSelectedUserData.PIN}
+                                                            onChange={(e) => {
+                                                                const updatedCurrentSelectedUserData = { ...data.currentSelectedUserData };
+                                                                updatedCurrentSelectedUserData.PIN = e.target.value;
+                                                                setData({
+                                                                    ...data,
+                                                                    currentSelectedUserData: updatedCurrentSelectedUserData
+                                                                })
+                                                            }}
                                                             className="p-2 border-[1px] border-theme"
                                                         />
                                                         :
@@ -143,14 +225,15 @@ export default function UsersPage({ users, roles }) {
                                         </th>
                                         <td className="px-6 py-4">
                                             {
-                                                (Object.keys(currentSelectedUserData).length > 0 && currentSelectedUserData.id == user.id) ?
+                                                (Object.keys(data.currentSelectedUserData).length > 0 && data.currentSelectedUserData.id == user.id) ?
                                                     <Select
-                                                        value={String(currentSelectedUserData.role_id)}
-                                                        onValueChange={(selectedRoleId) => {
-                                                            setCurrentSelectedUserData({
-                                                                ...currentSelectedUserData,
-                                                                role_id: Number(selectedRoleId) // convert to number if role_id is a number
-
+                                                        value={String(data.currentSelectedUserData.new_role_rank ?? data.currentSelectedUserData.role_rank)}
+                                                        onValueChange={(selectedRoleRank) => {
+                                                            const updatedCurrentSelectedUserData = { ...data.currentSelectedUserData };
+                                                            updatedCurrentSelectedUserData.new_role_rank = Number(selectedRoleRank)
+                                                            setData({
+                                                                ...data,
+                                                                currentSelectedUserData: updatedCurrentSelectedUserData
                                                             })
                                                         }}
                                                     >
@@ -159,7 +242,7 @@ export default function UsersPage({ users, roles }) {
                                                         </SelectTrigger>
                                                         <SelectContent>
                                                             {roles.map((role, role_ind) => (
-                                                                <SelectItem key={`${user.id}-${role.id}`} value={String(role.id)}>
+                                                                <SelectItem key={`${user.id}-${role.id}`} value={String(role.rank)}>
                                                                     {role.name}
                                                                 </SelectItem>
                                                             ))}
@@ -176,15 +259,15 @@ export default function UsersPage({ users, roles }) {
                                         </td>
                                         <td className="px-6 py-4">
                                             <button type="button" onClick={() => toggleEditUser(user)} className="cursor-pointer p-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={20} height={20} className={(currentSelectedUserData.id == user.id) ? "fill-theme-secondary-highlight" : "fill-theme"}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={20} height={20} className={(data.currentSelectedUserData.id == user.id) ? "fill-theme-secondary-highlight" : "fill-theme"}>
                                                     <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z" />
                                                 </svg>
                                             </button>
                                             {
-                                                (Object.keys(currentSelectedUserData).length > 0 && currentSelectedUserData.id == user.id)
+                                                (Object.keys(data.currentSelectedUserData).length > 0 && data.currentSelectedUserData.id == user.id)
                                                 &&
                                                 <>
-                                                    <button type="button" onClick={() => requestDeleteUser(currentSelectedUserData.id)} className="cursor-pointer p-2">
+                                                    <button type="button" onClick={() => requestDeleteUser(data.currentSelectedUserData.id)} className="cursor-pointer p-2">
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={20} height={20} className="fill-theme-secondary">
                                                             <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
                                                         </svg>
@@ -243,7 +326,8 @@ export default function UsersPage({ users, roles }) {
                 </div>
             </div>
             <UserRegisterDialog isOpen={isOpenRegisterUserDialog} setOpen={setOpenRegisterUserDialog} />
-            <UserDeleteDialog isOpen={isOpenDeleteUserDialog} setOpen={setOpenDeleteUserDialog} currentUserData={currentSelectedUserData} role={roles.find(role => role.id === currentSelectedUserData.role_id)?.name} confirmDeleteUser={confirmDeleteUser} />
+            <UserDeleteDialog isOpen={isOpenDeleteUserDialog} setOpen={setOpenDeleteUserDialog} currentUserData={data.currentSelectedUserData} role={roles.find(role => role.id === data.currentSelectedUserData.role_id)?.name} confirmDeleteUser={confirmDeleteUser} />
+            <UserUpdatePromotionDialog isOpen={isOpenPromotionUserDialog} setOpen={setOpenPromotionUserDialog} currentUserData={data.currentSelectedUserData} oldRole={roles.find(role => role.id === data.currentSelectedUserData.role_id)?.name} newRole={roles.find(role => role.rank === data.currentSelectedUserData.new_role_rank)?.name} confirmPassword={confirmPromotionUser} />
         </>
     )
 }

@@ -37,4 +37,9 @@ enum UserRoles: string
             array_filter(self::cases(), fn(self $role) => $role !== self::SuperAdmin)
         );
     }
+
+    public function requiresConfirmation(): bool
+    {
+        return in_array($this, [self::Admin, self::SuperAdmin], true);
+    }
 }
