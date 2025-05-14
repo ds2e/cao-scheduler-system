@@ -73,7 +73,6 @@ export default function ScheduleTimeTable({ tasks, users, todos, todoJobs, viewY
                     yearAndMonth={yearAndMonth}
                     onYearAndMonthChange={requestViewYearAndMonth}
                     tasks={tasks}
-                    // todos={todos}
                     todoJobs={todoJobs}
                     taskCategories={taskCategories}
                     requestSwitchView={requestSwitchView}
@@ -102,7 +101,6 @@ export default function ScheduleTimeTable({ tasks, users, todos, todoJobs, viewY
                 setOpen={setOpen}
                 users={users}
                 tasks={tasks}
-                todos={todos}
                 taskCategories={taskCategories}
                 currentSelectedDate={currentSelectedDate}
             />

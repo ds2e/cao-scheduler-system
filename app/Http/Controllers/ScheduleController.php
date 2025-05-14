@@ -125,7 +125,7 @@ class ScheduleController extends Controller
             }
         })->validate();
 
-        $tasks = $request->tasks ?? [];
+        $tasks = $validated['tasks'] ?? [];
 
         // Get IDs of tasks in the request (if they exist)
         $taskIdsInRequest = collect($tasks)
@@ -164,6 +164,56 @@ class ScheduleController extends Controller
         return back()->with('success', 'Schedule updated.');
     }
 
+    public function updateScheduleTodo(Request $request)
+    {
+        $this->authorize('update', Schedule::class);
+
+        $validated = Validator::make($request->all(), [
+            'todoJobs' => 'nullable|array',
+            'todoJobs.*.id' => 'nullable|exists:todo_jobs,id',
+            // 'todoJobs.*.users' => 'required|array|min:1',
+            // 'todoJobs.*.users.*.id' => 'required|exists:users,id',
+            'todoJobs.*.notice' => 'nullable|string',
+            'todoJobs.*.date' => 'required|date',
+            'todoJobs.*.todo_id' => 'required|exists:todos,id',
+            'date' => 'required|date',
+        ])->validate();
+
+        // dd($validated);
+
+        $todoJobs = $validated['todoJobs'] ?? [];
+
+        // Get IDs of tasks in the request (if they exist)
+        $todoJobIdsInRequest = collect($todoJobs)
+            ->pluck('id')
+            ->filter()
+            ->toArray();
+
+        // Delete tasks not present in the request but exist for the date
+        TodoJob::where('date', $validated['date'])
+            ->when(
+                $todoJobIdsInRequest,
+                fn($query) =>
+                $query->whereNotIn('id', $todoJobIdsInRequest)
+            )
+            ->delete();
+
+        // Upsert tasks
+        foreach ($todoJobs as $todoJobData) {
+            $todoJob = isset($todoJobData['id'])
+                ? TodoJob::find($todoJobData['id'])
+                : new TodoJob();
+
+            $todoJob->fill([
+                'notice' => $todoJobData['notice'] ?? '',
+                'date' => $todoJobData['date'],
+                'todo_id' => $todoJobData['todo_id'],
+            ])->save();
+        }
+
+        return back()->with('success', 'Todo list updated.');
+    }
+
     /**
      * Display the specified resource.
      */
@@ -188,10 +238,15 @@ class ScheduleController extends Controller
             ->whereBetween('date_start', [$startDate, $endDate])
             ->get();
 
+        $todoJobs = TodoJob::with('todo')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->get();
+
         return inertia('Schedule/UserSchedule', [
             'view' => $view,
             'taskCategories' => $taskCategories,
             'tasks' => $tasks,
+            'todoJobs' => $todoJobs,
             'userID' => $userID
         ]);
     }

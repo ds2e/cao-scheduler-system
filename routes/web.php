@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
         Route::get('schedule', [ScheduleController::class, 'handleRoleBasedView'])->name('show.schedule');
         Route::post('schedule', [ScheduleController::class, 'updateSchedule'])->name('update.schedule');
+        Route::post('schedule/todo', [ScheduleController::class, 'updateScheduleTodo'])->name('update.schedule.todo');
         // Route::resource('tasks', TaskController::class)->only(['update']);
         Route::resource('users', UserController::class)->except(['create', 'edit']);
     });

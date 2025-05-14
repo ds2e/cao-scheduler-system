@@ -43,11 +43,12 @@ export default function InspectDayTodoListDrawer({ isOpen, setOpen, todoJobs, to
     }, [currentSelectedDate, isOpen])
 
     function addTodoToDate(todoEntry) {
-        const newTodos = [{
+        const newTodos = [...data.todoJobs,
+        {
             date: currentSelectedDate,
             notice: '',
             todo_id: todoEntry.id
-        }, ...data.todoJobs]
+        }]
 
         console.log(newTodos)
 
@@ -57,15 +58,23 @@ export default function InspectDayTodoListDrawer({ isOpen, setOpen, todoJobs, to
         })
     }
 
+    function removeTodoFromDate(jobInd) {
+        const newTodos = data.todoJobs.filter((_, i) => i !== jobInd);
+        setData({
+            ...data,
+            todoJobs: newTodos
+        })
+    }
+
 
     function handleAssignTodosDate(data) {
-        console.log(data);
-        // post('/dashboard/schedule', {
-        //     onSuccess: () => {
-        //         setOpen(false);
-        //         setFormSubmitSuccess(true);
-        //     }
-        // });
+        // console.log(data);
+        post('/dashboard/schedule/todo', {
+            onSuccess: () => {
+                setOpen(false);
+                setFormSubmitSuccess(true);
+            }
+        });
     }
 
 
@@ -76,7 +85,7 @@ export default function InspectDayTodoListDrawer({ isOpen, setOpen, todoJobs, to
             <DrawerContent className="bg-white">
                 <DrawerHeader>
                     <DrawerTitle>Assign Todo</DrawerTitle>
-                    <DrawerDescription>{currentSelectedDate}</DrawerDescription>
+                    <DrawerDescription>{dayjs(currentSelectedDate).format('DD.MM.YYYY')}</DrawerDescription>
                 </DrawerHeader>
 
                 <div className="w-full px-4 grid gap-y-2 place-content-center">
@@ -85,7 +94,7 @@ export default function InspectDayTodoListDrawer({ isOpen, setOpen, todoJobs, to
                             {data.todoJobs.map((job, jobInd) => {
                                 return (
                                     <li key={(job.id) ? job.id + jobInd : 'new' + jobInd}>
-                                        {todos.find(todo => todo.id === job.todo_id)?.name}
+                                        <span onClick={() => removeTodoFromDate(jobInd)} className="cursor-pointer text-theme hover:text-theme-highlight">{todos.find(todo => todo.id === job.todo_id)?.name}</span>
                                         <input
                                             type="text"
                                             value={data.todoJobs[jobInd].notice}
@@ -99,13 +108,6 @@ export default function InspectDayTodoListDrawer({ isOpen, setOpen, todoJobs, to
                                             }}
                                             className="text-theme-secondary ms-1 w-64 border-[1px] border-theme px-1"
                                         />
-                                        {/* {
-                                            job.notice && 
-                                            <span className="text-theme-secondary ms-1">
-                                                ({job.notice})
-                                            </span>
-                                        } */}
-
                                     </li>
                                 )
                             })}

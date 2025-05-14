@@ -1,10 +1,10 @@
 import dayjs from "dayjs";
 import { useCallback, useState } from "react";
+import { router } from "@inertiajs/react";
 
 import UserInspectDayTasksDrawer from "@/components/Drawer/UserInspectDayTasksDrawer";
-import CalendarTimeTable from "@/components/Calendar/CalendarTimeTable";
-import CalendarTimeLine from "@/components/Calendar/CalendarTimeLine";
-import { router } from "@inertiajs/react";
+import UserCalendarTimeLine from "../../components/Calendar/UserCalendarTimeLine";
+import UserCalendarTimeTable from "../../components/Calendar/UserCalendarTimeTable";
 
 
 const today = new Date()
@@ -25,7 +25,7 @@ function parseYearMonth(viewStr) {
     return [year, month];
 }
 
-export default function UserScheduleTimeTable({ tasks, userID, viewYearAndMonthInterval, taskCategories }) {
+export default function UserScheduleTimeTable({ tasks, todoJobs, userID, viewYearAndMonthInterval, taskCategories }) {
 
     const yearAndMonth = parseYearMonth(viewYearAndMonthInterval);
 
@@ -40,7 +40,8 @@ export default function UserScheduleTimeTable({ tasks, userID, viewYearAndMonthI
 
     const [view, setView] = useState(false);
 
-    function requestSwitchView() {
+    function requestSwitchView(day) {
+        setDate(day)
         setView((prev) => !prev);
     }
 
@@ -68,21 +69,14 @@ export default function UserScheduleTimeTable({ tasks, userID, viewYearAndMonthI
     if (view == false) {
         return (
             <>
-                <CalendarTimeTable
+                <UserCalendarTimeTable
                     yearAndMonth={yearAndMonth}
                     onYearAndMonthChange={requestViewYearAndMonth}
                     requestInspectDay={handleInspectDay}
                     tasks={tasks}
+                    todoJobs={todoJobs}
                     taskCategories={taskCategories}
                     requestSwitchView={requestSwitchView}
-                    userID={userID}
-                />
-                <UserInspectDayTasksDrawer
-                    isOpen={open}
-                    setOpen={setOpen}
-                    tasks={tasks}
-                    taskCategories={taskCategories}
-                    currentSelectedDate={currentSelectedDate}
                     userID={userID}
                 />
             </>
@@ -92,14 +86,24 @@ export default function UserScheduleTimeTable({ tasks, userID, viewYearAndMonthI
 
     return (
         <>
-            <CalendarTimeLine
+            <UserCalendarTimeLine
                 date={date}
+                requestInspectDay={handleInspectDay}
                 requestTasksPrevDay={requestPrevDay}
                 requestTasksNextDay={requestNextDay}
                 handleDateSelect={handleDateSelect}
                 requestSwitchView={requestSwitchView}
                 tasks={tasks}
+                todoJobs={todoJobs}
                 taskCategories={taskCategories}
+                userID={userID}
+            />
+            <UserInspectDayTasksDrawer
+                isOpen={open}
+                setOpen={setOpen}
+                tasks={tasks}
+                taskCategories={taskCategories}
+                currentSelectedDate={currentSelectedDate}
                 userID={userID}
             />
         </>

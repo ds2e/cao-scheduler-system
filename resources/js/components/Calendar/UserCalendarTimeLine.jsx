@@ -10,7 +10,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import InspectDayTodoListDrawer from "@/components/Drawer/InspectDayTodoListDrawer";
 import UserInspectDayTodoListDrawer from "../Drawer/UserInspectDayTodoListDrawer";
 
 const today = new Date();
@@ -21,7 +20,6 @@ const maxDate = dayjs(today).add(1, 'month').endOf('month').toDate();
 
 const timeToColIndex = (timeStr) => {
     const [hour, minute] = timeStr.split(":").map(Number);
-    console.log([hour, minute])
     if (minute >= 30) {
         return hour * 2 + 1;
     }
@@ -29,7 +27,7 @@ const timeToColIndex = (timeStr) => {
     return hour * 2; // 30-min slots
 };
 
-export default function CalendarTimeLine({
+export default function UserCalendarTimeLine({
     date = new Date(),
 
     requestTasksPrevDay,
@@ -39,13 +37,11 @@ export default function CalendarTimeLine({
     requestInspectDay,
     requestSwitchView,
     tasks,
-    todos,
     todoJobs,
-    users,
     taskCategories,
+    userID
 }) {
     const containerRef = useRef(null);
-    const contentRef = useRef(null);
 
     const isDragging = useRef(false);
     const startX = useRef(0);
@@ -58,7 +54,6 @@ export default function CalendarTimeLine({
 
     useEffect(() => {
         const container = containerRef.current;
-        const contentContainer = contentRef.current;
 
         const onMouseDown = (e) => {
             isDragging.current = true;
@@ -92,10 +87,6 @@ export default function CalendarTimeLine({
                 const offsetTop = container.offsetTop;
                 const availableHeight = window.innerHeight - offsetTop;
                 container.style.height = `${availableHeight - 3}px`;
-
-                // const offsetTopContent = offsetTop + (Math.abs(offsetTop - contentContainer.offsetTop));
-                // const availableHeightContent = window.innerHeight - offsetTopContent;
-                // contentContainer.style.height = `${availableHeightContent}px`;
             }
         };
 
@@ -117,14 +108,27 @@ export default function CalendarTimeLine({
         };
     }, []);
 
-    // const todayTasks = tasks.filter(task => task.date_start === dayjs(date).format('YYYY-MM-DD'));
-    const todayTasks = tasks
-        .filter(task => task.date_start === dayjs(date).format('YYYY-MM-DD'))
-        .sort((a, b) => {
-            const [aHour, aMin] = a.time_start.split(':').map(Number);
-            const [bHour, bMin] = b.time_start.split(':').map(Number);
-            return aHour !== bHour ? aHour - bHour : aMin - bMin;
-        });
+    const [filter, setFilter] = useState(false);
+
+    let todayTasks;
+    if (!filter) {
+        todayTasks = tasks
+            .filter(task => task.date_start === dayjs(date).format('YYYY-MM-DD'))
+            .sort((a, b) => {
+                const [aHour, aMin] = a.time_start.split(':').map(Number);
+                const [bHour, bMin] = b.time_start.split(':').map(Number);
+                return aHour !== bHour ? aHour - bHour : aMin - bMin;
+            });
+    }
+    else {
+        todayTasks = tasks
+            .filter(task => task.users.some((user) => user.id === userID) && task.date_start === dayjs(date).format('YYYY-MM-DD'))
+            .sort((a, b) => {
+                const [aHour, aMin] = a.time_start.split(':').map(Number);
+                const [bHour, bMin] = b.time_start.split(':').map(Number);
+                return aHour !== bHour ? aHour - bHour : aMin - bMin;
+            });
+    }
 
     const todayTodoJobs = todoJobs.filter(todo => todo.date === dayjs(date).format('YYYY-MM-DD'));
 
@@ -248,8 +252,14 @@ export default function CalendarTimeLine({
                                     {task.task_category_id && <div className='grid place-content-center mb-1'><TaskCategoriesIcon categoryId={task.task_category_id} /></div>}
                                     <div className='flex flex-wrap items-center justify-center gap-1'>
                                         {task.users.map(user => {
+                                            if (!userID || user.id !== userID) {
+                                                return (
+                                                    <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 text-center text-black text-xs'>{user.name}</div>
+                                                )
+                                            }
+
                                             return (
-                                                <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 text-center text-black text-xs'>{user.name}</div>
+                                                <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 border-[1px] border-black shadow-sm shadow-black text-theme-secondary font-bold text-center text-sm'>You</div>
                                             )
                                         })}
                                     </div>
@@ -259,7 +269,15 @@ export default function CalendarTimeLine({
                     </div>
                 </div>
 
-                <div className="fixed flex gap-x-2 bottom-2 right-2 sm:right-4 sm:bottom-4 lg:bottom-8 lg:right-8">
+                <div className="fixed flex gap-x-2 bottom-2 right-2 sm:right-4 sm:bottom-4 lg:bottom-8 lg:right-8 bg-white rounded-full shadow-sm shadow-black">
+                    <button type="button"
+                        onClick={() => setFilter((prev) => !prev)}
+                        className="cursor-pointer p-2"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={20} height={20} className={`${!filter ? "fill-theme": "fill-theme-secondary"}`}>
+                            <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
+                        </svg>
+                    </button>
                     <button type="button"
                         onClick={() => setOpenTodoListDrawer(true)}
                         className="cursor-pointer p-2"
@@ -273,13 +291,13 @@ export default function CalendarTimeLine({
                         className="cursor-pointer p-2"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={20} height={20} className="fill-theme">
-                            <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z" />
+                            <path d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120l0 136c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2 280 120c0-13.3-10.7-24-24-24s-24 10.7-24 24z" />
                         </svg>
                     </button>
                 </div>
             </div>
 
-            <InspectDayTodoListDrawer isOpen={isOpenTodoListDrawer} setOpen={setOpenTodoListDrawer} todoJobs={todayTodoJobs} todos={todos} currentSelectedDate={date} />
+            <UserInspectDayTodoListDrawer isOpen={isOpenTodoListDrawer} setOpen={setOpenTodoListDrawer} todoJobs={todayTodoJobs} currentSelectedDate={date} />
         </>
 
     );
