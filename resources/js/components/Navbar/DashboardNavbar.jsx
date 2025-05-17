@@ -12,15 +12,15 @@ export default function DashboardNavbar({ auth }) {
 
     const navigation = (auth.user.role.name !== 'Mitarbeiter') ?
         [ // Admin, SuperAdmin Navigation
-            { name: 'Users', href: '/dashboard/users', current: false },
-            { name: 'Schedule', href: '/dashboard/schedule', current: false },
+            { name: 'Nutzer', href: '/dashboard/users', current: false },
+            { name: 'Zeitplan', href: '/dashboard/schedule', current: false },
         ].map(item => ({
             ...item,
             current: item.href === url,
         }))
         :
         [ // User Navigation
-            { name: 'Schedule', href: '/dashboard/schedule', current: false },
+            { name: 'Zeitplan', href: '/dashboard/schedule', current: false },
         ].map(item => ({
             ...item,
             current: item.href === url,
@@ -113,7 +113,7 @@ export default function DashboardNavbar({ auth }) {
                                         href={`/dashboard/users/${auth.user.uid}`}
                                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                                     >
-                                        Your Profile
+                                        Profil
                                     </Link>
                                 </MenuItem>
                                 <MenuItem>
@@ -121,7 +121,7 @@ export default function DashboardNavbar({ auth }) {
                                         href="#"
                                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                                     >
-                                        Settings
+                                        Einstellung
                                     </a>
                                 </MenuItem>
                                 <form onSubmit={requestLogout}>
@@ -130,7 +130,7 @@ export default function DashboardNavbar({ auth }) {
                                         disabled={processing}
                                         className="cursor-pointer flex w-full justify-center rounded-b-md bg-theme-secondary px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-theme-secondary-highlight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                     >
-                                        {processing ? 'Processing...' : 'Logout'}
+                                        {processing ? 'Processing...' : 'Ausloggen'}
                                     </button>
                                 </form>
 

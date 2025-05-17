@@ -259,7 +259,7 @@ export default function UserCalendarTimeLine({
                                             }
 
                                             return (
-                                                <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 border-[1px] border-black shadow-sm shadow-black text-theme-secondary font-bold text-center text-sm'>You</div>
+                                                <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 border-[1px] border-black shadow-sm shadow-black text-theme-secondary font-bold text-center text-sm'>Du</div>
                                             )
                                         })}
                                     </div>

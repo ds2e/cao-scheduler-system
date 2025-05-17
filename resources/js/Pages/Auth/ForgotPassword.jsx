@@ -1,16 +1,15 @@
-import { Link, useForm } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import mainLogo from '+/images/Cao_Laura_ohneText.png'
 
-export default function LoginPage() {
+export default function ForgotPassword() {
 
     const { data, setData, post, processing, errors } = useForm({
-        email: '',
-        password: '',
+        email: ''
     })
 
     function requestLogin(e) {
         e.preventDefault();
-        post('/login');
+        post('/forgot-password');
     }
 
     return (
@@ -22,7 +21,7 @@ export default function LoginPage() {
                     className="mx-auto h-36 w-auto"
                 />
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-theme-secondary">
-                    Sign in to your account
+                    Account information
                 </h2>
             </div>
 
@@ -49,37 +48,12 @@ export default function LoginPage() {
                     </div>
 
                     <div>
-                        <div className="flex items-center justify-between">
-                            <label htmlFor="password" className="block text-sm/6 font-medium text-white">
-                                Password
-                            </label>
-                            <div className="text-sm">
-                                <Link href="/forgot-password" className="font-semibold text-theme-secondary hover:text-white">
-                                    Forgot password?
-                                </Link>
-                            </div>
-                        </div>
-                        <div className="mt-2">
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                // required
-                                value={data.password}
-                                onChange={(e) => setData('password', e.target.value)}
-                                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                            />
-                        </div>
-                        {errors.password && <p className="mt-2 text-red-500">{errors.password}</p>}
-                    </div>
-
-                    <div>
                         <button
                             type="submit"
                             disabled={processing}
                             className="cursor-pointer flex w-full justify-center rounded-md bg-theme-secondary px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-theme-secondary-highlight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            {processing ? 'Signing... in' : 'Sign in'}
+                            {processing ? 'Requesting...' : 'Request'}
                         </button>
                     </div>
                 </form>

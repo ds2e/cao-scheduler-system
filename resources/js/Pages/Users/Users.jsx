@@ -86,6 +86,7 @@ export default function UsersPage({ users, roles }) {
     }
 
     function confirmDeleteUser() {
+        console.log(data)
         destroy(`/dashboard/users/${data.currentSelectedUserData.id}`, {
             onSuccess: () => {
                 setData({

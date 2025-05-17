@@ -10,6 +10,7 @@ import {
 } from "./helpers";
 import { TaskCategoriesColor } from '@/lib/enums'
 import TaskCategoriesIcon from './TaskCategoriesIcon';
+import UserScheduleSummaryDialog from '@/components/Dialog/UserSchuduleSummaryDialog';
 
 const UserCalendarTimeTable = memo(function UserCalendarComponent({
     yearAndMonth,
@@ -22,6 +23,7 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
     userID
 }) {
     const [year, month] = yearAndMonth;
+    const [isOpenUserWeekSummary, setOpenUserWeekSummary] = useState(true);
 
     let currentMonthDays = createDaysForCurrentMonth(year, month);
     let previousMonthDays = createDaysForPreviousMonth(
@@ -121,7 +123,7 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                                     }
 
                                     return (
-                                        <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 border-[1px] border-black shadow-sm shadow-black text-theme-secondary font-bold text-center'>You</div>
+                                        <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 border-[1px] border-black shadow-sm shadow-black text-theme-secondary font-bold text-center'>Du</div>
                                     )
                                 })}
                             </div>
@@ -171,11 +173,6 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                                 ))}
                             </select>
                         </div>
-                        {/* <button onClick={() => requestSwitchView()} className="cursor-pointer px-2 py-1 text-white border-[1px] border-white rounded-sm group hover:bg-white transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width={20} height={20} className='fill-white group-hover:fill-theme transition-all duration-300'>
-                            <path d="M128 72a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm32 97.3c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80S48 51.8 48 96c0 32.8 19.7 61 48 73.3L96 224l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0 54.7c-28.3 12.3-48 40.5-48 73.3c0 44.2 35.8 80 80 80s80-35.8 80-80c0-32.8-19.7-61-48-73.3l0-54.7 256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-54.7c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 32.8 19.7 61 48 73.3l0 54.7-320 0 0-54.7zM488 96a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM320 392a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
-                        </svg>
-                    </button> */}
                     </div>
                     <div className="days-of-week grid grid-cols-7 w-full border-y-[1px] border-white py-2 mt-2">
                         {daysOfWeek.map((day, index) => (
@@ -212,7 +209,7 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
 
             <div className='fixed flex gap-x-2 bottom-2 right-2 sm:right-4 sm:bottom-4 lg:bottom-8 lg:right-8 bg-white rounded-full shadow-sm shadow-black'>
                 <button type="button"
-                    // onClick={() => setFilter((prev) => !prev)}
+                    onClick={() => setOpenUserWeekSummary(true)}
                     className="cursor-pointer p-2"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width={20} height={20} className='fill-theme'>
@@ -220,6 +217,12 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                     </svg>
                 </button>
             </div>
+
+            <UserScheduleSummaryDialog 
+            isOpen={isOpenUserWeekSummary} 
+            setOpen={setOpenUserWeekSummary} 
+            tasks={tasks.filter(task => task.users.some((user) => user.id === userID))} 
+            />
         </>
     );
 })

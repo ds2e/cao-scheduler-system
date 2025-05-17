@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -43,7 +44,7 @@ class UserController extends Controller
 
             return $user;
         });
-        
+
         return inertia('Users/Users', [
             'users' => $users,
             'roles' => $roles->values()
@@ -143,11 +144,13 @@ class UserController extends Controller
     {
         $this->authorize('delete', $user);
 
-        $validated = $request->validate([
-            'id' => ['required', 'integer', Rule::exists('users', 'id')]
-        ]);
+        $validated = Validator::make($request->all(),[
+            'currentSelectedUserData.id' => ['required', 'integer', Rule::exists('users', 'id')]
+        ])->validate();
 
-        $user = User::findOrFail($validated['id']);
+        $userData = $validated['currentSelectedUserData'];
+
+        $user = User::findOrFail($userData['id']);
         $user->delete(); // ✅ This triggers model events
 
         return back()->with('success', 'User deleted.');
@@ -182,7 +185,12 @@ class UserController extends Controller
         $validated['PIN'] = Crypt::encryptString($rand_PIN);
         $validated['role_id'] = Role::where('name', UserRoles::Mitarbeiter->value)->first()->id;
 
-        User::create($validated);
+        $user = User::create($validated);
+
+        // Mail::raw('Testing email on localhost.', function ($message) use ($validated) {
+        //     $message->to($validated['email'])->subject('Test Email');
+        // });
+        $user->sendEmailVerificationNotification();
 
         return back()->with('success', 'User created.');
     }
