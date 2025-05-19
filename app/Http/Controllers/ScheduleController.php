@@ -27,7 +27,7 @@ class ScheduleController extends Controller
 
         return match ($role) {
             UserRoles::Mitarbeiter => $this->show($request),
-            UserRoles::Moderator => $this->index($request),
+            UserRoles::Moderator => $this->show($request),
             UserRoles::Admin => $this->index($request),
             UserRoles::SuperAdmin => $this->index($request),
             default => inertia('Error', ['status' => 406]),
@@ -164,7 +164,7 @@ class ScheduleController extends Controller
         return back()->with('success', 'Schedule updated.');
     }
 
-    public function updateScheduleTodo(Request $request)
+    public function updateScheduleTodoJob(Request $request)
     {
         $this->authorize('update', Schedule::class);
 

@@ -3,6 +3,9 @@
 namespace App\Http\Middleware;
 
 use App\Enums\UserRoles;
+use App\Models\Schedule;
+use App\Models\Todo;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -56,6 +59,23 @@ class HandleInertiaRequests extends Middleware
                             ] : [
                                 'name' => UserRoles::Mitarbeiter,
                                 'rank' => UserRoles::Mitarbeiter->rank()
+                            ],
+                            'permissions' => [ // permission to display navigation menupoint
+                                'schedule' => [
+                                    'title' => 'Schedule',
+                                    'viewAny' => true,
+                                    'href' => '/dashboard/schedule'
+                                ],
+                                'users' => [
+                                    'title' => 'Nutzer',
+                                    'viewAny' => $request->user()->can('viewAny', User::class),
+                                    'href' => '/dashboard/users'
+                                ],
+                                'todos' => [
+                                    'title' => 'Todos',
+                                    'viewAny' => $request->user()->can('viewAny', Todo::class),
+                                    'href' => '/dashboard/todos'
+                                ]
                             ],
                         ] : null
                     ] : null

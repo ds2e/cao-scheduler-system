@@ -4,6 +4,7 @@ use App\Enums\UserRoles;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -29,7 +30,7 @@ Route::middleware('auth')->group(function () {
             $role = UserRoles::fromId($user->role_id);
             return match ($role) {
                 UserRoles::Mitarbeiter => Inertia::render('Dashboard/UserDashboard'),
-                UserRoles::Moderator => Inertia::render('Dashboard/AdminDashboard'),
+                UserRoles::Moderator => Inertia::render('Dashboard/UserDashboard'),
                 UserRoles::Admin => Inertia::render('Dashboard/AdminDashboard'),
                 UserRoles::SuperAdmin => Inertia::render('Dashboard/AdminDashboard'),
                 default => Inertia::render('Error', ['status' => 406]),
@@ -38,9 +39,10 @@ Route::middleware('auth')->group(function () {
         Route::prefix('dashboard')->name('dashboard.')->group(function () {
             Route::get('schedule', [ScheduleController::class, 'handleRoleBasedView'])->name('show.schedule');
             Route::post('schedule', [ScheduleController::class, 'updateSchedule'])->name('update.schedule');
-            Route::post('schedule/todo', [ScheduleController::class, 'updateScheduleTodo'])->name('update.schedule.todo');
+            Route::post('schedule/todo', [ScheduleController::class, 'updateScheduleTodoJob'])->name('update.schedule.todoJob');
             // Route::resource('tasks', TaskController::class)->only(['update']);
             Route::resource('users', UserController::class)->except(['create', 'edit']);
+            Route::resource('todos', TodoController::class)->except(['create', 'edit']);
             Route::get('setting', [UserSettingController::class, 'displayUserSetting'])->name('show.setting');
         });
     });

@@ -179,16 +179,14 @@ const CalendarTimeTable = memo(function CalendarComponent({
 
             <div className="days-grid grid grid-cols-7 min-h-screen w-full">
                 {calendarGridDayObjects.map((day) => {
-                    const hasTask = tasks.some(task => task.date_start === day.dateString);
-
                     return (
                         <div
                             key={day.dateString}
                             className={`day-grid-item-container border-[1px] border-theme bg-gray-50`}
                         >
                             <div
-                                onClick={hasTask ? () => requestSwitchView(day.dateString) : undefined}
-                                className={`h-full overflow-clip ${hasTask ? 'hover:bg-gray-200 cursor-pointer' : ''}`}
+                                onClick={() => requestSwitchView(day.dateString)}
+                                className={`h-full overflow-clip hover:bg-gray-200 cursor-pointer`}
                             >
                                 {render(day)}
                             </div>

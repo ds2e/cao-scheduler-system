@@ -2,7 +2,6 @@
 namespace App\Traits;
 
 use App\Enums\UserRoles;
-use App\Models\Role;
 
 trait HasRole
 {
@@ -11,9 +10,14 @@ trait HasRole
         return $this->role?->name === $role->value;
     }
 
+    public function isModerator(): bool
+    {
+        return $this->hasRole(UserRoles::Moderator);
+    }
+
     public function isAdmin(): bool
     {
-        return $this->hasRole(UserRoles::Moderator) || $this->hasRole(UserRoles::Admin) || $this->hasRole(UserRoles::SuperAdmin);
+        return $this->hasRole(UserRoles::Admin) || $this->hasRole(UserRoles::SuperAdmin);
     }
 
     public function isSuperAdmin(): bool

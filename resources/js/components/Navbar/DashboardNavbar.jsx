@@ -1,5 +1,13 @@
 import { Link, useForm, usePage } from "@inertiajs/react";
 import mainLogo from '+/images/Cao_Laura_ohneText.png';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
@@ -10,21 +18,24 @@ function classNames(...classes) {
 export default function DashboardNavbar({ auth }) {
     const { url } = usePage();
 
-    const navigation = (auth.user.role.name !== 'Mitarbeiter') ?
-        [ // Admin, SuperAdmin Navigation
-            { name: 'Nutzer', href: '/dashboard/users', current: false },
-            { name: 'Zeitplan', href: '/dashboard/schedule', current: false },
-        ].map(item => ({
-            ...item,
-            current: item.href === url,
-        }))
-        :
-        [ // User Navigation
-            { name: 'Zeitplan', href: '/dashboard/schedule', current: false },
-        ].map(item => ({
+    const permissions = Object.values(auth.user.permissions);
+    // console.log(permissions)
+
+    // const allRoutes = [
+    //     { key: 'users', name: permissions.users?.title || 'Users', href: '/dashboard/users' },
+    //     { key: 'schedule', name: permissions.schedule?.title || 'Schedule', href: '/dashboard/schedule' },
+    //     { key: 'todos', name: permissions.todos?.title || 'Todos', href: '/dashboard/todos' },
+    // ];
+
+    const navigation = permissions
+        .filter(item => item.viewAny)
+        .map(item => ({
             ...item,
             current: item.href === url,
         }));
+
+    const scheduleItem = navigation.find(item => item.title === 'Schedule');
+    const dropdownItems = navigation.filter(item => item.title !== 'Schedule');
 
     const { post, processing, errors } = useForm({});
 
@@ -60,6 +71,46 @@ export default function DashboardNavbar({ auth }) {
                         </Link>
                         <div className="hidden sm:ml-6 sm:block place-content-center">
                             <div className="flex space-x-4">
+                                {
+                                    dropdownItems.length > 0 ?
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger className="text-white">Manage</DropdownMenuTrigger>
+                                            <DropdownMenuContent>
+                                                {dropdownItems.map((item) => (
+                                                    <DropdownMenuItem key={item.title} asChild>
+                                                        <Link
+                                                            href={item.href}
+                                                            aria-current={item.current ? 'page' : undefined}
+                                                            className={classNames(
+                                                                item.current ? 'bg-gray-900 text-white' : 'text-gray-900 hover:bg-gray-700',
+                                                                'rounded-md px-3 py-2 text-sm font-medium',
+                                                            )}
+                                                        >
+                                                            {item.title}
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                        :
+                                        null
+                                }
+                                {scheduleItem && (
+                                    <Link
+                                        href={scheduleItem.href}
+                                        aria-current={scheduleItem.current ? 'page' : undefined}
+                                        className={classNames(
+                                            scheduleItem.current
+                                                ? 'bg-gray-900 text-white'
+                                                : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                            'rounded-md px-3 py-2 text-sm font-medium'
+                                        )}
+                                    >
+                                        {scheduleItem.title}
+                                    </Link>
+                                )}
+                            </div>
+                            {/* <div className="flex space-x-4">
                                 {navigation.map((item) => (
                                     <a
                                         key={item.name}
@@ -73,7 +124,7 @@ export default function DashboardNavbar({ auth }) {
                                         {item.name}
                                     </a>
                                 ))}
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
