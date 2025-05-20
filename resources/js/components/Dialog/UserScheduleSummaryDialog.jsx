@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { TaskCategoriesColor } from '@/lib/enums'
 
 import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
@@ -16,7 +17,7 @@ import { useMemo, useState } from "react";
 dayjs.extend(isoWeek);
 dayjs.locale('de');
 
-export default function UserScheduleSummaryDialog({ isOpen, setOpen, tasks }) {
+export default function UserScheduleSummaryDialog({ isOpen, setOpen, tasks, taskCategories }) {
     // console.log(tasks)
 
     const [weekOffset, setWeekOffset] = useState(0); // 0 = this week, -1 = last, +1 = next
@@ -38,6 +39,7 @@ export default function UserScheduleSummaryDialog({ isOpen, setOpen, tasks }) {
             const taskDate = dayjs(`${task.date_start} ${task.time_start}`);
             if (taskDate.isBetween(startOfWeek, endOfWeek, 'day', '[]')) {
                 const weekday = taskDate.format('dddd');
+                // console.log(task)
                 weekSchedule[weekday].push(task); // push raw task
             }
         });
@@ -50,30 +52,14 @@ export default function UserScheduleSummaryDialog({ isOpen, setOpen, tasks }) {
                     const [bHour, bMin] = b.time_start.split(':').map(Number);
                     return aHour !== bHour ? aHour - bHour : aMin - bMin;
                 })
-                .map(task => {
-                    const start = dayjs(`${task.date_start} ${task.time_start}`).format('HH:mm');
-                    const end = dayjs(`${task.date_start} ${task.time_end}`).format('HH:mm');
-                    return `${start} - ${end}`;
-                });
         }
 
         return weekSchedule;
     }, [tasks, weekOffset]);
 
-    function renderWeekSchedule() {
-        return Object.entries(visibleTasks).map(([weekday, times]) => (
-            <div key={weekday} className="flex sm:flex-row flex-col gap-x-1 sm:items-start items-center">
-                <b>{weekday}:</b>
-                <div className="flex flex-wrap items-center justify-center sm:justify-start divide-x-1 divide-theme">
-                    {
-                        // times.join(', ')
-                        times.map((time, timeInd) => (
-                            <span key={weekday + timeInd} className="text-theme-secondary px-2">{time}</span>
-                        ))
-                    }
-                </div>
-            </div>
-        ))
+    function renderTaskCategoryTextColor(taskCatID) {
+        const item = taskCategories.find(cat => cat.id === taskCatID)?.name
+        return `text-${TaskCategoriesColor[item]}`;
     }
 
     return (
@@ -85,15 +71,36 @@ export default function UserScheduleSummaryDialog({ isOpen, setOpen, tasks }) {
                         w&ouml;chentliche Zusammenfassung Ihrer Aufgaben
                     </DialogDescription>
                 </DialogHeader>
-                <Tabs value={weekOffset} onValueChange={setWeekOffset} className="w-full">
+                <Tabs value={String(weekOffset)} onValueChange={setWeekOffset} className="w-full">
                     <TabsList className="w-full">
                         <TabsTrigger value="-1">letzte Woche</TabsTrigger>
                         <TabsTrigger value="0">aktuelle Woche</TabsTrigger>
                         <TabsTrigger value="1">n&auml;chste Woche</TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value={weekOffset}>
-                        {renderWeekSchedule()}
+                    <TabsContent value={String(weekOffset)}>
+                        {
+                            Object.entries(visibleTasks).map(([weekday, tasks]) => {
+
+                                return (
+                                    <div key={weekday} className="flex sm:flex-row flex-col gap-x-1 sm:items-start items-center">
+                                        <b>{weekday}:</b>
+                                        <div className="flex flex-wrap items-center justify-center sm:justify-start divide-x-1 divide-theme">
+                                            {
+                                                tasks.map((task, taskInd) => {
+                                                    const taskDisplay = `${taskCategories.find((ele) => ele.id == task.task_category_id).name} ${dayjs(`${task.date_start} ${task.time_start}`).format('HH:mm')} - ${dayjs(`${task.date_start} ${task.time_end}`).format('HH:mm')}`;
+                                                    return (
+                                                        <span key={weekday + taskInd} className={`${renderTaskCategoryTextColor(task.task_category_id)} px-2`}>
+                                                            {taskDisplay}
+                                                        </span>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
                     </TabsContent>
 
                 </Tabs>

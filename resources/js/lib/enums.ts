@@ -10,12 +10,12 @@ export enum UserRoles {
 };
 
 export enum TaskCategoriesColor{
-    None = 'bg-white',
-    Bar = 'bg-blue-900',
-    Küche = 'bg-yellow-900',
-    Service = 'bg-red-900',
-    Springer = 'bg-green-900',
-    Sonstiges = 'bg-gray-900'
+    None = 'white',
+    Bar = 'blue-900',
+    Küche = 'yellow-900',
+    Service = 'red-900',
+    Springer = 'green-900',
+    Sonstiges = 'gray-900'
 }
 
 export const TaskCategoryKeys = Object.keys(TaskCategoriesColor);

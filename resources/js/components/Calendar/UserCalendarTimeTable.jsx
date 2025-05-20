@@ -10,7 +10,7 @@ import {
 } from "./helpers";
 import { TaskCategoriesColor } from '@/lib/enums'
 import TaskCategoriesIcon from './TaskCategoriesIcon';
-import UserScheduleSummaryDialog from '@/components/Dialog/UserSchuduleSummaryDialog';
+import UserScheduleSummaryDialog from '@/components/Dialog/UserScheduleSummaryDialog';
 
 const UserCalendarTimeTable = memo(function UserCalendarComponent({
     yearAndMonth,
@@ -83,7 +83,7 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
 
     function renderTaskCategoryBackground(taskEntry) {
         const item = taskCategories.find(cat => cat.id === taskEntry.task_category_id)?.name
-        return TaskCategoriesColor[item];
+        return `bg-${TaskCategoriesColor[item]}`;
     }
 
     function render(day) {
@@ -221,7 +221,8 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
             <UserScheduleSummaryDialog 
             isOpen={isOpenUserWeekSummary} 
             setOpen={setOpenUserWeekSummary} 
-            tasks={tasks.filter(task => task.users.some((user) => user.id === userID))} 
+            tasks={tasks.filter(task => task.users.some((user) => user.id === userID))}
+            taskCategories={taskCategories} 
             />
         </>
     );

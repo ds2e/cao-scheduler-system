@@ -1,8 +1,7 @@
 
-import { Link, router, useForm, usePage } from "@inertiajs/react";
-import { useEffect, useState } from "react";
-import UserDeleteDialog from "@/components/Dialog/UserDeleteDialog";
-import UserRegisterDialog from "@/components/Dialog/UserRegisterDialog";
+import { useForm } from "@inertiajs/react";
+import { useState } from "react";
+import TodoAddNewDialog from "@/components/Dialog/TodoAddNewDialog";
 
 export default function TodosPage({ todos }) {
 
@@ -10,7 +9,7 @@ export default function TodosPage({ todos }) {
 
     console.log(todos);
 
-    const [isOpenRegisterUserDialog, setOpenRegisterUserDialog] = useState(false);
+    const [isOpenAddTodoDialog, setOpenAddTodoDialog] = useState(false);
 
     const itemsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
@@ -46,6 +45,10 @@ export default function TodosPage({ todos }) {
         destroy(`/dashboard/todos/${currentSelectedTodo.id}`, {
             onSuccess: () => {
                 setData({});
+                if (todos.length % 5 == 1) {
+                    if (totalPages == 1) return;
+                    setCurrentPage(totalPages - 1)
+                }
             }
         })
     }
@@ -114,7 +117,7 @@ export default function TodosPage({ todos }) {
                                                 {
                                                     (Object.keys(currentSelectedTodo).length > 0 && currentSelectedTodo.id == todo.id) ?
                                                         <textarea
-                                                            value={currentSelectedTodo.description}
+                                                            value={currentSelectedTodo.description ?? ''}
                                                             onChange={(e) => {
                                                                 const updatedCurrentSelectedUserData = { ...currentSelectedTodo };
                                                                 updatedCurrentSelectedUserData.description = e.target.value;
@@ -173,7 +176,7 @@ export default function TodosPage({ todos }) {
                     </table>
                 </div>
                 <div className="my-4 flex justify-between">
-                    <button type="button" onClick={() => setOpenRegisterUserDialog(true)} className="transition-all duration-200 px-2 py-1 cursor-pointer rounded-sm shadow-md shadow-black bg-theme-secondary text-white hover:bg-theme-secondary-highlight focus-within:bg-theme-secondary-highlight text-lg hover:scale-90 focus-within:scale-90">
+                    <button type="button" onClick={() => setOpenAddTodoDialog(true)} className="transition-all duration-200 px-2 py-1 cursor-pointer rounded-sm shadow-md shadow-black bg-theme-secondary text-white hover:bg-theme-secondary-highlight focus-within:bg-theme-secondary-highlight text-lg hover:scale-90 focus-within:scale-90">
                         + Entry
                     </button>
                     <div className="flex items-center gap-2">
@@ -199,7 +202,7 @@ export default function TodosPage({ todos }) {
                     </div>
                 </div>
             </div>
-            <UserRegisterDialog isOpen={isOpenRegisterUserDialog} setOpen={setOpenRegisterUserDialog} />
+            <TodoAddNewDialog isOpen={isOpenAddTodoDialog} setOpen={setOpenAddTodoDialog} />
         </>
     )
 }

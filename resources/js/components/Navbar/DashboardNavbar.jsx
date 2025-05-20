@@ -27,15 +27,15 @@ export default function DashboardNavbar({ auth }) {
     //     { key: 'todos', name: permissions.todos?.title || 'Todos', href: '/dashboard/todos' },
     // ];
 
-    const navigation = permissions
+    const navigation = [...permissions]
         .filter(item => item.viewAny)
         .map(item => ({
             ...item,
             current: item.href === url,
         }));
 
-    const scheduleItem = navigation.find(item => item.title === 'Schedule');
-    const dropdownItems = navigation.filter(item => item.title !== 'Schedule');
+    const scheduleItem = navigation.find(item => item.title === 'Zeitplan');
+    const dropdownItems = navigation.filter(item => item.title !== 'Zeitplan');
 
     const { post, processing, errors } = useForm({});
 
@@ -71,6 +71,20 @@ export default function DashboardNavbar({ auth }) {
                         </Link>
                         <div className="hidden sm:ml-6 sm:block place-content-center">
                             <div className="flex space-x-4">
+                                {scheduleItem && (
+                                    <Link
+                                        href={scheduleItem.href}
+                                        aria-current={scheduleItem.current ? 'page' : undefined}
+                                        className={classNames(
+                                            scheduleItem.current
+                                                ? 'bg-gray-900 text-white'
+                                                : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                            'rounded-md px-3 py-2 text-sm font-medium'
+                                        )}
+                                    >
+                                        {scheduleItem.title}
+                                    </Link>
+                                )}
                                 {
                                     dropdownItems.length > 0 ?
                                         <DropdownMenu>
@@ -95,20 +109,6 @@ export default function DashboardNavbar({ auth }) {
                                         :
                                         null
                                 }
-                                {scheduleItem && (
-                                    <Link
-                                        href={scheduleItem.href}
-                                        aria-current={scheduleItem.current ? 'page' : undefined}
-                                        className={classNames(
-                                            scheduleItem.current
-                                                ? 'bg-gray-900 text-white'
-                                                : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                            'rounded-md px-3 py-2 text-sm font-medium'
-                                        )}
-                                    >
-                                        {scheduleItem.title}
-                                    </Link>
-                                )}
                             </div>
                             {/* <div className="flex space-x-4">
                                 {navigation.map((item) => (

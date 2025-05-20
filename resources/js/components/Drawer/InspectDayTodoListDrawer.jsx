@@ -97,7 +97,7 @@ export default function InspectDayTodoListDrawer({ isOpen, setOpen, todoJobs, to
                                         <span onClick={() => removeTodoFromDate(jobInd)} className="cursor-pointer text-theme hover:text-theme-highlight">{todos.find(todo => todo.id === job.todo_id)?.name}</span>
                                         <input
                                             type="text"
-                                            value={data.todoJobs[jobInd].notice}
+                                            value={data.todoJobs[jobInd].notice ?? ''}
                                             onChange={(e) => {
                                                 const updatedTodoJobs = [...data.todoJobs]
                                                 updatedTodoJobs[jobInd].notice = e.target.value

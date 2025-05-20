@@ -19,7 +19,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, tasks, userID, 
 
     function renderTaskCategoryBackground(taskIndex) {
         const item = taskCategories.find(cat => cat.id === currentDayTasks[taskIndex].task_category_id)?.name
-        return TaskCategoriesColor[item];
+        return `bg-${TaskCategoriesColor[item]}`;
     }
 
     return (

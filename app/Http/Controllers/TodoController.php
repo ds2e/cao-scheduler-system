@@ -6,6 +6,7 @@ use App\Models\Todo;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreTodoRequest;
 use App\Http\Requests\UpdateTodoRequest;
+use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -18,7 +19,7 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny', Todo::class);
+        $this->authorize('viewAny', User::class);
 
         $todos = Todo::all();
 
@@ -30,9 +31,18 @@ class TodoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTodoRequest $request)
+    public function store(Request $request, User $user)
     {
-        //
+        $this->authorize('create', $user);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        $user = Todo::create($validated);
+
+        return back()->with('success', 'Todo created.');
     }
 
     /**
@@ -46,9 +56,9 @@ class TodoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Todo $todo)
+    public function update(Request $request, User $user)
     {
-        $this->authorize('update', $todo);
+        $this->authorize('update', $user);
 
         $validated = $request->validate([
             'id' => ['required', 'integer', Rule::exists('todos', 'id')],
@@ -70,9 +80,9 @@ class TodoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, Todo $todo)
+    public function destroy(Request $request, User $user)
     {
-        $this->authorize('delete', $todo);
+        $this->authorize('delete', $user);
 
         $validated = $request->validate([
             'id' => ['required', 'integer', Rule::exists('todos', 'id')]

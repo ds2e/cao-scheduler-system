@@ -141,7 +141,7 @@ export default function CalendarTimeLine({
 
     function renderTaskCategoryBackground(taskEntry) {
         const item = taskCategories.find(cat => cat.id === taskEntry.task_category_id)?.name
-        return TaskCategoriesColor[item];
+        return `bg-${TaskCategoriesColor[item]}`;
     }
 
     return (

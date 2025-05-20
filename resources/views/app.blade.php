@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Cáo Scheduler System</title>
+    <title>Cáo Manager</title>
     @vite('resources/css/app.css')
     @viteReactRefresh
     @vite('resources/js/app.jsx') 

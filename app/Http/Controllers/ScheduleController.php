@@ -48,10 +48,21 @@ class ScheduleController extends Controller
     {
         $this->authorize('viewAny', Schedule::class);
 
-        // Fetch view query param (expected format: YYYY-MM)
-        $view = $request->query('view', now()->format('Y-m')); // Default to current month
+        $view = $request->query('view');
 
-        if (!preg_match('/^\d{4}-\d{2}$/', $view) || !self::isValidYearMonth($view)) {
+        $validator = Validator::make(['view' => $view], [
+            'view' => [
+                'nullable',
+                'regex:/^\d{4}-\d{2}$/',
+                function ($attribute, $value, $fail) use ($view) {
+                    if (!self::isValidYearMonth($view)) {
+                        $fail('The ' . $attribute . ' is not a valid year-month.');
+                    }
+                },
+            ],
+        ]);
+
+        if ($validator->fails()) {
             $view = now()->format('Y-m');
         }
 

@@ -62,7 +62,7 @@ class HandleInertiaRequests extends Middleware
                             ],
                             'permissions' => [ // permission to display navigation menupoint
                                 'schedule' => [
-                                    'title' => 'Schedule',
+                                    'title' => 'Zeitplan',
                                     'viewAny' => true,
                                     'href' => '/dashboard/schedule'
                                 ],
