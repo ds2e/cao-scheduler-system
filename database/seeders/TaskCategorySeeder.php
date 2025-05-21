@@ -14,8 +14,14 @@ class TaskCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        foreach (TaskCategories::cases() as $task_cat) {
-            TaskCategory::firstOrCreate(['name' => $task_cat->value]);
+        foreach (TaskCategories::cases() as $category) {
+            TaskCategory::updateOrCreate(
+                ['name' => $category->value],
+                ['color' => $category->color()]
+            );
         }
+        // foreach (TaskCategories::cases() as $task_cat) {
+        //     TaskCategory::firstOrCreate(['name' => $task_cat->value]);
+        // }
     }
 }

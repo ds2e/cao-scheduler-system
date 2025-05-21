@@ -33,7 +33,7 @@ export default function UsersPage({ users, roles }) {
     const goToPage = (page) => {
         // Inertia automatically handles page requests
         setCurrentPage(page);
-        router.get(`/dashboard/users?page=${page}`);
+        router.get(`/dashboard/manage/users?page=${page}`);
     };
 
     function toggleEditUser(user) {
@@ -70,7 +70,7 @@ export default function UsersPage({ users, roles }) {
                     role_id: roles.find(role => role.rank === selectedRank)?.id
                 }
             }))
-            patch(`/dashboard/users/${data.currentSelectedUserData.id}`, {
+            patch(`/dashboard/manage/users/${data.currentSelectedUserData.id}`, {
                 onSuccess: () => {
                     setData({
                         ...data,
@@ -87,7 +87,7 @@ export default function UsersPage({ users, roles }) {
 
     function confirmDeleteUser() {
         console.log(data)
-        destroy(`/dashboard/users/${data.currentSelectedUserData.id}`, {
+        destroy(`/dashboard/manage/users/${data.currentSelectedUserData.id}`, {
             onSuccess: () => {
                 setData({
                     ...data,
@@ -111,7 +111,7 @@ export default function UsersPage({ users, roles }) {
                 password: authorPassword
             }
         }));
-        patch(`/dashboard/users/${data.currentSelectedUserData.id}`, {
+        patch(`/dashboard/manage/users/${data.currentSelectedUserData.id}`, {
             onSuccess: () => {
                 setData({
                     ...data,
@@ -194,7 +194,7 @@ export default function UsersPage({ users, roles }) {
                                                         />
                                                         :
                                                         <div className="flex gap-x-2 items-center">
-                                                            <Link href={`/dashboard/users/${user.id}`} className="text-base font-semibold">{user.name}</Link>
+                                                            <Link href={`/dashboard/profile/${user.id}`} className="text-base font-semibold">{user.name}</Link>
                                                             {
                                                                 user.id == auth.user.uid ? <span className="text-theme-secondary">(You)</span> : <></>
                                                             }

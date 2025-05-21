@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('task_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique(); // Bar, Küche, Service, Springer
+            $table->string('color', 7); // "#RRGGBB"
             $table->timestamps();
         });
     }

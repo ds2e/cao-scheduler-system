@@ -10,7 +10,10 @@ class TaskCategory extends Model
     /** @use HasFactory<\Database\Factories\TaskCategoryFactory> */
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'color'
+    ];
 
     public function tasks()
     {

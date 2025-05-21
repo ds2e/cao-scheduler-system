@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dialog";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { TaskCategoriesColor } from '@/lib/enums'
 
 import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
@@ -58,8 +57,8 @@ export default function UserScheduleSummaryDialog({ isOpen, setOpen, tasks, task
     }, [tasks, weekOffset]);
 
     function renderTaskCategoryTextColor(taskCatID) {
-        const item = taskCategories.find(cat => cat.id === taskCatID)?.name
-        return `text-${TaskCategoriesColor[item]}`;
+        const itemColor = taskCategories.find(cat => cat.id === taskCatID)?.color
+        return itemColor;
     }
 
     return (
@@ -84,13 +83,19 @@ export default function UserScheduleSummaryDialog({ isOpen, setOpen, tasks, task
 
                                 return (
                                     <div key={weekday} className="flex sm:flex-row flex-col gap-x-1 sm:items-start items-center">
-                                        <b>{weekday}:</b>
+                                        <b className={`${weekOffset == 0 && weekday == dayjs().format('dddd') ? "text-red-500": ""}`}>{weekday}:</b>
                                         <div className="flex flex-wrap items-center justify-center sm:justify-start divide-x-1 divide-theme">
                                             {
                                                 tasks.map((task, taskInd) => {
                                                     const taskDisplay = `${taskCategories.find((ele) => ele.id == task.task_category_id).name} ${dayjs(`${task.date_start} ${task.time_start}`).format('HH:mm')} - ${dayjs(`${task.date_start} ${task.time_end}`).format('HH:mm')}`;
                                                     return (
-                                                        <span key={weekday + taskInd} className={`${renderTaskCategoryTextColor(task.task_category_id)} px-2`}>
+                                                        <span 
+                                                        key={weekday + taskInd} 
+                                                        className={`px-2`}
+                                                        style={{
+                                                            color: renderTaskCategoryTextColor(task.task_category_id)
+                                                        }}
+                                                        >
                                                             {taskDisplay}
                                                         </span>
                                                     )

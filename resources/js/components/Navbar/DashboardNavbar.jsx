@@ -19,13 +19,6 @@ export default function DashboardNavbar({ auth }) {
     const { url } = usePage();
 
     const permissions = Object.values(auth.user.permissions);
-    // console.log(permissions)
-
-    // const allRoutes = [
-    //     { key: 'users', name: permissions.users?.title || 'Users', href: '/dashboard/users' },
-    //     { key: 'schedule', name: permissions.schedule?.title || 'Schedule', href: '/dashboard/schedule' },
-    //     { key: 'todos', name: permissions.todos?.title || 'Todos', href: '/dashboard/todos' },
-    // ];
 
     const navigation = [...permissions]
         .filter(item => item.viewAny)
@@ -88,7 +81,7 @@ export default function DashboardNavbar({ auth }) {
                                 {
                                     dropdownItems.length > 0 ?
                                         <DropdownMenu>
-                                            <DropdownMenuTrigger className="text-white">Manage</DropdownMenuTrigger>
+                                            <DropdownMenuTrigger className="text-white cursor-pointer">Manage</DropdownMenuTrigger>
                                             <DropdownMenuContent>
                                                 {dropdownItems.map((item) => (
                                                     <DropdownMenuItem key={item.title} asChild>
@@ -161,7 +154,7 @@ export default function DashboardNavbar({ auth }) {
 
                                 <MenuItem>
                                     <Link
-                                        href={`/dashboard/users/${auth.user.uid}`}
+                                        href={`/dashboard/profile/${auth.user.uid}`}
                                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                                     >
                                         Profil

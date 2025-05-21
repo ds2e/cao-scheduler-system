@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\TaskCategories;
 use App\Models\TaskCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,8 +18,11 @@ class TaskCategoryFactory extends Factory
      */
     public function definition(): array
     {
+        $category = fake()->randomElement(TaskCategories::cases());
+
         return [
-            'name' => fake()->randomElement(TaskCategory::cases())->value,
+            'name' => $category->value,
+            'color' => $category->color(),
         ];
     }
 }

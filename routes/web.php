@@ -7,6 +7,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;
+use App\Models\TaskCategory;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
@@ -41,8 +42,12 @@ Route::middleware('auth')->group(function () {
             Route::post('schedule', [ScheduleController::class, 'updateSchedule'])->name('update.schedule');
             Route::post('schedule/todo', [ScheduleController::class, 'updateScheduleTodoJob'])->name('update.schedule.todoJob');
             // Route::resource('tasks', TaskController::class)->only(['update']);
-            Route::resource('users', UserController::class)->except(['create', 'edit']);
-            Route::resource('todos', TodoController::class)->except(['create', 'edit']);
+            Route::prefix('manage')->name('manage.')->group(function () {
+                Route::resource('users', UserController::class)->except(['create', 'edit', 'show']);
+                Route::resource('todos', TodoController::class)->except(['create', 'edit', 'show']);
+                Route::resource('taskCategories', TaskCategory::class)->except(['create', 'edit', 'show']);
+            });
+            Route::get('profile/{user}', [UserController::class, 'show'])->name('show.profile');
             Route::get('setting', [UserSettingController::class, 'displayUserSetting'])->name('show.setting');
         });
     });

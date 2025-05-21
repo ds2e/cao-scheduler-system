@@ -8,7 +8,6 @@ import {
     getMonthDropdownOptions,
     getYearDropdownOptions
 } from "./helpers";
-import { TaskCategoriesColor } from '@/lib/enums'
 import TaskCategoriesIcon from './TaskCategoriesIcon';
 import UserScheduleSummaryDialog from '@/components/Dialog/UserScheduleSummaryDialog';
 
@@ -82,15 +81,39 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
     }
 
     function renderTaskCategoryBackground(taskEntry) {
-        const item = taskCategories.find(cat => cat.id === taskEntry.task_category_id)?.name
-        return `bg-${TaskCategoriesColor[item]}`;
+        const itemColor = taskCategories.find(cat => cat.id === taskEntry.task_category_id)?.color
+        return itemColor;
     }
 
     function render(day) {
         const tasksForTheDay = tasks.filter(task => task.date_start === day.dateString).sort((a, b) => a.task_category_id - b.task_category_id);
+        const tasksForTheDayGroupedByCategory = Object.values(
+            tasksForTheDay.reduce((acc, task) => {
+                const categoryId = task.task_category_id;
+                if (!acc[categoryId]) {
+                    acc[categoryId] = {
+                        task_category_id: categoryId,
+                        users: [],
+                    };
+                }
+
+                // Avoid duplicate users (by id)
+                const existingUserIds = new Set(acc[categoryId].users.map(u => u.id));
+                task.users.forEach(user => {
+                    if (!existingUserIds.has(user.id)) {
+                        acc[categoryId].users.push(user);
+                        existingUserIds.add(user.id);
+                    }
+                });
+
+                return acc;
+            }, {})
+        );
+
+        console.log(tasksForTheDayGroupedByCategory)
 
         return (
-            <div className="day-grid-item-header p-1 flex flex-col items-start">
+            <div className="day-grid-item-header h-full p-1 flex flex-col items-start">
                 <div className='w-full px-1 flex flex-col sm:flex-row items-center justify-between gap-y-1'>
                     <p className={`p-1 ${getDayClassName(day)}`}>
                         {day.dayOfMonth}
@@ -104,9 +127,18 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                             <></>
                     }
                 </div>
-                <div className='h-full w-full p-1'>
-                    {tasksForTheDay.map(task => (
-                        <div key={task.id} className={`text-xs my-1 text-white rounded-sm p-1 ${renderTaskCategoryBackground(task)}`}>
+                <div
+                    onClick={tasks.some(task => task.date_start === day.dateString) ? () => requestSwitchView(day.dateString) : undefined}
+                    className={`${tasks.some(task => task.date_start === day.dateString) ? 'hover:bg-gray-200 cursor-pointer' : ''} h-full w-full p-1`}
+                >
+                    {tasksForTheDayGroupedByCategory.map((task, taskInd) => (
+                        <div
+                            key={task.task_category_id + taskInd}
+                            className={`text-xs my-1 text-white rounded-sm p-1`}
+                            style={{
+                                backgroundColor: renderTaskCategoryBackground(task)
+                            }}
+                        >
                             {task.task_category_id && <div className='grid place-content-center mb-1'><TaskCategoriesIcon categoryId={task.task_category_id} /></div>}
                             {
                                 (task.users.some(user => user.id === userID)) ?
@@ -188,7 +220,6 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
 
                 <div className="days-grid grid grid-cols-7 min-h-screen w-full">
                     {calendarGridDayObjects.map((day) => {
-                        const hasTask = tasks.some(task => task.date_start === day.dateString);
 
                         return (
                             <div
@@ -196,8 +227,8 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                                 className={`day-grid-item-container border-[1px] border-theme bg-gray-50`}
                             >
                                 <div
-                                    onClick={hasTask ? () => requestSwitchView(day.dateString) : undefined}
-                                    className={`h-full overflow-clip ${hasTask ? 'hover:bg-gray-200 cursor-pointer' : ''}`}
+                                    // onClick={hasTask ? () => requestSwitchView(day.dateString) : undefined}
+                                    className={`h-full overflow-clip`}
                                 >
                                     {render(day)}
                                 </div>
@@ -218,11 +249,11 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                 </button>
             </div>
 
-            <UserScheduleSummaryDialog 
-            isOpen={isOpenUserWeekSummary} 
-            setOpen={setOpenUserWeekSummary} 
-            tasks={tasks.filter(task => task.users.some((user) => user.id === userID))}
-            taskCategories={taskCategories} 
+            <UserScheduleSummaryDialog
+                isOpen={isOpenUserWeekSummary}
+                setOpen={setOpenUserWeekSummary}
+                tasks={tasks.filter(task => task.users.some((user) => user.id === userID))}
+                taskCategories={taskCategories}
             />
         </>
     );

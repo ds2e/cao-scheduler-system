@@ -69,12 +69,12 @@ class HandleInertiaRequests extends Middleware
                                 'users' => [
                                     'title' => 'Nutzer',
                                     'viewAny' => $request->user()->can('viewAny', User::class),
-                                    'href' => '/dashboard/users'
+                                    'href' => '/dashboard/manage/users'
                                 ],
                                 'todos' => [
                                     'title' => 'Todos',
                                     'viewAny' => $request->user()->can('viewAny', Todo::class),
-                                    'href' => '/dashboard/todos'
+                                    'href' => '/dashboard/manage/todos'
                                 ]
                             ],
                         ] : null

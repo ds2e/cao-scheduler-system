@@ -18,7 +18,7 @@ export default function TodoAddNewDialog({ isOpen, setOpen }) {
 
     function requestAddNewTodo(e) {
         e.preventDefault()
-        post('/dashboard/todos', {
+        post('/dashboard/manage/todos', {
             onSuccess: () => {
                 setOpen(false)
             },

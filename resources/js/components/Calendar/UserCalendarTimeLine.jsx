@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 
-import { TaskCategoriesColor } from '@/lib/enums'
 import TaskCategoriesIcon from './TaskCategoriesIcon';
 
 import { Calendar } from "@/components/ui/calendar";
@@ -144,8 +143,8 @@ export default function UserCalendarTimeLine({
     }
 
     function renderTaskCategoryBackground(taskEntry) {
-        const item = taskCategories.find(cat => cat.id === taskEntry.task_category_id)?.name
-        return `bg-${TaskCategoriesColor[item]}`;
+        const itemColor = taskCategories.find(cat => cat.id === taskEntry.task_category_id)?.color
+        return itemColor;
     }
 
     return (
@@ -204,7 +203,7 @@ export default function UserCalendarTimeLine({
                 ref={containerRef}
                 className="w-full relative overflow-auto cursor-grab active:cursor-grabbing select-none border rounded-md mt-16"
             >
-                <div className="grid grid-cols-24 min-w-[1200px] sticky top-0">
+                <div className="grid grid-cols-24 min-w-[2400px] sticky top-0">
                     {hours.map((hour, i) => (
                         <div
                             key={i}
@@ -217,7 +216,7 @@ export default function UserCalendarTimeLine({
 
                 <div className="grid">
                     <div
-                        className="min-w-[1200px] h-screen col-start-1 row-start-1"
+                        className="min-w-[2400px] h-screen col-start-1 row-start-1"
                         style={{
                             backgroundImage: `repeating-linear-gradient(
                       to right,
@@ -231,7 +230,7 @@ export default function UserCalendarTimeLine({
                     >
 
                     </div>
-                    <div className={`h-fit grid grid-cols-48 ${rowHeightFraction(todayTasks)} min-w-[1200px] col-start-1 row-start-1`}>
+                    <div className={`h-fit grid grid-cols-48 ${rowHeightFraction(todayTasks)} min-w-[2400px] col-start-1 row-start-1`}>
                         {todayTasks.map((task, i) => {
                             const colStart = timeToColIndex(task.time_start) + 1;
                             const colEnd = timeToColIndex(task.time_end) + 1;
@@ -246,8 +245,9 @@ export default function UserCalendarTimeLine({
                                         gridColumnEnd: colEnd,
                                         gridRowStart: row,
                                         gridRowEnd: row + 1,
+                                        backgroundColor: renderTaskCategoryBackground(task)
                                     }}
-                                    className={`${renderTaskCategoryBackground(task)} text-white p-2 flex flex-col items-center justify-center rounded-sm`}
+                                    className={`text-white p-2 flex flex-col items-center justify-center rounded-sm`}
                                 >
                                     {task.task_category_id && <div className='grid place-content-center mb-1'><TaskCategoriesIcon categoryId={task.task_category_id} /></div>}
                                     <div className='flex flex-wrap items-center justify-center gap-1'>

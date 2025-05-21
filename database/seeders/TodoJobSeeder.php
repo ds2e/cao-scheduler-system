@@ -14,9 +14,9 @@ class TodoJobSeeder extends Seeder
      */
     public function run(): void
     {
-        $todos = Todo::factory(10)->create();
+        $todos = Todo::factory(7)->create();
         
-        TodoJob::factory(25)->make()->each(function ($job) use ($todos) {
+        TodoJob::factory(10)->make()->each(function ($job) use ($todos) {
             $job->todo_id = $todos->random()->id;
             $job->save();
         });

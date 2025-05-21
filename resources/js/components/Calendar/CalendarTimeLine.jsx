@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
-
-import { TaskCategoriesColor } from '@/lib/enums'
 import TaskCategoriesIcon from './TaskCategoriesIcon';
 
 import { Calendar } from "@/components/ui/calendar";
@@ -11,7 +9,6 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import InspectDayTodoListDrawer from "@/components/Drawer/InspectDayTodoListDrawer";
-import UserInspectDayTodoListDrawer from "../Drawer/UserInspectDayTodoListDrawer";
 
 const today = new Date();
 
@@ -21,13 +18,22 @@ const maxDate = dayjs(today).add(1, 'month').endOf('month').toDate();
 
 const timeToColIndex = (timeStr) => {
     const [hour, minute] = timeStr.split(":").map(Number);
-    console.log([hour, minute])
+    // console.log([hour, minute])
     if (minute >= 30) {
         return hour * 2 + 1;
     }
 
     return hour * 2; // 30-min slots
 };
+
+function getTaskDuration(task) {
+    return timeToColIndex(task.time_end) - timeToColIndex(task.time_start);
+}
+
+// function getOpacity(duration, min, max) {
+//     if (max === min) return 1; // avoid divide by zero if all durations equal
+//     return 0.75 + 0.75 * ((duration - min) / (max - min));
+// }
 
 export default function CalendarTimeLine({
     date = new Date(),
@@ -127,8 +133,32 @@ export default function CalendarTimeLine({
         });
 
     const todayTodoJobs = todoJobs.filter(todo => todo.date === dayjs(date).format('YYYY-MM-DD'));
-
     // console.log(todayTasks)
+
+    const groupedUsers = {};
+
+    todayTasks.forEach(task => {
+        task.users.forEach(user => {
+            const userId = user.id;
+
+            if (!groupedUsers[userId]) {
+                // Shallow clone user data without the pivot and users list
+                const { pivot, ...userData } = user;
+                groupedUsers[userId] = {
+                    ...userData,
+                    tasks: []
+                };
+            }
+
+            // Shallow clone task data without the users list
+            const { users, ...taskData } = task;
+            groupedUsers[userId].tasks.push(taskData);
+        });
+    });
+
+    // Final array result
+    const result = Object.values(groupedUsers);
+    console.log(result)
 
     const hourNum = 24
 
@@ -140,8 +170,8 @@ export default function CalendarTimeLine({
     }
 
     function renderTaskCategoryBackground(taskEntry) {
-        const item = taskCategories.find(cat => cat.id === taskEntry.task_category_id)?.name
-        return `bg-${TaskCategoriesColor[item]}`;
+        const itemColor = taskCategories.find(cat => cat.id === taskEntry.task_category_id)?.color
+        return itemColor;
     }
 
     return (
@@ -200,7 +230,7 @@ export default function CalendarTimeLine({
                 ref={containerRef}
                 className="w-full relative overflow-auto cursor-grab active:cursor-grabbing select-none border rounded-md mt-16"
             >
-                <div className="grid grid-cols-24 min-w-[1200px] sticky top-0">
+                <div className="grid grid-cols-24 min-w-[2400px] sticky top-0 z-[41]">
                     {hours.map((hour, i) => (
                         <div
                             key={i}
@@ -213,7 +243,7 @@ export default function CalendarTimeLine({
 
                 <div className="grid">
                     <div
-                        className="min-w-[1200px] h-screen col-start-1 row-start-1"
+                        className="min-w-[2400px] h-screen col-start-1 row-start-1"
                         style={{
                             backgroundImage: `repeating-linear-gradient(
                       to right,
@@ -227,11 +257,10 @@ export default function CalendarTimeLine({
                     >
 
                     </div>
-                    <div className={`h-fit grid grid-cols-48 ${rowHeightFraction(todayTasks)} min-w-[1200px] col-start-1 row-start-1`}>
+                    <div className={`h-fit grid grid-cols-48 ${rowHeightFraction(todayTasks)} min-w-[2400px] col-start-1 row-start-1`}>
                         {todayTasks.map((task, i) => {
                             const colStart = timeToColIndex(task.time_start) + 1;
                             const colEnd = timeToColIndex(task.time_end) + 1;
-                            // const colSpan = Math.max(colEnd - colStart, 1);
                             const row = i + 1; // grid row is 1-based
 
                             return (
@@ -242,8 +271,9 @@ export default function CalendarTimeLine({
                                         gridColumnEnd: colEnd,
                                         gridRowStart: row,
                                         gridRowEnd: row + 1,
+                                        backgroundColor: renderTaskCategoryBackground(task)
                                     }}
-                                    className={`${renderTaskCategoryBackground(task)} text-white p-2 flex flex-col items-center justify-center rounded-sm`}
+                                    className={`text-white p-2 flex flex-col items-center justify-center rounded-sm`}
                                 >
                                     {task.task_category_id && <div className='grid place-content-center mb-1'><TaskCategoriesIcon categoryId={task.task_category_id} /></div>}
                                     <div className='flex flex-wrap items-center justify-center gap-1'>
@@ -256,6 +286,56 @@ export default function CalendarTimeLine({
                                 </div>
                             )
                         })}
+                        {/* {result.map((user, rowIndex) => {
+                            const row = rowIndex + 1; // grid row is 1-based
+
+                            const tasksWithDurations = user.tasks.map(task => ({
+                                ...task,
+                                // duration: getTaskDuration(task)
+                            }));
+
+                            // const maxDuration = Math.max(...tasksWithDurations.map(t => t.duration));
+                            // const minDuration = Math.min(...tasksWithDurations.map(t => t.duration));
+
+                            return (
+                                <Fragment key={user.id}>
+                                    {tasksWithDurations
+                                        .slice()
+                                        .sort((a, b) => getTaskDuration(b) - getTaskDuration(a)) // longest first
+                                        .map((task) => {
+                                            const colStart = timeToColIndex(task.time_start) + 1;
+                                            const colEnd = timeToColIndex(task.time_end) + 1;
+                                            const duration = getTaskDuration(task);
+
+                                            // const opacity = getOpacity(task.duration, minDuration, maxDuration);
+                                            const zIndex = 40 - duration;
+
+                                            return (
+                                                <div
+                                                    key={task.id}
+                                                    style={{
+                                                        gridColumnStart: colStart,
+                                                        gridColumnEnd: colEnd,
+                                                        gridRowStart: row,
+                                                        gridRowEnd: row,
+                                                        backgroundColor: renderTaskCategoryBackground(task),
+                                                        // opacity,
+                                                        zIndex
+                                                    }}
+                                                    className="text-white p-2 flex flex-row items-center justify-between rounded-sm"
+                                                >
+                                                    <div className='rounded-sm px-2 py-1 bg-gray-100 text-center text-black text-xs'>{user.name}</div>
+                                                    {task.task_category_id && (
+                                                        <div className="grid place-content-center mb-1">
+                                                            <TaskCategoriesIcon categoryId={task.task_category_id} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                </Fragment>
+                            );
+                        })} */}
                     </div>
                 </div>
 

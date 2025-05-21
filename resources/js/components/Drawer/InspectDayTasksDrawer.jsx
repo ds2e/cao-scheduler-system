@@ -32,7 +32,6 @@ import {
 
 import { useEffect, useState } from "react";
 import { router, useForm } from "@inertiajs/react";
-import { TaskCategoriesColor } from '@/lib/enums'
 import { DateTimePicker } from "@/components/Calendar/DateTimePicker";
 
 export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, currentSelectedDate, taskCategories }) {
@@ -120,8 +119,8 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
     }
 
     function renderTaskCategoryBackground(taskIndex) {
-        const item = taskCategories.find(cat => cat.id === data.tasks[taskIndex].task_category_id)?.name
-        return `bg-${TaskCategoriesColor[item]}`;
+        const itemColor = taskCategories.find(cat => cat.id === data.tasks[taskIndex].task_category_id)?.color
+        return itemColor;
     }
 
     // console.log(tasks)
@@ -141,7 +140,13 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                             const endDateTime = `${taskEntry.date_end} ${taskEntry.time_end}`;
 
                             return (
-                                <div key={taskInd} className={`mb-8 border p-4 rounded-lg ${renderTaskCategoryBackground(taskInd)}`}>
+                                <div 
+                                key={taskInd} 
+                                className={`mb-8 border p-4 rounded-lg`}
+                                style={{
+                                    backgroundColor: renderTaskCategoryBackground(taskInd)
+                                }}
+                                >
                                     <div className="mb-5">
                                         <div className="flex flex-col md:flex-row items-center justify-between mb-4">
                                             <div className="flex flex-col md:flex-row items-center justify-center gap-2">

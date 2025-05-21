@@ -11,15 +11,17 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer";
 
-import { TaskCategoriesColor } from '@/lib/enums'
-
 export default function InspectDayTasksDrawer({ isOpen, setOpen, tasks, userID, currentSelectedDate, taskCategories }) {
 
-    const currentDayTasks = [...tasks].filter(task => task.date_start === currentSelectedDate);
+    const currentDayTasks = [...tasks].filter(task => task.date_start === currentSelectedDate).sort((a, b) => {
+        const [aHour, aMin] = a.time_start.split(':').map(Number);
+        const [bHour, bMin] = b.time_start.split(':').map(Number);
+        return aHour !== bHour ? aHour - bHour : aMin - bMin;
+    });
 
     function renderTaskCategoryBackground(taskIndex) {
-        const item = taskCategories.find(cat => cat.id === currentDayTasks[taskIndex].task_category_id)?.name
-        return `bg-${TaskCategoriesColor[item]}`;
+        const itemColor = taskCategories.find(cat => cat.id === currentDayTasks[taskIndex].task_category_id)?.color
+        return itemColor;
     }
 
     return (
@@ -33,7 +35,13 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, tasks, userID, 
                 <div className="w-full px-4">
                     <div className="max-h-[70dvh] overflow-y-scroll">
                         {currentDayTasks.map((taskEntry, taskInd) => (
-                            <div key={taskInd} className={`mb-8 border p-4 rounded-lg ${renderTaskCategoryBackground(taskInd)}`}>
+                            <div
+                                key={taskInd}
+                                className={`mb-8 border p-4 rounded-lg`}
+                                style={{
+                                    backgroundColor: renderTaskCategoryBackground(taskInd)
+                                }}
+                            >
                                 <div className="mb-5">
                                     <div className="flex items-center justify-between mb-2">
                                         {taskCategories.find(cat => cat.id === taskEntry.task_category_id) &&

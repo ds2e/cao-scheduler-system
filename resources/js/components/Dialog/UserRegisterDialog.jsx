@@ -20,7 +20,7 @@ export default function UserDeleteDialog({ isOpen, setOpen }) {
 
     function requestRegister(e) {
         e.preventDefault()
-        post('/dashboard/users',{
+        post('/dashboard/manage/users',{
             onSuccess: () => {
                 setOpen(false)
             },
