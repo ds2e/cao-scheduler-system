@@ -1,12 +1,14 @@
 import { usePage } from "@inertiajs/react";
 
-export default function UserDashboard(){
+export default function UserDashboard() {
     const { auth } = usePage().props;
 
     return (
-        <div className="p-4 mt-16">
-            <h1 className="mb-4">Welcome <span className="text-red-500 font-semibold">{auth.user.name}</span></h1>
-            <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+        <div className="antialiased bg-gray-50 dark:bg-gray-900">
+            <SideMenuBar />
+
+            <section className="p-4 md:ml-64 h-auto pt-20">
+                <h1 className="mb-4">Welcome <span className="text-theme-secondary">{auth.user.name}</span></h1>
                 <div className="grid grid-cols-3 gap-4 mb-4">
                     <div className="flex items-center justify-center h-24 rounded-sm bg-gray-50 dark:bg-gray-800">
                         <p className="text-2xl text-gray-400 dark:text-gray-500">
@@ -104,7 +106,7 @@ export default function UserDashboard(){
                         </p>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     )
 }

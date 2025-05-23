@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             TaskCategorySeeder::class,
             ScheduleSeeder::class,
-            TodoJobSeeder::class
+            TodoJobSeeder::class,
+            ReservationSeeder::class
         ]);
     }
 }

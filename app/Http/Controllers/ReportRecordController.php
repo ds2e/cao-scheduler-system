@@ -2,23 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
-use App\Http\Requests\StoreTaskRequest;
-use App\Http\Requests\UpdateTaskRequest;
-use App\Models\User;
+use App\Models\ReportRecord;
+use App\Http\Requests\StoreReportRecordRequest;
+use App\Http\Requests\UpdateReportRecordRequest;
 
-class TaskController extends Controller
+class ReportRecordController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // show all tasks with user for admin/moderator interaction
-        $tasks = Task::all();
-        return inertia('Schedule/Schedule', [
-            'tasks' => $tasks
-        ]);
+        //
     }
 
     /**
@@ -32,7 +27,7 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTaskRequest $request)
+    public function store(StoreReportRecordRequest $request)
     {
         //
     }
@@ -40,7 +35,7 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Task $task)
+    public function show(ReportRecord $reportRecord)
     {
         //
     }
@@ -48,7 +43,7 @@ class TaskController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Task $task)
+    public function edit(ReportRecord $reportRecord)
     {
         //
     }
@@ -56,15 +51,15 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTaskRequest $request, Task $task)
+    public function update(UpdateReportRecordRequest $request, ReportRecord $reportRecord)
     {
-        dd($request);
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy(ReportRecord $reportRecord)
     {
         //
     }

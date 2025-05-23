@@ -20,7 +20,7 @@ class ScheduleController extends Controller
 {
     use AuthorizesRequests;
 
-    public function handleRoleBasedView(Request $request)
+    public function handleScheduleRoleBasedView(Request $request)
     {
         $user = Auth::user();
         $role = UserRoles::fromId($user->role_id);

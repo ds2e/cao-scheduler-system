@@ -2,6 +2,7 @@
 
 use App\Enums\UserRoles;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TodoController;
@@ -26,22 +27,8 @@ Route::post('/login', [AuthController::class, 'requestLogin'])->name('request.lo
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'requestLogout'])->name('logout');
     Route::middleware('verified')->group(function () {
-        Route::get('/dashboard', function () {
-            $user = Auth::user();
-            $role = UserRoles::fromId($user->role_id);
-            return match ($role) {
-                UserRoles::Mitarbeiter => Inertia::render('Dashboard/UserDashboard'),
-                UserRoles::Moderator => Inertia::render('Dashboard/UserDashboard'),
-                UserRoles::Admin => Inertia::render('Dashboard/AdminDashboard'),
-                UserRoles::SuperAdmin => Inertia::render('Dashboard/AdminDashboard'),
-                default => Inertia::render('Error', ['status' => 406]),
-            };
-        })->name('dashboard');
+        Route::get('/dashboard', [UserController::class, 'handleRoleBasedView'])->name('dashboard');
         Route::prefix('dashboard')->name('dashboard.')->group(function () {
-            Route::get('schedule', [ScheduleController::class, 'handleRoleBasedView'])->name('show.schedule');
-            Route::post('schedule', [ScheduleController::class, 'updateSchedule'])->name('update.schedule');
-            Route::post('schedule/todo', [ScheduleController::class, 'updateScheduleTodoJob'])->name('update.schedule.todoJob');
-            // Route::resource('tasks', TaskController::class)->only(['update']);
             Route::prefix('manage')->name('manage.')->group(function () {
                 Route::resource('users', UserController::class)->except(['create', 'edit', 'show']);
                 Route::resource('todos', TodoController::class)->except(['create', 'edit', 'show']);
@@ -49,6 +36,12 @@ Route::middleware('auth')->group(function () {
             });
             Route::get('profile/{user}', [UserController::class, 'show'])->name('show.profile');
             Route::get('setting', [UserSettingController::class, 'displayUserSetting'])->name('show.setting');
+
+            Route::get('schedule', [ScheduleController::class, 'handleScheduleRoleBasedView'])->name('show.schedule');
+            Route::post('schedule', [ScheduleController::class, 'updateSchedule'])->name('update.schedule');
+            Route::post('schedule/todo', [ScheduleController::class, 'updateScheduleTodoJob'])->name('update.schedule.todoJob');
+
+            Route::resource('reservation', ReservationController::class)->except(['create', 'edit', 'show']);
         });
     });
 

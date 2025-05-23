@@ -10,6 +10,8 @@ import {
 } from "./helpers";
 import TaskCategoriesIcon from './TaskCategoriesIcon';
 import UserScheduleSummaryDialog from '@/components/Dialog/UserScheduleSummaryDialog';
+import UserTodoJobsSummaryDialog from '@/components/Dialog/UserTodoJobsSummaryDialog';
+import dayjs from 'dayjs';
 
 const UserCalendarTimeTable = memo(function UserCalendarComponent({
     yearAndMonth,
@@ -23,6 +25,8 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
 }) {
     const [year, month] = yearAndMonth;
     const [isOpenUserWeekSummary, setOpenUserWeekSummary] = useState(true);
+    const [isOpenUserTodoJobsSummary, setOpenUserTodoJobsSummary] = useState(false);
+    const [currentSelectedDate, setCurrentSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
 
     let currentMonthDays = createDaysForCurrentMonth(year, month);
     let previousMonthDays = createDaysForPreviousMonth(
@@ -80,6 +84,11 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
         }
     }
 
+    function inspectDayTodoJobs(date) {
+        setCurrentSelectedDate(date);
+        setOpenUserTodoJobsSummary(true);
+    }
+
     function renderTaskCategoryBackground(taskEntry) {
         const itemColor = taskCategories.find(cat => cat.id === taskEntry.task_category_id)?.color
         return itemColor;
@@ -110,7 +119,7 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
             }, {})
         );
 
-        console.log(tasksForTheDayGroupedByCategory)
+        // console.log(tasksForTheDayGroupedByCategory)
 
         return (
             <div className="day-grid-item-header h-full p-1 flex flex-col items-start">
@@ -120,7 +129,10 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                     </p>
                     {
                         todoJobs.find((job) => job.date === day.dateString) ?
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={20} height={20} className="fill-theme-secondary animate-pulse me-0 sm:me-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={20} height={20} 
+                            onClick={() => inspectDayTodoJobs(day.dateString)}
+                            className="fill-theme-secondary animate-pulse me-0 sm:me-1 cursor-pointer"
+                            >
                                 <path d="M152.1 38.2c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 113C-2.3 103.6-2.3 88.4 7 79s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zm0 160c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 273c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zM224 96c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zm0 160c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zM160 416c0-17.7 14.3-32 32-32l288 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-288 0c-17.7 0-32-14.3-32-32zM48 368a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
                             </svg>
                             :
@@ -170,7 +182,7 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
         <>
             <div className="w-full pt-16">
                 <div className="flex flex-col items-center justify-center place-content-center sticky top-16 pt-2 z-10 bg-gray-800">
-                    <div className='w-full flex items-center justify-center sm:justify-start px-2 sm:px-6 lg:px-8'>
+                    <div className='w-full flex items-center justify-center sm:justify-start px-2 sm:px-6'>
                         <div className='flex items-center justify-center gap-4'>
                             <button onClick={handleMonthNavBackButtonClick} className='cursor-pointer group'>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={25} height={25} className='fill-white group-hover:fill-theme bg-transparent group-hover:bg-white transition-all duration-300 rounded-full'>
@@ -254,6 +266,13 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                 setOpen={setOpenUserWeekSummary}
                 tasks={tasks.filter(task => task.users.some((user) => user.id === userID))}
                 taskCategories={taskCategories}
+            />
+
+            <UserTodoJobsSummaryDialog 
+                isOpen={isOpenUserTodoJobsSummary}
+                setOpen={setOpenUserTodoJobsSummary}
+                todoJobs={todoJobs}
+                currentSelectedDate={currentSelectedDate}
             />
         </>
     );

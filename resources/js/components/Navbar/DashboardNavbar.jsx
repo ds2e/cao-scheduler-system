@@ -18,17 +18,16 @@ function classNames(...classes) {
 export default function DashboardNavbar({ auth }) {
     const { url } = usePage();
 
-    const permissions = Object.values(auth.user.permissions);
+    const navigationItems = [
+        { title: 'Zeitplan', href: '/dashboard/schedule' },
+        { title: 'Reservierung', href: '/dashboard/reservation' }
+    ]
 
-    const navigation = [...permissions]
-        .filter(item => item.viewAny)
+    const navigation = [...navigationItems]
         .map(item => ({
             ...item,
             current: item.href === url,
         }));
-
-    const scheduleItem = navigation.find(item => item.title === 'Zeitplan');
-    const dropdownItems = navigation.filter(item => item.title !== 'Zeitplan');
 
     const { post, processing, errors } = useForm({});
 
@@ -39,7 +38,7 @@ export default function DashboardNavbar({ auth }) {
 
     return (
         <Disclosure as="nav" className="bg-gray-800 fixed top-0 left-0 w-full z-50">
-            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="mx-auto px-2 sm:px-6">
                 <div className="relative flex h-16 items-center justify-between">
                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                         {/* Mobile menu button*/}
@@ -64,60 +63,26 @@ export default function DashboardNavbar({ auth }) {
                         </Link>
                         <div className="hidden sm:ml-6 sm:block place-content-center">
                             <div className="flex space-x-4">
-                                {scheduleItem && (
-                                    <Link
-                                        href={scheduleItem.href}
-                                        aria-current={scheduleItem.current ? 'page' : undefined}
-                                        className={classNames(
-                                            scheduleItem.current
-                                                ? 'bg-gray-900 text-white'
-                                                : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                            'rounded-md px-3 py-2 text-sm font-medium'
-                                        )}
-                                    >
-                                        {scheduleItem.title}
-                                    </Link>
-                                )}
                                 {
-                                    dropdownItems.length > 0 ?
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger className="text-white cursor-pointer">Manage</DropdownMenuTrigger>
-                                            <DropdownMenuContent>
-                                                {dropdownItems.map((item) => (
-                                                    <DropdownMenuItem key={item.title} asChild>
-                                                        <Link
-                                                            href={item.href}
-                                                            aria-current={item.current ? 'page' : undefined}
-                                                            className={classNames(
-                                                                item.current ? 'bg-gray-900 text-white' : 'text-gray-900 hover:bg-gray-700',
-                                                                'rounded-md px-3 py-2 text-sm font-medium',
-                                                            )}
-                                                        >
-                                                            {item.title}
-                                                        </Link>
-                                                    </DropdownMenuItem>
-                                                ))}
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                        :
-                                        null
+                                    navigation.map((navMenu, navInd) => {
+                                        return (
+                                            <Link
+                                                key={navMenu.title + navInd}
+                                                href={navMenu.href}
+                                                aria-current={navMenu.current ? 'page' : undefined}
+                                                className={classNames(
+                                                    navMenu.current
+                                                        ? 'bg-gray-900 text-white'
+                                                        : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                                    'rounded-md px-3 py-2 text-sm font-medium'
+                                                )}
+                                            >
+                                                {navMenu.title}
+                                            </Link>
+                                        )
+                                    })
                                 }
                             </div>
-                            {/* <div className="flex space-x-4">
-                                {navigation.map((item) => (
-                                    <a
-                                        key={item.name}
-                                        href={item.href}
-                                        aria-current={item.current ? 'page' : undefined}
-                                        className={classNames(
-                                            item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                            'rounded-md px-3 py-2 text-sm font-medium',
-                                        )}
-                                    >
-                                        {item.name}
-                                    </a>
-                                ))}
-                            </div> */}
                         </div>
                     </div>
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
@@ -154,6 +119,15 @@ export default function DashboardNavbar({ auth }) {
 
                                 <MenuItem>
                                     <Link
+                                        href="/dashboard"
+                                        className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
+                                    >
+                                        Dashboard
+                                    </Link>
+                                </MenuItem>
+
+                                <MenuItem>
+                                    <Link
                                         href={`/dashboard/profile/${auth.user.uid}`}
                                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                                     >
@@ -161,12 +135,12 @@ export default function DashboardNavbar({ auth }) {
                                     </Link>
                                 </MenuItem>
                                 <MenuItem>
-                                    <a
-                                        href="#"
+                                    <Link
+                                        href="/dashboard/setting"
                                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                                     >
                                         Einstellung
-                                    </a>
+                                    </Link>
                                 </MenuItem>
                                 <form onSubmit={requestLogout}>
                                     <button
@@ -186,9 +160,9 @@ export default function DashboardNavbar({ auth }) {
 
             <DisclosurePanel className="sm:hidden">
                 <div className="space-y-1 px-2 pt-2 pb-3">
-                    {navigation.map((item) => (
+                    {navigation.map((item, itemInd) => (
                         <DisclosureButton
-                            key={item.name}
+                            key={item.title + itemInd}
                             as="a"
                             href={item.href}
                             aria-current={item.current ? 'page' : undefined}
@@ -197,7 +171,7 @@ export default function DashboardNavbar({ auth }) {
                                 'block rounded-md px-3 py-2 text-base font-medium',
                             )}
                         >
-                            {item.name}
+                            {item.title}
                         </DisclosureButton>
                     ))}
                 </div>

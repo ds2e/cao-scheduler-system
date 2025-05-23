@@ -64,7 +64,11 @@ export default function ScheduleTimeTable({ tasks, users, todos, todoJobs, viewY
         setDate(date)
     }
 
-    // console.log(todos)
+    const todoJobsWithTodo = todoJobs.map((job) => {
+        const newJob = {...job};
+        newJob.todo = todos.find((todo) => todo.id == newJob.todo_id);
+        return newJob;
+    })
 
     if (view == false) {
         return (
@@ -73,7 +77,7 @@ export default function ScheduleTimeTable({ tasks, users, todos, todoJobs, viewY
                     yearAndMonth={yearAndMonth}
                     onYearAndMonthChange={requestViewYearAndMonth}
                     tasks={tasks}
-                    todoJobs={todoJobs}
+                    todoJobs={todoJobsWithTodo}
                     taskCategories={taskCategories}
                     requestSwitchView={requestSwitchView}
                 />

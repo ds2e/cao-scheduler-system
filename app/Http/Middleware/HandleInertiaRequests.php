@@ -61,11 +61,6 @@ class HandleInertiaRequests extends Middleware
                                 'rank' => UserRoles::Mitarbeiter->rank()
                             ],
                             'permissions' => [ // permission to display navigation menupoint
-                                'schedule' => [
-                                    'title' => 'Zeitplan',
-                                    'viewAny' => true,
-                                    'href' => '/dashboard/schedule'
-                                ],
                                 'users' => [
                                     'title' => 'Nutzer',
                                     'viewAny' => $request->user()->can('viewAny', User::class),

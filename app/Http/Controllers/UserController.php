@@ -6,6 +6,7 @@ use App\Enums\UserRoles;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\Task;
+use App\Models\Todo;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
@@ -144,7 +146,7 @@ class UserController extends Controller
     {
         $this->authorize('delete', $user);
 
-        $validated = Validator::make($request->all(),[
+        $validated = Validator::make($request->all(), [
             'currentSelectedUserData.id' => ['required', 'integer', Rule::exists('users', 'id')]
         ])->validate();
 
@@ -193,5 +195,86 @@ class UserController extends Controller
         $user->sendEmailVerificationNotification();
 
         return back()->with('success', 'User created.');
+    }
+
+    public function handleRoleBasedView(Request $request)
+    {
+        $user = Auth::user();
+        $role = UserRoles::fromId($user->role_id);
+        return match ($role) {
+            // View specific to Mitarbeiter and Moderator
+            UserRoles::Mitarbeiter, UserRoles::Moderator => (function () use ($user) {
+                $tasks_num = Task::where('user_id', $user->id)->count();
+                return inertia('Dashboard/UserDashboard', [
+                    'tasks_num' => $tasks_num,
+                ]);
+            })(),
+
+            // View specific to Admin and SuperAdmin
+            UserRoles::Admin, UserRoles::SuperAdmin => (function () use ($user) {
+                $users_num = User::count();
+                $todos_num = Todo::count();
+
+                // Get current date
+                $now = Carbon::now();
+
+                // Get first and last day of current month
+                $startDate = $now->copy()->startOfMonth();
+                $endDate = $now->copy()->endOfMonth();
+
+
+                // $daysInMonth = $startDate->daysInMonth;
+
+                // Fetch all tasks in the current month
+                $tasks = Task::whereBetween('date_start', [$startDate->toDateString(), $endDate->toDateString()])
+                    ->get();
+
+                $tasks_num = Task::whereBetween('date_start', [$startDate->toDateString(), $endDate->toDateString()])
+                    ->count();
+
+                $tasksByDate = $tasks->groupBy('date_start');
+
+                $totalHours = 0;
+                $daysWithWork = $tasksByDate->count(); // Only counts days with at least one task
+
+                // foreach ($tasks as $task) {
+                //     $start = Carbon::createFromFormat('H:i:s', $task->time_start);
+                //     $end = Carbon::createFromFormat('H:i:s', $task->time_end);
+
+                //     // Handle overnight tasks
+                //     if ($end->lessThan($start)) {
+                //         $end->addDay();
+                //     }
+
+                //     $totalHours += $end->diffInSeconds($start, true) / 3600; // Convert seconds to hours
+                // }
+
+                // $averageHoursPerDay = $totalHours / $daysInMonth;
+
+                foreach ($tasksByDate as $date => $dayTasks) {
+                    foreach ($dayTasks as $task) {
+                        $start = Carbon::createFromFormat('H:i:s', $task->time_start);
+                        $end = Carbon::createFromFormat('H:i:s', $task->time_end);
+
+                        // Handle overnight tasks
+                        if ($end->lessThan($start)) {
+                            $end->addDay();
+                        }
+
+                        $totalHours += $end->diffInSeconds($start, true) / 3600; // Convert to hours
+                    }
+                }
+
+                $averageHoursPerDay = $daysWithWork > 0 ? $totalHours / $daysWithWork : 0;
+
+                return inertia('Dashboard/AdminDashboard', [
+                    'users_num' => $users_num,
+                    'tasks_num' => $tasks_num,
+                    'todos_num' => $todos_num,
+                    'avg_hpd' => round($averageHoursPerDay, 2),
+                ]);
+            })(),
+            default => inertia('Error', ['status' => 406]),
+        };
     }
 }

@@ -11,6 +11,8 @@ class UserSettingController extends Controller
     use AuthorizesRequests;
 
     public function displayUserSetting(Request $request){
-        $this->authorize('view', User::class);
+        // $this->authorize('view', User::class);
+
+        return inertia('Setting/Setting');
     }
 }
