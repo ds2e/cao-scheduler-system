@@ -29,6 +29,8 @@
 
     --color-theme-highlight: rgb(7,19,70);
     --color-theme-secondary-highlight: rgb(203,48,51);
+
+    --breakpoint-xs: 32rem;
 }
 
 @theme inline {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserRoles;
+use App\Models\ReportRecord;
 use App\Models\Schedule;
 use App\Models\Task;
 use App\Models\TaskCategory;
@@ -88,6 +89,9 @@ class ScheduleController extends Controller
 
         $todoJobs = TodoJob::whereBetween('date', [$startDate, $endDate])
             ->get();
+        $reportRecords = ReportRecord::with('user')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->get();
 
         // show all users for admin to assign task
         $users = User::whereIn('role_id', UserRoles::taskAssignable())->get();
@@ -97,6 +101,7 @@ class ScheduleController extends Controller
             'taskCategories' => $taskCategories,
             'tasks' => $tasks,
             'todoJobs' => $todoJobs,
+            'reportRecords' => $reportRecords,
             'todos' => $todos,
             'users' => $users,
         ]);

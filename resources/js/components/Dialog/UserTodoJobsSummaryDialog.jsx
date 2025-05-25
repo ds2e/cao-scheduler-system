@@ -24,8 +24,8 @@ export default function UserTodoJobsSummaryDialog({ isOpen, setOpen, todoJobs, c
                     dayTodoJobs.map((job, jobInd) => {
                         return (
                             <div key={job.id + jobInd}>
-                                {job.todo.name}:
-                                <span className="text-theme-secondary ms-1">{job.notice}</span>
+                                {job.todo.name}
+                                {job.notice && <>: <span className="text-theme-secondary ms-1">{job.notice}</span></>}
                             </div>
                         )
                     })

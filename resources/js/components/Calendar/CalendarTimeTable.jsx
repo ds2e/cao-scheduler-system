@@ -12,19 +12,43 @@ import {
 import TaskCategoriesIcon from './TaskCategoriesIcon';
 import dayjs from 'dayjs';
 import UserTodoJobsSummaryDialog from '@/components/Dialog/UserTodoJobsSummaryDialog';
+import { router } from "@inertiajs/react";
+import ReportRecordsSummaryDialog from '@/components/Dialog/ReportRecordsSummaryDialog';
+
+function parseYearMonth(viewStr) {
+    if (!viewStr) return [new Date().getFullYear(), new Date().getMonth() + 1];
+
+    const [yearStr, monthStr] = viewStr.split('-');
+    const year = parseInt(yearStr, 10);
+    const month = parseInt(monthStr, 10);
+
+    if (!year || !month || month < 1 || month > 12) {
+        // fallback to current month if invalid
+        return defaultViewInterval;
+    }
+
+    return [year, month];
+}
 
 const CalendarTimeTable = memo(function CalendarComponent({
     yearAndMonth,
-    onYearAndMonthChange,
-    // requestInspectDay,
+    reportRecords,
     tasks,
     todoJobs,
     taskCategories,
     requestSwitchView
 }) {
-    const [year, month] = yearAndMonth;
+    const [year, month] = parseYearMonth(yearAndMonth);
     const [isOpenUserTodoJobsSummary, setOpenUserTodoJobsSummary] = useState(false);
+    const [isOpenReportRecordsSummary, setOpenReportRecordsSummary] = useState(false);
     const [currentSelectedDate, setCurrentSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
+
+    // const yearAndMonth = parseYearMonth(viewYearAndMonthInterval);
+
+    function onYearAndMonthChange(interval) {
+        const formattedView = `${interval[0]}-${String(interval[1]).padStart(2, '0')}`;
+        router.get(('/dashboard/schedule'), { view: formattedView });
+    }
 
     let currentMonthDays = createDaysForCurrentMonth(year, month);
     let previousMonthDays = createDaysForPreviousMonth(
@@ -87,6 +111,11 @@ const CalendarTimeTable = memo(function CalendarComponent({
         setOpenUserTodoJobsSummary(true);
     }
 
+    function inspectDayReportRecords(date) {
+        setCurrentSelectedDate(date);
+        setOpenReportRecordsSummary(true);
+    }
+
     function renderTaskCategoryBackground(taskEntry) {
         const itemColor = taskCategories.find(cat => cat.id === taskEntry.task_category_id)?.color
         return itemColor;
@@ -116,6 +145,14 @@ const CalendarTimeTable = memo(function CalendarComponent({
                 return acc;
             }, {})
         );
+
+        // const recordsForTheDay = reportRecords
+        //     .filter(task => task.date_start === day.dateString)
+        //     .sort((a, b) => {
+        //         const [aHour, aMin] = a.time_start.split(':').map(Number);
+        //         const [bHour, bMin] = b.time_start.split(':').map(Number);
+        //         return aHour !== bHour ? aHour - bHour : aMin - bMin;
+        //     });
 
         return (
             <div className="day-grid-item-header h-full p-1 flex flex-col items-start min-h-34">
@@ -157,6 +194,19 @@ const CalendarTimeTable = memo(function CalendarComponent({
                             </div>
                         </div>
                     ))}
+                </div>
+                <div className='w-full px-1 flex items-center justify-center'>
+                    {
+                        reportRecords.find((record) => record.date === day.dateString) ?
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width={25} height={25}
+                                onClick={() => inspectDayReportRecords(day.dateString)}
+                                className='cursor-pointer fill-theme hover:fill-theme-secondary-highlight transition-all duration-200'
+                            >
+                                <path d="M192 0c-41.8 0-77.4 26.7-90.5 64L64 64C28.7 64 0 92.7 0 128L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64l-37.5 0C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM128 256a64 64 0 1 1 128 0 64 64 0 1 1 -128 0zM80 432c0-44.2 35.8-80 80-80l64 0c44.2 0 80 35.8 80 80c0 8.8-7.2 16-16 16L96 448c-8.8 0-16-7.2-16-16z" />
+                            </svg>
+                            :
+                            null
+                    }
                 </div>
             </div>
         );
@@ -237,6 +287,11 @@ const CalendarTimeTable = memo(function CalendarComponent({
                 todoJobs={todoJobs}
                 currentSelectedDate={currentSelectedDate}
             />
+            <ReportRecordsSummaryDialog
+                isOpen={isOpenReportRecordsSummary}
+                setOpen={setOpenReportRecordsSummary}
+                records={reportRecords}
+                currentSelectedDate={currentSelectedDate} />
         </>
 
     );

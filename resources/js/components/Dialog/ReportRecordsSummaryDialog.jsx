@@ -1,0 +1,58 @@
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import dayjs from "dayjs";
+
+export default function ReportRecordsSummaryDialog({ isOpen, setOpen, records, currentSelectedDate }) {
+    const dayRecords = records
+        .filter((record) => record.date == currentSelectedDate)
+        .sort((a, b) => {
+            const [aHour, aMin] = a.time_start.split(':').map(Number);
+            const [bHour, bMin] = b.time_start.split(':').map(Number);
+            return aHour !== bHour ? aHour - bHour : aMin - bMin;
+        });
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setOpen}>
+            <DialogContent className="!max-w-[95vw]">
+                <DialogHeader>
+                    <DialogTitle>Tages Bericht</DialogTitle>
+                    <DialogDescription>
+                        {dayjs(currentSelectedDate).format('DD/MM/YYYY')}
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="hidden font-semibold sm:flex items-center justify-between">
+                    <h2 className="basis-1/3">Mitarbeiter</h2>
+                    <h2 className="basis-1/6">Anfang</h2>
+                    <h2 className="basis-1/6">Ende</h2>
+                    <h2 className="basis-1/3">Bemerkung</h2>
+                </div>
+                {
+                    dayRecords.map((record, recordInd) => {
+                        return (
+                            <div key={record.id + recordInd} className="flex sm:flex-row flex-col items-center justify-between max-h-[70dvh] scroll-y-auto">
+                                <span className="basis-1/3 sm:text-start text-center">
+                                    {record.user.name} ({record.user.PIN})
+                                </span>
+                                <span className="basis-1/6 sm:text-start text-center text-theme-secondary">
+                                    {record.time_start}
+                                </span>
+                                <span className="basis-1/6 sm:text-start text-center text-theme-secondary">
+                                    {record.time_end}
+                                </span>
+                                <span className="basis-1/3 sm:text-start text-center">
+                                    {record.notice}
+                                </span>
+                            </div>
+                        )
+                    })
+                }
+            </DialogContent>
+        </Dialog>
+    )
+}

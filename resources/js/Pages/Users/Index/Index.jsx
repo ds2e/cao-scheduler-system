@@ -7,7 +7,6 @@ dayjs.extend(isBetween);
 
 export default function UserProfile({ user, tasks }) {
 
-    console.log(tasks)
     const now = dayjs();
 
     // Define month boundaries
@@ -19,8 +18,6 @@ export default function UserProfile({ user, tasks }) {
 
     const startOfNextMonth = now.add(1, 'month').startOf('month');
     const endOfNextMonth = now.add(1, 'month').endOf('month');
-
-    console.log(startOfLastMonth)
 
     // Filter tasks into 3 groups
     const lastMonthTasks = tasks.filter(task =>

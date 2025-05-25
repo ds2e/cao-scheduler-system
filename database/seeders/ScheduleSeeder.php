@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\ReportRecord;
 use App\Models\Task;
 use App\Models\TaskCategory;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -26,11 +28,36 @@ class ScheduleSeeder extends Seeder
             $task->save();
         });
 
+        $assignedUsers = $users->random(rand(1, 3));
+
         // Attach random users to each task
-        $tasks->each(function ($task) use ($users) {
-            $task->users()->attach(
-                $users->random(rand(1, 3))->pluck('id')->toArray()
-            );
+        $tasks->each(function ($task) use ($assignedUsers) {
+            
+            $task->users()->attach($assignedUsers->pluck('id')->toArray());
+
+            foreach ($assignedUsers as $user) {
+                $date = fake()->dateTimeBetween('-3 days', '+5 days')->format('Y-m-d');
+                // Generate valid time_start and time_end
+                $earliestStart = Carbon::createFromTime(7, 0);
+                $latestStart = Carbon::createFromTime(15, 0);
+                $timeStart = Carbon::createFromTime(
+                    fake()->numberBetween($earliestStart->hour, $latestStart->hour),
+                    fake()->numberBetween(0, 59)
+                );
+
+                $maxEndTime = Carbon::createFromTime(23, 0);
+                $maxDuration = min(480, $maxEndTime->diffInMinutes($timeStart));
+                $durationMinutes = fake()->numberBetween(60, $maxDuration);
+                $timeEnd = (clone $timeStart)->addMinutes($durationMinutes);
+
+                ReportRecord::create([
+                    'user_id' => $user->id,
+                    'date' => $date,
+                    'time_start' => $timeStart->format('H:i:s'),
+                    'time_end' => $timeEnd->format('H:i:s'),
+                    'notice' => "Task ID {$task->id} - " . fake()->optional()->sentence(),
+                ]);
+            }
         });
     }
 }

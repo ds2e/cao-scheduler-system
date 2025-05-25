@@ -9,4 +9,17 @@ class ReportRecord extends Model
 {
     /** @use HasFactory<\Database\Factories\ReportRecordFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'date',
+        'time_start',
+        'time_end',
+        'notice'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

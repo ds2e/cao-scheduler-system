@@ -39,9 +39,13 @@ export default function UsersPage({ users, roles }) {
 
     function toggleEditUser(user) {
         if (Object.keys(data.currentSelectedUserData).length == 0 || data.currentSelectedUserData.id !== user.id) {
+            const UserData = {
+                ...user,
+                role_rank: roles.find((role) => role.id === user.role_id)?.rank
+            }
             setData({
                 ...data,
-                currentSelectedUserData: user
+                currentSelectedUserData: UserData
             });
         } else {
             setData({
@@ -58,9 +62,10 @@ export default function UsersPage({ users, roles }) {
             (role) => role.rank === selectedRank
         );
 
-        // console.log(data);
+        console.log(data);
 
         if (data.currentSelectedUserData.new_role_rank > data.currentSelectedUserData.role_rank && needConfirmation) {
+            console.log(data)
             setOpenPromotionUserDialog(true);
         }
         else {

@@ -34,18 +34,7 @@ class UserController extends Controller
 
         $roles = Role::all()->keyBy('id');
 
-        $users = User::latest()->paginate(5)->through(function ($user) use ($roles) {
-            try {
-                $user->PIN = Crypt::decryptString($user->PIN);
-            } catch (\Exception $e) {
-                $user->PIN = null; // fallback if decryption fails
-            }
-
-            // $user->role_name = $roles[$user->role_id]->name ?? 'Unknown';
-            $user->role_rank = $roles[$user->role_id]->rank ?? 1;
-
-            return $user;
-        });
+        $users = User::latest()->paginate(5);
 
         return inertia('Users/Users', [
             'users' => $users,
@@ -60,7 +49,6 @@ class UserController extends Controller
         $this->authorize('view', $user);
 
         $user = User::with('role')->findOrFail($user->id);
-        $role = UserRoles::fromId($user->role_id);
 
         $startDate = now()->subMonth()->startOfMonth()->toDateString();
         $endDate = now()->addMonth()->endOfMonth()->toDateString();
@@ -71,18 +59,7 @@ class UserController extends Controller
                 $query->where('users.id', $user->id);
             })
             ->get();
-
-        // Conditionally hide the PIN
-        if (in_array($role, [UserRoles::Admin, UserRoles::SuperAdmin])) {
-            try {
-                $user->PIN = Crypt::decryptString($user->PIN);
-            } catch (\Exception $e) {
-                $user->PIN = null; // fallback if decryption fails
-            }
-        } else {
-            $user->makeHidden(['PIN']);
-        }
-
+        
         return inertia('Users/Index/Index', [
             'user' => $user,
             'tasks' => $tasks
@@ -93,9 +70,6 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
-        // $validator = Validator::make($request->all(), $request->rules());
-        // Validate the request
-        // $validated = $validator->validated();
         $validated = $request->validated();
 
         $userData = $validated['currentSelectedUserData'];
@@ -107,7 +81,8 @@ class UserController extends Controller
 
         // Decrypt current user's PIN for comparison
         try {
-            $currentPIN = Crypt::decryptString($user->PIN);
+            $currentPIN = $user->PIN;
+            // Crypt::decryptString($user->PIN);
         } catch (\Exception $e) {
             $currentPIN = null;
         }
@@ -117,7 +92,8 @@ class UserController extends Controller
         // Check if the entered PIN is already used by someone else
         $pinExists = User::get()->contains(function ($u) use ($enteredPIN, $user) {
             try {
-                return $u->id !== $user->id && Crypt::decryptString($u->PIN) === $enteredPIN;
+                return $u->id !== $user->id && $u->PIN === $enteredPIN;
+                // $u->id !== $user->id && Crypt::decryptString($u->PIN) === $enteredPIN;
             } catch (\Exception $e) {
                 return false;
             }
@@ -132,7 +108,8 @@ class UserController extends Controller
 
             $user->name = $userData['name'];
             $user->email = $userData['email'];
-            $user->PIN = Crypt::encryptString($enteredPIN);
+            $user->PIN = $enteredPIN;
+            // $user->PIN = Crypt::encryptString($enteredPIN);
             $user->role_id = $userData['role_id'];
             $user->updated_at = now();
 
@@ -176,7 +153,8 @@ class UserController extends Controller
         } while (
             User::get()->contains(function ($u) use ($rand_PIN) {
                 try {
-                    return Crypt::decryptString($u->PIN) === $rand_PIN;
+                    return $u->PIN === $rand_PIN;
+                    // Crypt::decryptString($u->PIN) === $rand_PIN;
                 } catch (\Exception $e) {
                     return false; // Ignore broken/missing PINs
                 }
@@ -184,7 +162,8 @@ class UserController extends Controller
         );
 
         $validated['password'] = Hash::make($validated['password']);
-        $validated['PIN'] = Crypt::encryptString($rand_PIN);
+        // $validated['PIN'] = Crypt::encryptString($rand_PIN);
+        $validated['PIN'] = $rand_PIN;
         $validated['role_id'] = Role::where('name', UserRoles::Mitarbeiter->value)->first()->id;
 
         $user = User::create($validated);
@@ -197,6 +176,7 @@ class UserController extends Controller
         return back()->with('success', 'User created.');
     }
 
+    // DASHBOARD VIEW
     public function handleRoleBasedView(Request $request)
     {
         $user = Auth::user();
@@ -204,9 +184,9 @@ class UserController extends Controller
         return match ($role) {
             // View specific to Mitarbeiter and Moderator
             UserRoles::Mitarbeiter, UserRoles::Moderator => (function () use ($user) {
-                $tasks_num = Task::where('user_id', $user->id)->count();
+                // $tasks_num = Task::where('user_id', $user->id)->count();
                 return inertia('Dashboard/UserDashboard', [
-                    'tasks_num' => $tasks_num,
+                    // 'tasks_num' => $tasks_num,
                 ]);
             })(),
 

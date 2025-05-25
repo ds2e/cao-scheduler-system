@@ -1,4 +1,5 @@
 import { usePage } from "@inertiajs/react";
+import SideMenuBar from "@/components/Navbar/SideMenuBar";
 
 export default function UserDashboard() {
     const { auth } = usePage().props;

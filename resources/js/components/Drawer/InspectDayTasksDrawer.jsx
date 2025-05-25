@@ -43,7 +43,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
 
     useEffect(() => {
         setData({
-            tasks: tasks.filter(task => task.date_start === currentSelectedDate),
+            tasks: tasks,
             date: currentSelectedDate
         });
 
@@ -85,7 +85,6 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
     }
 
     function addTaskToDate(date) {
-        console.log(date)
         const newTasks = [
             {
                 users: [],
@@ -98,8 +97,6 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
             },
             ...data.tasks
         ]
-
-        console.log(newTasks)
 
         setData('tasks', newTasks)
     }

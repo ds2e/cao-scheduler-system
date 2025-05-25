@@ -1,85 +1,55 @@
-import dayjs from "dayjs";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 
-import InspectDayTasksDrawer from "@/components/Drawer/InspectDayTasksDrawer";
 import CalendarTimeTable from "@/components/Calendar/CalendarTimeTable";
-import CalendarTimeLine from "@/components/Calendar/CalendarTimeLine";
-import { router } from "@inertiajs/react";
+import ScheduleTimeLine from "./ScheduleTimeLine"
+import dayjs from "dayjs";
 
-const today = new Date()
-const defaultViewInterval = [today.getFullYear(), today.getMonth() + 1];
+const today = new Date();
 
-function parseYearMonth(viewStr) {
-    if (!viewStr) return defaultViewInterval;
-
-    const [yearStr, monthStr] = viewStr.split('-');
-    const year = parseInt(yearStr, 10);
-    const month = parseInt(monthStr, 10);
-
-    if (!year || !month || month < 1 || month > 12) {
-        // fallback to current month if invalid
-        return defaultViewInterval;
-    }
-
-    return [year, month];
-}
-
-export default function ScheduleTimeTable({ tasks, users, todos, todoJobs, viewYearAndMonthInterval, taskCategories }) {
-
-    const yearAndMonth = parseYearMonth(viewYearAndMonthInterval);
-
-    function requestViewYearAndMonth(interval) {
-        const formattedView = `${interval[0]}-${String(interval[1]).padStart(2, '0')}`;
-        router.get(('/dashboard/schedule'), { view: formattedView });
-    }
-
-    const [open, setOpen] = useState(false);
-    const [currentSelectedDate, setCurrentSelectedDate] = useState("");
+export default function ScheduleTimeTable({ tasks, users, todos, todoJobs, viewYearAndMonthInterval, taskCategories, reportRecords }) {
 
     const [view, setView] = useState(false);
+    const [date, setDate] = useState(today);
 
-    function requestSwitchView(day) {
+    function requestSwitchViewDate(day) {
         setDate(day)
         setView((prev) => !prev);
     }
 
-    const handleInspectDay = useCallback((dateString) => {
-        setOpen(true);
-        setCurrentSelectedDate(dateString);
-    }, [])
+    function requestSwitchView() {
+        setView((prev) => !prev);
+    }
 
-    const [date, setDate] = useState(today);
+    const todoJobsWithTodo = todoJobs.map((job) => {
+        const newJob = { ...job };
+        newJob.todo = todos.find((todo) => todo.id == newJob.todo_id);
+        return newJob;
+    })
 
     function requestPrevDay(date) {
-        const prev = dayjs(date).subtract(1, "day").toDate();
-        setDate(prev);
+        const prevDate = dayjs(date).subtract(1, "day").toDate();
+        setDate(prevDate);
     }
 
     function requestNextDay(date) {
-        const next = dayjs(date).add(1, "day").toDate();
-        setDate(next);
+        const nextDate = dayjs(date).add(1, "day").toDate();
+        setDate(nextDate);
     }
 
     function handleDateSelect(date) {
         setDate(date)
     }
 
-    const todoJobsWithTodo = todoJobs.map((job) => {
-        const newJob = {...job};
-        newJob.todo = todos.find((todo) => todo.id == newJob.todo_id);
-        return newJob;
-    })
-
     if (view == false) {
         return (
             <>
                 <CalendarTimeTable
-                    yearAndMonth={yearAndMonth}
-                    onYearAndMonthChange={requestViewYearAndMonth}
+                    yearAndMonth={viewYearAndMonthInterval}
                     tasks={tasks}
+                    reportRecords={reportRecords}
                     todoJobs={todoJobsWithTodo}
                     taskCategories={taskCategories}
-                    requestSwitchView={requestSwitchView}
+                    requestSwitchView={requestSwitchViewDate}
                 />
             </>
         )
@@ -87,26 +57,23 @@ export default function ScheduleTimeTable({ tasks, users, todos, todoJobs, viewY
 
     return (
         <>
-            <CalendarTimeLine
+            <ScheduleTimeLine
                 date={date}
-                requestInspectDay={handleInspectDay}
-                requestTasksPrevDay={requestPrevDay}
-                requestTasksNextDay={requestNextDay}
-                handleDateSelect={handleDateSelect}
+
                 requestSwitchView={requestSwitchView}
+                requestPrevDay={requestPrevDay}
+                requestNextDay={requestNextDay}
+                requestSelectDay={handleDateSelect}
+
                 users={users}
+
                 tasks={tasks}
+                taskCategories={taskCategories}
+
                 todos={todos}
                 todoJobs={todoJobs}
-                taskCategories={taskCategories}
-            />
-            <InspectDayTasksDrawer
-                isOpen={open}
-                setOpen={setOpen}
-                users={users}
-                tasks={tasks}
-                taskCategories={taskCategories}
-                currentSelectedDate={currentSelectedDate}
+
+                reportRecords={reportRecords}               
             />
         </>
     )
