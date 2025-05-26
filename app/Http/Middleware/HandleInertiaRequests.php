@@ -51,6 +51,7 @@ class HandleInertiaRequests extends Middleware
                     'auth' => Auth::check() ? [
                         'user' => Auth::user() ? [
                             'uid' => Auth::user()->id,
+                            'PIN' => Auth::user()->PIN,
                             'name' => Auth::user()->name,
                             'email' => Auth::user()->email,
                             'role' => Auth::user()->role_id ? [

@@ -29,19 +29,29 @@ Route::middleware('auth')->group(function () {
     Route::middleware('verified')->group(function () {
         Route::get('/dashboard', [UserController::class, 'handleRoleBasedView'])->name('dashboard');
         Route::prefix('dashboard')->name('dashboard.')->group(function () {
+
+            // Admin Route for managing resources
             Route::prefix('manage')->name('manage.')->group(function () {
                 Route::resource('users', UserController::class)->except(['create', 'edit', 'show']);
                 Route::resource('todos', TodoController::class)->except(['create', 'edit', 'show']);
                 Route::resource('taskCategories', TaskCategory::class)->except(['create', 'edit', 'show']);
             });
-            Route::get('profile/{user}', [UserController::class, 'show'])->name('show.profile');
-            Route::get('setting', [UserSettingController::class, 'displayUserSetting'])->name('show.setting');
 
+            // Profile
+            Route::get('profile/{user}', [UserController::class, 'show'])->name('show.profile');
+
+            // Schedule + TodoJob
             Route::get('schedule', [ScheduleController::class, 'handleScheduleRoleBasedView'])->name('show.schedule');
             Route::post('schedule', [ScheduleController::class, 'updateSchedule'])->name('update.schedule');
             Route::post('schedule/todo', [ScheduleController::class, 'updateScheduleTodoJob'])->name('update.schedule.todoJob');
 
+            // Reservation
             Route::resource('reservation', ReservationController::class)->except(['create', 'edit', 'show']);
+
+            // User Setting
+            // Route::get('setting', [UserSettingController::class, 'displayUserSetting'])->name('show.setting');
+            Route::get('setting/security', [UserSettingController::class, 'displayUserSettingSecurity'])->name('show.setting.security');
+            Route::post('setting/security/reset-password', [UserSettingController::class, 'handleUserSettingSecurityChangePassword'])->middleware('throttle:5,1')->name('update.setting.security.password');
         });
     });
 
@@ -63,7 +73,7 @@ Route::middleware('auth')->group(function () {
         $request->user()->sendEmailVerificationNotification();
 
         return back()->with('status', 'verification-link-sent');
-    })->middleware('throttle:6,1')->name('verification.send');
+    })->middleware('throttle:5,1')->name('verification.send');
 });
 
 // Custom Handle verification links

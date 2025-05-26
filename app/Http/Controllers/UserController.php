@@ -202,9 +202,6 @@ class UserController extends Controller
                 $startDate = $now->copy()->startOfMonth();
                 $endDate = $now->copy()->endOfMonth();
 
-
-                // $daysInMonth = $startDate->daysInMonth;
-
                 // Fetch all tasks in the current month
                 $tasks = Task::whereBetween('date_start', [$startDate->toDateString(), $endDate->toDateString()])
                     ->get();
@@ -216,20 +213,6 @@ class UserController extends Controller
 
                 $totalHours = 0;
                 $daysWithWork = $tasksByDate->count(); // Only counts days with at least one task
-
-                // foreach ($tasks as $task) {
-                //     $start = Carbon::createFromFormat('H:i:s', $task->time_start);
-                //     $end = Carbon::createFromFormat('H:i:s', $task->time_end);
-
-                //     // Handle overnight tasks
-                //     if ($end->lessThan($start)) {
-                //         $end->addDay();
-                //     }
-
-                //     $totalHours += $end->diffInSeconds($start, true) / 3600; // Convert seconds to hours
-                // }
-
-                // $averageHoursPerDay = $totalHours / $daysInMonth;
 
                 foreach ($tasksByDate as $date => $dayTasks) {
                     foreach ($dayTasks as $task) {
