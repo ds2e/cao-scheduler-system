@@ -123,4 +123,15 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Work API Key
+    |--------------------------------------------------------------------------
+    |
+    | Work API Key for communicating with Cao Work Manager System.
+    | This is hardcoded for now. It can be store in Super Admin action in database.
+    |
+    */
+    'work_api_key' => env('WORK_API_KEY'),
+
 ];
