@@ -32,7 +32,7 @@ class ScheduleSeeder extends Seeder
 
         // Attach random users to each task
         $tasks->each(function ($task) use ($assignedUsers) {
-            
+
             $task->users()->attach($assignedUsers->pluck('id')->toArray());
 
             foreach ($assignedUsers as $user) {
@@ -46,15 +46,20 @@ class ScheduleSeeder extends Seeder
                 );
 
                 $maxEndTime = Carbon::createFromTime(23, 0);
-                $maxDuration = min(480, $maxEndTime->diffInMinutes($timeStart));
+                $maxDuration = min(480, $maxEndTime->diffInMinutes($timeStart, true));
                 $durationMinutes = fake()->numberBetween(60, $maxDuration);
                 $timeEnd = (clone $timeStart)->addMinutes($durationMinutes);
+
+                // Compute duration in seconds
+                $diffInSeconds = $timeStart->diffInSeconds($timeEnd, true);
+                $duration = fake()->numberBetween(0, $diffInSeconds);
 
                 ReportRecord::create([
                     'user_id' => $user->id,
                     'date' => $date,
                     'time_start' => $timeStart->format('H:i:s'),
                     'time_end' => $timeEnd->format('H:i:s'),
+                    'duration' => $duration,
                     'notice' => "Task ID {$task->id} - " . fake()->optional()->sentence(),
                 ]);
             }

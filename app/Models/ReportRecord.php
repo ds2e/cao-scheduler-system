@@ -15,6 +15,7 @@ class ReportRecord extends Model
         'date',
         'time_start',
         'time_end',
+        'duration',
         'notice'
     ];
 

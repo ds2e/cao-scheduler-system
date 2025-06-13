@@ -7,6 +7,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import dayjs from "dayjs";
+import { formatDurationFromSecond } from "@/lib/utils.ts"
 
 export default function ReportRecordsSummaryDialog({ isOpen, setOpen, records, currentSelectedDate }) {
     const dayRecords = records
@@ -28,22 +29,23 @@ export default function ReportRecordsSummaryDialog({ isOpen, setOpen, records, c
                 </DialogHeader>
                 <div className="hidden font-semibold sm:flex items-center justify-between">
                     <h2 className="basis-1/3">Mitarbeiter</h2>
-                    <h2 className="basis-1/6">Anfang</h2>
-                    <h2 className="basis-1/6">Ende</h2>
+                    <h2 className="basis-1/6">Onlinezeit</h2>
+                    <h2 className="basis-1/6">Arbeitszeit</h2>
                     <h2 className="basis-1/3">Bemerkung</h2>
                 </div>
                 {
                     dayRecords.map((record, recordInd) => {
                         return (
-                            <div key={record.id + recordInd} className="flex sm:flex-row flex-col items-center justify-between max-h-[70dvh] scroll-y-auto">
+                            <div key={String(record.id + '-' + recordInd)} className="flex sm:flex-row flex-col items-center justify-between max-h-[70dvh] scroll-y-auto">
                                 <span className="basis-1/3 sm:text-start text-center">
                                     {record.user.name} ({record.user.PIN})
                                 </span>
                                 <span className="basis-1/6 sm:text-start text-center text-theme-secondary">
-                                    {record.time_start}
+                                    Von: {record.time_start}<br />
+                                    Bis: {record.time_end}
                                 </span>
                                 <span className="basis-1/6 sm:text-start text-center text-theme-secondary">
-                                    {record.time_end}
+                                    {formatDurationFromSecond(record.duration)}
                                 </span>
                                 <span className="basis-1/3 sm:text-start text-center">
                                     {record.notice}

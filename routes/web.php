@@ -22,7 +22,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'requestLogin'])->name('request.login');
+Route::post('/login', [AuthController::class, 'requestLogin'])->middleware('throttle:5,1')->name('request.login');
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'requestLogout'])->name('logout');
@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
             Route::get('schedule', [ScheduleController::class, 'handleScheduleRoleBasedView'])->name('show.schedule');
             Route::post('schedule', [ScheduleController::class, 'updateSchedule'])->name('update.schedule');
             Route::post('schedule/todo', [ScheduleController::class, 'updateScheduleTodoJob'])->name('update.schedule.todoJob');
+            Route::post('schedule/report', [ScheduleController::class, 'updateReportRecords'])->name('update.schedule.report');
 
             // Reservation
             Route::resource('reservation', ReservationController::class)->except(['create', 'edit', 'show']);

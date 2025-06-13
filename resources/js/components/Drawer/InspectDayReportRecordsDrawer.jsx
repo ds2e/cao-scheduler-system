@@ -23,6 +23,8 @@ import {
 import { useEffect, useState } from "react";
 import { router, useForm } from "@inertiajs/react";
 import { DateTimePicker } from "@/components/Calendar/DateTimePicker";
+import { formatDurationFromSecond } from "@/lib/utils.ts"
+import { TimePicker } from "../Calendar/TimePicker";
 
 export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, reportRecords, currentSelectedDate }) {
     const [formSubmitSuccess, setFormSubmitSuccess] = useState(null); // using extra field for form submission success because reset() in Inertia doesn't reset wasSuccessful nor isDirty
@@ -91,40 +93,59 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
         }
     }
 
-    function unassignUserFromTask(userEntry, taskID) {
-        const newDayTasks = data.reportRecords.map(task =>
-            task.id === taskID
+    function removeRecordFromUser(userEntry, record) {
+        const newReportRecords = data.reportRecords.map(recordUserEntry =>
+            recordUserEntry.id === userEntry.id
                 ? {
-                    ...task,
-                    users: task.users.filter(user => user.id !== userEntry.id)
+                    ...recordUserEntry,
+                    records: recordUserEntry.records.filter(rcrd => rcrd.id !== record.id)
                 }
-                : task
+                : recordUserEntry
         );
-        setData('tasks', newDayTasks);
+        setData('reportRecords', newReportRecords);
     }
 
-    function addTaskToDate(date) {
-        const newTasks = [
+    function addRecordToUser(userEntry) {
+        const newRecordEntry = {
+            date: currentSelectedDate,
+            notice: '',
+            duration: 0,
+            time_start: '00:00:00',
+            time_end: '00:00:01'
+        }
+
+        const newReportRecords = data.reportRecords.map(recordUserEntry =>
+            recordUserEntry.id === userEntry.id
+                ? {
+                    ...recordUserEntry,
+                    records: [...recordUserEntry.records, newRecordEntry]
+                }
+                : recordUserEntry
+        );
+
+        setData('reportRecords', newReportRecords);
+    }
+
+    function addRecordOfUserToDate(user) {
+        const newReportRecords = [
+            ...data.reportRecords,
             {
-                users: [],
-                description: '',
-                date: date,
-                time_start: '00:00:00',
-                time_end: '00:00:00',
-            },
-            ...data.reportRecords
+                ...user,
+                records: []
+            }
         ]
 
-        setData('tasks', newTasks)
+        setData('reportRecords', newReportRecords);
     }
 
-    function removeTaskFromDate(taskInd) {
-        const newTasks = data.reportRecords.filter((_, i) => i !== taskInd);
-        setData('tasks', newTasks);
+    function removeRecordOfUserFromDate(userEntry) {
+        const newReportRecords = data.reportRecords.filter(recordUserEntry => recordUserEntry.id !== userEntry.id);
+        setData('reportRecords', newReportRecords);
     }
 
-    function handleAssignTasksDate(data) {
-        post('/dashboard/schedule', {
+    function handleAssignRecordsDate() {
+        // console.log(data)
+        post('/dashboard/schedule/report', {
             onSuccess: () => {
                 setOpen(false);
                 setFormSubmitSuccess(true);
@@ -148,11 +169,20 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
                             return (
                                 <div
                                     key={recordUserInd}
-                                    className="mb-4 border p-4 rounded-lg bg-gray-500"
+                                    className="mb-4 border p-4 rounded-lg bg-gray-100"
                                 >
 
-                                    <div className="flex md:flex-row flex-col items-center justify-evenly">
-                                        <h2 className="text-white">{recordEntryUser.name} ({recordEntryUser.PIN})</h2>
+                                    <div className="flex md:flex-row flex-col items-center justify-evenly gap-y-2">
+                                        <div className="flex items-center gap-x-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={30} height={30}
+                                                onClick={() => removeRecordOfUserFromDate(recordEntryUser)}
+                                                className="fill-theme-secondary"
+                                            >
+                                                <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z" />
+                                            </svg>
+                                            <h2>{recordEntryUser.name} <span className="text-theme-secondary font-bold">({recordEntryUser.PIN})</span></h2>
+                                        </div>
+
                                         <div className="flex flex-col gap-y-4">
                                             {
                                                 recordEntryUser.records.map((record, recordInd) => {
@@ -160,9 +190,8 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
                                                     const endDateTime = `${record.date} ${record.time_end}`;
 
                                                     return (
-                                                        <div className="flex flex-row gap-x-4">
-                                                            <div key={recordUserInd + recordInd} className="flex flex-row items-center justify-center gap-x-2">
-                                                                <span className="text-white font-bold">Start</span>
+                                                        <div key={String(recordUserInd + '-' + recordInd)} className="flex items-center justify-between flex-row gap-x-4">
+                                                            <div className="flex flex-row items-center justify-center gap-x-2 px-2 rounded-full bg-theme">
                                                                 <DateTimePicker
                                                                     dataTime={startDateTime}
                                                                     confirmSetDataTime={(dataStartTime) => {
@@ -195,7 +224,7 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
                                                                         });
                                                                     }}
                                                                 />
-                                                                <span className="text-white font-bold">End</span>
+                                                                <span className="text-white">-</span>
                                                                 <DateTimePicker
                                                                     dataTime={endDateTime}
                                                                     confirmSetDataTime={(dataStartTime) => {
@@ -229,39 +258,85 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
                                                                     }}
                                                                 />
                                                             </div>
+                                                            <div className="text-theme-secondary">
+                                                                {/* {formatDurationFromSecond(record.duration)} */}
+                                                                <TimePicker dataTime={record.duration} confirmSetDataTime={(dataDuration) => {
+                                                                    // Clone the user-level reportRecords array
+                                                                    const updatedReportRecords = [...data.reportRecords];
+
+                                                                    // Clone the user's records array
+                                                                    const updatedUserRecords = [...updatedReportRecords[recordUserInd].records];
+
+                                                                    // Update the specific record
+                                                                    updatedUserRecords[recordInd] = {
+                                                                        ...updatedUserRecords[recordInd],
+                                                                        duration: dataDuration
+                                                                    };
+
+                                                                    // Apply the updated records array back to the user
+                                                                    updatedReportRecords[recordUserInd] = {
+                                                                        ...updatedReportRecords[recordUserInd],
+                                                                        records: updatedUserRecords
+                                                                    };
+
+                                                                    // Set the full updated data
+                                                                    setData({
+                                                                        ...data,
+                                                                        reportRecords: updatedReportRecords
+                                                                    });
+                                                                }} />
+                                                            </div>
                                                             <div>
                                                                 <label htmlFor={`notice-${recordUserInd}`} className="hidden mb-2 text-sm font-medium text-white dark:text-gray-900">
                                                                     Bemerkung
                                                                 </label>
                                                                 <input
                                                                     id={`notice-${recordUserInd}`}
-                                                                    value={record.notice}
+                                                                    value={record.notice ?? ''}
                                                                     onChange={(e) => {
-                                                                        const updatedTasks = [...data.reportRecords];
-                                                                        updatedTasks[recordUserInd].notice = e.target.value;
-                                                                        setData('tasks', updatedTasks);
+                                                                        // Clone the user-level reportRecords array
+                                                                        const updatedReportRecords = [...data.reportRecords];
+
+                                                                        // Clone the user's records array
+                                                                        const updatedUserRecords = [...updatedReportRecords[recordUserInd].records];
+
+                                                                        // Update the specific record
+                                                                        updatedUserRecords[recordInd] = {
+                                                                            ...updatedUserRecords[recordInd],
+                                                                            notice: e.target.value,
+                                                                        };
+
+                                                                        // Apply the updated records array back to the user
+                                                                        updatedReportRecords[recordUserInd] = {
+                                                                            ...updatedReportRecords[recordUserInd],
+                                                                            records: updatedUserRecords
+                                                                        };
+
+                                                                        setData({
+                                                                            ...data,
+                                                                            reportRecords: updatedReportRecords
+                                                                        });
                                                                     }}
                                                                     className="block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300"
                                                                     placeholder="Task notice..."
                                                                 />
                                                             </div>
+                                                            <svg onClick={() => removeRecordFromUser(recordEntryUser, record)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={20} height={20} className="cursor-pointer fill-theme-secondary">
+                                                                <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
+                                                            </svg>
                                                         </div>
                                                     )
                                                 })
                                             }
                                         </div>
 
-                                        {/* <div className="flex items-center justify-center gap-x-2">
-                                                {
-                                                    recordEntryAfterUser.id ?
-                                                        <></>
-                                                        :
-                                                        <h2 className="text-lg font-medium text-theme-secondary dark:text-gray-900 text-shadow-black text-shadow-lg">(New)</h2>
-                                                }
-                                                <svg onClick={() => removeTaskFromDate(recordInd)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={20} height={20} className="cursor-pointer fill-theme-secondary">
-                                                    <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
-                                                </svg>
-                                            </div> */}
+                                        {/* Add record to User */}
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={30} height={30}
+                                            onClick={() => addRecordToUser(recordEntryUser)}
+                                            className="cursor-pointer fill-theme"
+                                        >
+                                            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
+                                        </svg>
                                     </div>
                                 </div>
                             )
@@ -284,19 +359,38 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
                                     Assign Day Tasks successfully!
                                 </p>
                             )
-
                         }
-                        <button
+                        {/* <button
                             type="button"
-                            onClick={() => addTaskToDate(currentSelectedDate)}
+                            onClick={() => addRecordOfUserToDate(currentSelectedDate)}
                             className="cursor-pointer ms-auto text-theme rounded-full border-theme border-2 px-4 py-2 hover:bg-gray-100"
                         >
-                            + Task
-                        </button>
+                            + Record
+                        </button> */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger className="cursor-pointer flex items-center gap-x-1 bg-theme rounded-full pe-2 py-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={30} height={30} className="fill-white">
+                                    <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
+                                </svg>
+                                <span className="text-white">Record</span>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuLabel>Available Users</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                {
+                                    [...users]
+                                        .filter(usr => !data.reportRecords.some(recUser => recUser.id === usr.id))
+                                        .sort((a, b) => a.name.localeCompare(b.name))
+                                        .map((usr, usrInd) => {
+                                            return <DropdownMenuItem onClick={() => addRecordOfUserToDate(usr)} key={"rest-Todo" + usr.id}>{usr.name}</DropdownMenuItem>
+                                        })
+                                }
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
 
                     <DrawerFooter className="flex flex-row items-center justify-center gap-4">
-                        <button disabled={processing} type="button" onClick={() => handleAssignTasksDate(data)} className={`rounded-full px-4 py-2 select-none ${(processing) ? "bg-muted text-theme" : "cursor-pointer bg-theme text-white hover:bg-theme-highlight"}`}>
+                        <button disabled={processing} type="button" onClick={() => handleAssignRecordsDate(data)} className={`rounded-full px-4 py-2 select-none ${(processing) ? "bg-muted text-theme" : "cursor-pointer bg-theme text-white hover:bg-theme-highlight"}`}>
                             {processing ? 'Submitting...' : 'Submit'}
                         </button>
                         <DrawerClose className='cursor-pointer text-theme-secondary rounded-full border-theme-secondary border-2 px-4 py-2 hover:bg-gray-100'>

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('date');
             $table->string('time_start');
             $table->string('time_end');
+            $table->integer('duration');
             $table->text('notice')->nullable();
             $table->timestamps();
         });

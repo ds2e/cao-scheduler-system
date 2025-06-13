@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -187,15 +188,11 @@ class ScheduleController extends Controller
         $validated = Validator::make($request->all(), [
             'todoJobs' => 'nullable|array',
             'todoJobs.*.id' => 'nullable|exists:todo_jobs,id',
-            // 'todoJobs.*.users' => 'required|array|min:1',
-            // 'todoJobs.*.users.*.id' => 'required|exists:users,id',
             'todoJobs.*.notice' => 'nullable|string',
             'todoJobs.*.date' => 'required|date',
             'todoJobs.*.todo_id' => 'required|exists:todos,id',
             'date' => 'required|date',
         ])->validate();
-
-        // dd($validated);
 
         $todoJobs = $validated['todoJobs'] ?? [];
 
@@ -229,6 +226,117 @@ class ScheduleController extends Controller
 
         return back()->with('success', 'Todo list updated.');
     }
+
+    public function updateReportRecords(Request $request)
+    {
+        $this->authorize('update', Schedule::class);
+
+        // Validate the main structure
+        $validated = Validator::make($request->all(), [
+            'reportRecords' => 'nullable|array',
+            'reportRecords.*.id' => 'required|integer|exists:users,id',
+            'reportRecords.*.records' => 'required|array|min:1',
+            'reportRecords.*.records.*.id' => 'nullable|integer|exists:report_records,id',
+            'reportRecords.*.records.*.date' => 'required|date',
+            'reportRecords.*.records.*.time_start' => 'required|date_format:H:i:s',
+            'reportRecords.*.records.*.time_end' => 'required|date_format:H:i:s|after:reportRecords.*.records.*.time_start',
+            'reportRecords.*.records.*.duration' => 'required|integer|min:0',
+            'reportRecords.*.records.*.notice' => 'nullable|string',
+            'date' => 'required|date'
+        ])->validate();
+
+        $reportDate = $validated['date'];
+        $reportRecords = $validated['reportRecords'];
+
+        DB::beginTransaction();
+
+        try {
+            // Step 1: Collect user IDs from the request
+            $incomingUserIds = collect($reportRecords)->pluck('id')->all();
+
+            // Step 2: Get all users who have records for the given date
+            $usersWithRecordsOnDate = ReportRecord::whereDate('date', $reportDate)
+                ->pluck('user_id')
+                ->unique()
+                ->all();
+
+            // Step 3: Determine which users should have their records deleted
+            $usersToDelete = array_diff($usersWithRecordsOnDate, $incomingUserIds);
+
+            // Step 4: Delete all records for users not included in the new data
+            if (!empty($usersToDelete)) {
+                ReportRecord::whereIn('user_id', $usersToDelete)
+                    ->whereDate('date', $reportDate)
+                    ->delete();
+            }
+
+            // Step 5: Continue with your existing logic to update/create/delete individual records
+            foreach ($reportRecords as $userRecord) {
+                $userId = $userRecord['id'];
+                $records = $userRecord['records'];
+
+                $user = User::find($userId);
+                if (!$user) {
+                    throw new \Exception("User not found");
+                }
+
+                $existingRecords = ReportRecord::where('user_id', $userId)
+                    ->whereDate('date', $reportDate)
+                    ->get()
+                    ->keyBy('id');
+
+                $processedRecordIds = [];
+
+                foreach ($records as $recordData) {
+                    if (isset($recordData['id']) && $recordData['id']) {
+                        $recordId = $recordData['id'];
+                        if (!$existingRecords->has($recordId)) {
+                            throw new \Exception("Some records do not belong to user {$user->name}");
+                        }
+
+                        $record = $existingRecords->get($recordId);
+                        $record->update([
+                            'date' => $recordData['date'],
+                            'time_start' => $recordData['time_start'],
+                            'time_end' => $recordData['time_end'],
+                            'duration' => $recordData['duration'],
+                            'notice' => $recordData['notice'] ?? null,
+                        ]);
+                        $processedRecordIds[] = $recordId;
+                    } else {
+                        $newRecord = ReportRecord::create([
+                            'user_id' => $userId,
+                            'date' => $recordData['date'],
+                            'time_start' => $recordData['time_start'],
+                            'time_end' => $recordData['time_end'],
+                            'duration' => $recordData['duration'],
+                            'notice' => $recordData['notice'] ?? null,
+                        ]);
+                        $processedRecordIds[] = $newRecord->id;
+                    }
+                }
+
+                // Delete any records not present in the updated list
+                $recordsToDelete = $existingRecords->keys()->diff($processedRecordIds);
+                if ($recordsToDelete->isNotEmpty()) {
+                    ReportRecord::whereIn('id', $recordsToDelete)->delete();
+                }
+            }
+
+            DB::commit();
+
+            return back()->with('success', 'Report records updated.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update records: ' . $e->getMessage()
+            ], 500);
+        }
+
+        return back()->with('success', 'Report records updated.');
+    }
+
 
     /**
      * Display the specified resource.
