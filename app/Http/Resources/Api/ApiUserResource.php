@@ -14,11 +14,14 @@ class ApiUserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $hasTaskToday = $this->tasks && $this->tasks->isNotEmpty();
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'PIN' => $this->PIN,
-            'email' => $this->email
+            'email' => $this->email,
+            'status' => $hasTaskToday ? 'Inactive' : 'Disabled',
         ];
     }
 }

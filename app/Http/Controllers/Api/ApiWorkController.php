@@ -13,22 +13,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ApiWorkController extends Controller
 {
     public function index(Request $request)
     {
-        if ($request->query('key') !== base64_encode(config('app.work_api_key'))) {
+        $authHeader = $request->header('Authorization');
+
+        if (!$authHeader || !Str::startsWith($authHeader, 'Bearer ') || Str::after($authHeader, 'Bearer ') !== base64_encode(config('app.work_api_key'))) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $masterPassword = 'ADMINcaoleipzigde1996';
-        $hashedMasterPassword = Hash::make($masterPassword);
+        // if ($request->query('key') !== base64_encode(config('app.work_api_key'))) {
+        //     return response()->json(['error' => 'Unauthorized'], 401);
+        // }
 
-        $users = User::whereIn('role_id', UserRoles::taskAssignable())->get();
+        // MasterPassword hardcoded, should be implement to be changable by Admin/SuperAdmin
+        $masterPassword = 'ADMINcaoleipzigde';
+        $hashedMasterPassword = Hash::make($masterPassword);
         $masterData = [
             'password' => $hashedMasterPassword,
         ];
+
+        $today = Carbon::today()->toDateString();
+        $users = User::whereIn('role_id', UserRoles::taskAssignable())->get();
+        // Eager load tasks for today to reduce DB hits
+        $users->load(['tasks' => function ($query) use ($today) {
+            $query->whereDate('date_start', $today);
+        }]);
 
         return response()->json([
             'users' => ApiUserResource::collection($users),
@@ -38,9 +51,15 @@ class ApiWorkController extends Controller
 
     public function store(Request $request)
     {
-        if ($request->query('key') !== base64_encode(config('app.work_api_key'))) {
+        $authHeader = $request->header('Authorization');
+
+        if (!$authHeader || !Str::startsWith($authHeader, 'Bearer ') || Str::after($authHeader, 'Bearer ') !== base64_encode(config('app.work_api_key'))) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        // if ($request->query('key') !== base64_encode(config('app.work_api_key'))) {
+        //     return response()->json(['error' => 'Unauthorized'], 401);
+        // }
 
         $mainValidator = Validator::make($request->all(), [
             'dayRecords' => 'required|array',
