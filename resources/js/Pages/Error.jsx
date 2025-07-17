@@ -1,7 +1,6 @@
 import { Link } from "@inertiajs/react";
 
 export default function ErrorPage({ status }) {
-    console.log(status);
     const titleMap = {
         503: '503 | Service Unavailable',
         500: '500 | Server Error',
