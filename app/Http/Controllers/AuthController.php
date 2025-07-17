@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class AuthController extends Controller
 {
@@ -22,7 +23,7 @@ class AuthController extends Controller
             return redirect()->route('dashboard');
         }
 
-        return inertia('Login/Login');
+        return Inertia::render('Login/Login');
     }
 
     public function requestLogin(Request $request)
