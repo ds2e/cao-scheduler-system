@@ -46,7 +46,7 @@ export default function DashboardNavbar({ auth }) {
                         </DisclosureButton>
                     </div>
                     <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                        <Link href={route('dashboard')} className="flex shrink-0 items-center">
+                        <Link href="/dashboard" className="flex shrink-0 items-center">
                             <img
                                 alt="Cao Navbar Logo"
                                 src={mainLogo}
