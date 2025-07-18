@@ -41,7 +41,6 @@ deploy:
       - find $(pwd) -type d -not -name "logs" -exec chmod 775 {} \;
       - chmod -R o+w storage bootstrap/cache
       - php artisan migrate --force
-      - composer dump-autoload
       - php artisan optimize:clear
       - php artisan migrate --force -n
       - php artisan storage:link
