@@ -21,13 +21,9 @@ Route::get('/', function () {
     return Inertia::render('Home');
 })->name('home');
 
-Route::get('/maintainance', function () {
-    return Inertia::render('Maintainance');
-})->name('maintainance');
-
-Route::get('/test', function () {
-    return 'Laravel is working';
-});
+// Route::get('/maintainance', function () {
+//     return Inertia::render('Maintainance');
+// })->name('maintainance');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'requestLogin'])->middleware('throttle:5,1')->name('request.login');
