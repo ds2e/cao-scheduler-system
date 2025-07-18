@@ -8,10 +8,8 @@ on:
     secrets:
       API_KEY:
         required: true
-        type: string
       WORK_API_KEY:
         required: true
-        type: string
     inputs:
       site-url:
         required: true
