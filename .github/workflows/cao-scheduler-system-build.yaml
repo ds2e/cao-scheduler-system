@@ -6,7 +6,7 @@ name: "Deploy Now: Execute Build"
 on:
   workflow_call:
     secrets:
-      API_KEY:
+      APP_KEY:
         required: true
       WORK_API_KEY:
         required: true
