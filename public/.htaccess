@@ -19,15 +19,8 @@
     RewriteRule ^ %1 [L,R=301]
 
     # Send Requests To Front Controller...
-    # RewriteCond %{REQUEST_FILENAME} !-d
-    # RewriteCond %{REQUEST_FILENAME} !-f
-    # # RewriteRule ^ index.php [L]
-    # RewriteRule ^(.+)$ /index.php/$1 [L] 
-    
-    # serve existing files from /public folder as if they were in your base directory
-    RewriteCond %{REQUEST_URI} !public/
-    RewriteRule (.*) /public/$1 [L]
-
-    # route everything else to /public/index.php
-    RewriteRule ^ /public/index.php [L]
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    # RewriteRule ^ index.php [L]
+    RewriteRule ^(.+)$ /index.php/$1 [L] 
 </IfModule>
