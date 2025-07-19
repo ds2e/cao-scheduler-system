@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Auth\Events\Registered;
 
 class UserController extends Controller
 {
@@ -171,6 +172,7 @@ class UserController extends Controller
         // Mail::raw('Testing email on localhost.', function ($message) use ($validated) {
         //     $message->to($validated['email'])->subject('Test Email');
         // });
+        event(new Registered($user));
         $user->sendEmailVerificationNotification();
 
         return back()->with('success', 'User created.');
