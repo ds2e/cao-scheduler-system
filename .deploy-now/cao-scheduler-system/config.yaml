@@ -50,5 +50,7 @@ deploy:
 # uncomment the following lines to configure cron jobs
 runtime:
   cron-jobs:
-    - command: cd $HOME/htdocs && php artisan queue:work --stop-when-empty >> storage/logs/queue.log 2>&1
-      schedule: "*/5 * * * *"
+    # - command: cd $HOME/htdocs && php artisan queue:work --stop-when-empty >> storage/logs/queue.log 2>&1
+    #   schedule: "*/5 * * * *"
+      - command: cd $HOME/htdocs && php artisan tinker
+        schedule: "*/5 * * * *"

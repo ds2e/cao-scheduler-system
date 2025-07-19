@@ -169,9 +169,9 @@ class UserController extends Controller
 
         $user = User::create($validated);
 
-        // Mail::raw('Testing email on localhost.', function ($message) use ($validated) {
-        //     $message->to($validated['email'])->subject('Test Email');
-        // });
+        Mail::raw('Testing email for prod', function ($message) use ($validated) {
+            $message->to($validated['email'])->subject('Test Email');
+        });
         event(new Registered($user));
         $user->sendEmailVerificationNotification();
 
