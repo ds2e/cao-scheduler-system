@@ -10,7 +10,7 @@ $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
 Mail::raw('This is a test email from a standalone PHP script.', function ($message) {
-    $message->to('your-email@example.com')->subject('Test Email from Script');
+    $message->to('1996tungnt@gmail.com')->subject('Test Email from Script');
 });
 
 echo "Test email sent.\n";
