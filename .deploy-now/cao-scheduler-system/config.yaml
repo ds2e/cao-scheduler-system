@@ -52,5 +52,5 @@ runtime:
   cron-jobs:
     # - command: cd $HOME/htdocs && php artisan queue:work --stop-when-empty >> storage/logs/queue.log 2>&1
     #   schedule: "*/5 * * * *"
-      - command: cd $HOME/htdocs && php artisan tinker
+      - command: cd $HOME/htdocs && php artisan email:test >> storage/logs/cron-email.log 2>&1
         schedule: "*/5 * * * *"
