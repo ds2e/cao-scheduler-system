@@ -190,6 +190,7 @@ class UserController extends Controller
                     // 'tasks_num' => $tasks_num,
                 ]);
             })(),
+            
 
             // View specific to Admin and SuperAdmin
             UserRoles::Admin, UserRoles::SuperAdmin => (function () use ($user) {
