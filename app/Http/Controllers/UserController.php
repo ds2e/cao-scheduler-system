@@ -13,13 +13,12 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Auth\Events\Registered;
+// use Illuminate\Support\Facades\Mail;
+// use Illuminate\Auth\Events\Registered;
 
 class UserController extends Controller
 {
