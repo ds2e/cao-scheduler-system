@@ -191,7 +191,6 @@ class UserController extends Controller
                 ]);
             })(),
 
-            
             // View specific to Admin and SuperAdmin
             UserRoles::Admin, UserRoles::SuperAdmin => (function () use ($user) {
                 $users_num = User::count();
