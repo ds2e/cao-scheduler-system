@@ -28,6 +28,8 @@ class CustomVerifyEmail extends BaseVerifyEmail
         $verificationUrl = $this->verificationUrl($notifiable);
 
         return (new MailMessage)
+            ->from(config('mail.from.address'), config('app.name'))
+            ->subject('Cáo Web-App - Email Bestätigung') // custom subject
             ->view('emails.verify-email', [
                 'url' => $verificationUrl, 
                 'user' => $notifiable

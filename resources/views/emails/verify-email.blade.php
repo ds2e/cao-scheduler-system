@@ -8,18 +8,14 @@
             text-decoration: none;
         }
         p {
-            margin: 0 !important;
+            margin: 1rem 0 !important;
         }
 
         .wrapper{
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            align-items: start;
-            justify-content: center;
             color: white;
             padding: 1rem;
             background-color: rgb(37,49,100);
+            width: 100%;
         }
 
         .logo{
@@ -27,11 +23,11 @@
         }
 
         .button{
-            display: flex;
-            justify-content: center;
+            width: fit-content;
             border-radius: 0.125rem;
             background-color: rgb(233,78,81);
             padding: 0.375rem 0.75rem;
+            margin: 1rem 0;
                 
             font-weight: 600;
             font-size: 0.9rem;
@@ -48,10 +44,11 @@
 </head>
 <body>
     <div class="wrapper">
-        <img src="{{ asset('assets/images/Cao_Laura_ohneText.png') }}" class="logo" alt="Cao Logo">
-        <h2>Hallo {{ $user->name }},</h2>
+        <img src="{{ config('app.url') . '/assets/images/Cao_Laura_ohneText.png' }}" class="logo" alt="Cao Logo">
+        {{-- <img src="{{ asset('assets/images/Cao_Laura_ohneText.png') }}" class="logo" alt="Cao Logo"> --}}
+        <h1>Hallo {{ $user->name }},</h1>
 
-        <p>Verifizieren Sie bitte Ihre E-Mail-Adresse</p>
+        <h4>Verifizieren Sie bitte Ihre E-Mail-Adresse</h4>
 
         <a href="{{ $url }}" class="button">
             Verify Email
