@@ -30,7 +30,7 @@ class ApiWorkController extends Controller
         // }
 
         // MasterPassword hardcoded, should be implement to be changable by Admin/SuperAdmin
-        $masterPassword = 'ADMINcaoleipzigde';
+        $masterPassword = 'D0nn3rB@lk3n';
         $hashedMasterPassword = Hash::make($masterPassword);
         $masterData = [
             'password' => $hashedMasterPassword,
