@@ -86,7 +86,7 @@ class ApiWorkController extends Controller
                     'user_id'    => 'required|integer|exists:users,id',
                     'date'       => 'required|date',
                     'time_start' => 'required|date_format:H:i:s',
-                    'time_end'   => 'required|date_format:H:i:s|after:time_start',
+                    'time_end'   => 'required|date_format:H:i:s',
                     'status'     => 'required|string',
                     'duration'   => 'required|integer|min:0',
                     'notice'     => 'nullable|string',

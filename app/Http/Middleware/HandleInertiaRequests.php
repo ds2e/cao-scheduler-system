@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Enums\UserRoles;
+use App\Models\Item;
+use App\Models\Master;
 use App\Models\Schedule;
 use App\Models\Todo;
 use App\Models\User;
@@ -71,6 +73,16 @@ class HandleInertiaRequests extends Middleware
                                     'title' => 'Todos',
                                     'viewAny' => $request->user()->can('viewAny', Todo::class),
                                     'href' => '/dashboard/manage/todos'
+                                ],
+                                'menu' => [
+                                    'title' => 'Menu',
+                                    'viewAny' => $request->user()->can('viewAny', Item::class),
+                                    'href' => '/dashboard/manage/menu/items'
+                                ],
+                                'devices' => [
+                                    'title' => 'Geräte',
+                                    'viewAny' => $request->user()->can('viewAny', Master::class),
+                                    'href' => '/dashboard/manage/devices'
                                 ]
                             ],
                         ] : null

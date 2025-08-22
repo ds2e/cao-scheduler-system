@@ -191,7 +191,7 @@ export default function TodosPage({ todos }) {
                     </div>
                     <div className="my-4 flex justify-between">
                         <button type="button" onClick={() => setOpenAddTodoDialog(true)} className="transition-all duration-200 px-2 py-1 cursor-pointer rounded-sm shadow-md shadow-black bg-theme-secondary text-white hover:bg-theme-secondary-highlight focus-within:bg-theme-secondary-highlight text-lg hover:scale-90 focus-within:scale-90">
-                            + Entry
+                            + Eintrag
                         </button>
                         <div className="flex items-center gap-2">
                             <button

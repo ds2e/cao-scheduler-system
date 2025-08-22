@@ -62,10 +62,7 @@ export default function UsersPage({ users, roles }) {
             (role) => role.rank === selectedRank
         );
 
-        console.log(data);
-
         if (data.currentSelectedUserData.new_role_rank > data.currentSelectedUserData.role_rank && needConfirmation) {
-            console.log(data)
             setOpenPromotionUserDialog(true);
         }
         else {
@@ -92,7 +89,6 @@ export default function UsersPage({ users, roles }) {
     }
 
     function confirmDeleteUser() {
-        console.log(data)
         destroy(`/dashboard/manage/users/${data.currentSelectedUserData.id}`, {
             onSuccess: () => {
                 setData({

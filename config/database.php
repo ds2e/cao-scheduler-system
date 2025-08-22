@@ -62,6 +62,24 @@ return [
             ]) : [],
         ],
 
+        // 'mysql_waiter' => [
+        //     'driver' => 'mysql',
+        //     'host' => env('DB_HOST_WAITER', '127.0.0.1'),
+        //     'port' => env('DB_PORT_WAITER', '3306'),
+        //     'database' => env('DB_DATABASE_WAITER', 'laravel'),
+        //     'username' => env('DB_USERNAME_WAITER', 'root'),
+        //     'password' => env('DB_PASSWORD_WAITER', ''),
+        //     'charset' => 'utf8mb4',
+        //     'collation' => 'utf8mb4_unicode_ci',
+        //     'prefix' => '',
+        //     // 'prefix_indexes' => true,
+        //     'strict' => true,
+        //     'engine' => null,
+        //     'options' => extension_loaded('pdo_mysql') ? array_filter([
+        //         PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+        //     ]) : [],
+        // ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
@@ -147,7 +165,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

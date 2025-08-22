@@ -9,7 +9,7 @@ export default function AdminDashboard({ users_num, tasks_num, todos_num, avg_hp
             <SideMenuBar />
 
             <section className="p-4 md:ml-64 h-auto pt-20">
-                <h1 className="mb-4">Welcome <span className="text-theme-secondary">{auth.user.name}</span> ({auth.user.role.name})</h1>
+                <h1 className="mb-4">Willkommen <span className="text-theme-secondary">{auth.user.name}</span> ({auth.user.role.name})</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                     <Link
                         href="/dashboard/manage/users"

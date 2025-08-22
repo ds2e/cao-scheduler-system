@@ -9,7 +9,7 @@ export default function UserDashboard() {
             <SideMenuBar />
 
             <section className="p-4 md:ml-64 h-auto pt-20">
-                <h1 className="mb-4">Welcome <span className="text-theme-secondary">{auth.user.name}</span></h1>
+                <h1 className="mb-4">Willkommen <span className="text-theme-secondary">{auth.user.name}</span></h1>
                 <div className="grid grid-cols-3 gap-4 mb-4">
                     <div className="flex items-center justify-center h-24 rounded-sm bg-gray-50 dark:bg-gray-800">
                         <p className="text-2xl text-gray-400 dark:text-gray-500">

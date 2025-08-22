@@ -25,7 +25,7 @@ class ReservationController extends Controller
 
         return match ($role) {
             UserRoles::Mitarbeiter => (function () use ($reservations) {
-                return inertia('Reservation/UserReservation', [
+                return inertia('Reservation/Reservation', [
                     'reservations' => $reservations
                 ]);
             })(),

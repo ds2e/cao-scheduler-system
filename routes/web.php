@@ -1,17 +1,15 @@
 <?php
 
-use App\Enums\UserRoles;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MasterController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\RestaurantMenuController;
 use App\Http\Controllers\ScheduleController;
-use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;
 use App\Models\TaskCategory;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request as HttpRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Models\User;
@@ -38,6 +36,13 @@ Route::middleware('auth')->group(function () {
             Route::prefix('manage')->name('manage.')->group(function () {
                 Route::resource('users', UserController::class)->except(['create', 'edit', 'show']);
                 Route::resource('todos', TodoController::class)->except(['create', 'edit', 'show']);
+                Route::prefix('menu')->name('menu.')->group(function () {
+                    // Route::get('items', [RestaurantMenuController::class, 'showItemManageMenu']);
+                    Route::any('{any}', function () {
+                        return Inertia::render('Maintainance');
+                    })->where('any', '.*');
+                });
+                Route::resource('devices', MasterController::class)->except(['create', 'edit', 'show']);
                 Route::resource('taskCategories', TaskCategory::class)->except(['create', 'edit', 'show']);
             });
 

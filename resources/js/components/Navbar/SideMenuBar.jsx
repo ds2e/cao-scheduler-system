@@ -26,6 +26,25 @@ const navigationIcons = {
             className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-400 dark:text-gray-400 dark:group-hover:text-white">
             <path d="M152.1 38.2c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 113C-2.3 103.6-2.3 88.4 7 79s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zm0 160c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 273c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zM224 96c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zm0 160c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zM160 416c0-17.7 14.3-32 32-32l288 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-288 0c-17.7 0-32-14.3-32-32zM48 368a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
         </svg>
+    },
+    'Menu': {
+        icon: <svg
+            aria-hidden="true"
+            fill="currentColor"
+            className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-400 dark:text-gray-400 dark:group-hover:text-white"
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+            <path d="M480 576L192 576C139 576 96 533 96 480L96 160C96 107 139 64 192 64L496 64C522.5 64 544 85.5 544 112L544 400C544 420.9 530.6 438.7 512 445.3L512 512C529.7 512 544 526.3 544 544C544 561.7 529.7 576 512 576L480 576zM192 448C174.3 448 160 462.3 160 480C160 497.7 174.3 512 192 512L448 512L448 448L192 448zM224 216C224 229.3 234.7 240 248 240L424 240C437.3 240 448 229.3 448 216C448 202.7 437.3 192 424 192L248 192C234.7 192 224 202.7 224 216zM248 288C234.7 288 224 298.7 224 312C224 325.3 234.7 336 248 336L424 336C437.3 336 448 325.3 448 312C448 298.7 437.3 288 424 288L248 288z" />
+        </svg>
+    },
+    'Geräte': {
+        icon: <svg
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"
+            aria-hidden="true"
+            fill="currentColor"
+            className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-400 dark:text-gray-400 dark:group-hover:text-white"
+        >
+            <path d="M144 128C144 92.7 172.7 64 208 64L432 64C467.3 64 496 92.7 496 128L496 512C496 547.3 467.3 576 432 576L208 576C172.7 576 144 547.3 144 512L144 128zM256 504C256 517.3 266.7 528 280 528L360 528C373.3 528 384 517.3 384 504C384 490.7 373.3 480 360 480L280 480C266.7 480 256 490.7 256 504zM432 128L208 128L208 432L432 432L432 128z" />
+        </svg>
     }
 };
 
@@ -44,10 +63,9 @@ export default function SideMenuBar() {
         .filter(item => item.viewAny)
         .map(item => ({
             ...item,
-            current: item.href === url,
+            current: url.startsWith(item.href),
         }));
 
-    // const scheduleItem = navigation.find(item => item.title === 'Zeitplan');
     const navigationItems = navigation.filter(item => item.title !== 'Zeitplan');
 
     return (
@@ -73,7 +91,7 @@ export default function SideMenuBar() {
                                 <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                 <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                             </svg>
-                            <span className="ml-3">Overview</span>
+                            <span className="ml-3">&Uuml;berblick</span>
                         </Link>
                     </li>
                     {
@@ -181,7 +199,7 @@ export default function SideMenuBar() {
                                     clipRule="evenodd"
                                 ></path>
                             </svg>
-                            <span className="ml-3">Docs</span>
+                            <span className="ml-3">Dokument</span>
                         </a>
                     </li>
                     <li>
@@ -202,7 +220,7 @@ export default function SideMenuBar() {
                                     clipRule="evenodd"
                                 ></path>
                             </svg>
-                            <span className="ml-3">Help</span>
+                            <span className="ml-3">Unterst&uuml;tzung</span>
                         </a>
                     </li>
                 </ul>

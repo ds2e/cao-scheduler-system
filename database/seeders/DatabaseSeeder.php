@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
             TaskCategorySeeder::class,
             ScheduleSeeder::class,
             TodoJobSeeder::class,
-            ReservationSeeder::class
+            ReservationSeeder::class,
+            MasterSeeder::class,
+            MenuSeeder::class
         ]);
     }
 }

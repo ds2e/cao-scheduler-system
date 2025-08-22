@@ -128,7 +128,7 @@ export default function DashboardNavbar({ auth }) {
                                 </MenuItem>
                                 <MenuItem>
                                     <Link
-                                        href="/dashboard/setting"
+                                        href="/dashboard/setting/security"
                                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                                     >
                                         Einstellung

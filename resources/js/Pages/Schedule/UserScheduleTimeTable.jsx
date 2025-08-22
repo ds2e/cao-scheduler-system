@@ -31,7 +31,6 @@ export default function UserScheduleTimeTable({ tasks, todoJobs, userID, viewYea
 
     function requestViewYearAndMonth(interval) {
         const formattedView = `${interval[0]}-${String(interval[1]).padStart(2, '0')}`;
-        console.log(formattedView)
         router.get(('/dashboard/schedule'), { view: formattedView });
     }
 

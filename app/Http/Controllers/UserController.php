@@ -182,6 +182,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $role = UserRoles::fromId($user->role_id);
+        // dd($request);
         return match ($role) {
             // View specific to Mitarbeiter and Moderator
             UserRoles::Mitarbeiter, UserRoles::Moderator => (function () use ($user) {
