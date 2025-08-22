@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('mysql_waiter')->dropIfExists('items');
-        Schema::connection('mysql_waiter')->dropIfExists('tables');
-        Schema::connection('mysql_waiter')->dropIfExists('sub_categories');
-        Schema::connection('mysql_waiter')->dropIfExists('categories');
-        if (!Schema::connection('mysql_waiter')->hasTable('categories')) {
-            Schema::connection('mysql_waiter')->create('categories', function (Blueprint $table) {
-                $table->id();
-                $table->string('name');
-                $table->string('icon')->nullable();
-                $table->integer('priority')->nullable();
-            });
-        }
+        // Schema::connection('mysql_waiter')->dropIfExists('items');
+        // Schema::connection('mysql_waiter')->dropIfExists('tables');
+        // Schema::connection('mysql_waiter')->dropIfExists('sub_categories');
+        // Schema::connection('mysql_waiter')->dropIfExists('categories');
+        // if (!Schema::connection('mysql_waiter')->hasTable('categories')) {
+        //     Schema::connection('mysql_waiter')->create('categories', function (Blueprint $table) {
+        //         $table->id();
+        //         $table->string('name');
+        //         $table->string('icon')->nullable();
+        //         $table->integer('priority')->nullable();
+        //     });
+        // }
     }
 
     /**
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('mysql_waiter')->dropIfExists('categories');
+        // Schema::connection('mysql_waiter')->dropIfExists('categories');
     }
 };

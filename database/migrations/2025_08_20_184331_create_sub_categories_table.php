@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::connection('mysql_waiter')->hasTable('sub_categories')) {
-            Schema::connection('mysql_waiter')->create('sub_categories', function (Blueprint $table) {
-                $table->id();
-                $table->string('name');
-                $table->string('color')->nullable();
-                $table->foreignId('category_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            });
-        }
+        // if (!Schema::connection('mysql_waiter')->hasTable('sub_categories')) {
+        //     Schema::connection('mysql_waiter')->create('sub_categories', function (Blueprint $table) {
+        //         $table->id();
+        //         $table->string('name');
+        //         $table->string('color')->nullable();
+        //         $table->foreignId('category_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+        //     });
+        // }
     }
 
     /**
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('mysql_waiter')->dropIfExists('sub_categories');
+        // Schema::connection('mysql_waiter')->dropIfExists('sub_categories');
     }
 };

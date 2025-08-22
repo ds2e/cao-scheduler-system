@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::connection('mysql_waiter')->hasTable('tables')) {
-            Schema::connection('mysql_waiter')->create('tables', function (Blueprint $table) {
-                $table->id();
-                $table->string('name');
-                $table->integer('type', false, true);
-                $table->timestamps();
-            });
-        }
+        // if (!Schema::connection('mysql_waiter')->hasTable('tables')) {
+        //     Schema::connection('mysql_waiter')->create('tables', function (Blueprint $table) {
+        //         $table->id();
+        //         $table->string('name');
+        //         $table->integer('type', false, true);
+        //         $table->timestamps();
+        //     });
+        // }
     }
 
     /**
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('mysql_waiter')->dropIfExists('tables');
+        // Schema::connection('mysql_waiter')->dropIfExists('tables');
     }
 };
