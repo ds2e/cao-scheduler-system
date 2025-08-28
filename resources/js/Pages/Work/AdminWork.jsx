@@ -15,7 +15,6 @@ import SideMenuBar from "../../components/Navbar/SideMenuBar";
 
 const AdminWorkWorkPage = ({ users, works }) => {
     const [action, setAction] = useState('');
-    console.log(works)
     const [isOpenAdminConfirmDialog, setOpenAdminConfirmDialog] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -23,7 +22,6 @@ const AdminWorkWorkPage = ({ users, works }) => {
     })
 
     function requestLogoutUser(userPIN) {
-        // console.log(userData)
         setData("pin", userPIN);
         setAction("logout");
         setOpenAdminConfirmDialog(true);

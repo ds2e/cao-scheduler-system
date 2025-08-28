@@ -50,8 +50,6 @@ export default function InspectDayTodoListDrawer({ isOpen, setOpen, todoJobs, to
             todo_id: todoEntry.id
         }]
 
-        console.log(newTodos)
-
         setData({
             ...data,
             todoJobs: newTodos
@@ -68,7 +66,6 @@ export default function InspectDayTodoListDrawer({ isOpen, setOpen, todoJobs, to
 
 
     function handleAssignTodosDate(data) {
-        // console.log(data);
         post('/dashboard/schedule/todo', {
             onSuccess: () => {
                 setOpen(false);
@@ -76,9 +73,6 @@ export default function InspectDayTodoListDrawer({ isOpen, setOpen, todoJobs, to
             }
         });
     }
-
-
-    // console.log(tasks)
 
     return (
         <Drawer open={isOpen} onOpenChange={setOpen}>

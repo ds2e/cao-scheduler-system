@@ -17,7 +17,6 @@ dayjs.extend(isoWeek);
 dayjs.locale('de');
 
 export default function UserScheduleSummaryDialog({ isOpen, setOpen, tasks, taskCategories }) {
-    // console.log(tasks)
 
     const [weekOffset, setWeekOffset] = useState(0); // 0 = this week, -1 = last, +1 = next
 
@@ -38,7 +37,6 @@ export default function UserScheduleSummaryDialog({ isOpen, setOpen, tasks, task
             const taskDate = dayjs(`${task.date_start} ${task.time_start}`);
             if (taskDate.isBetween(startOfWeek, endOfWeek, 'day', '[]')) {
                 const weekday = taskDate.format('dddd');
-                // console.log(task)
                 weekSchedule[weekday].push(task); // push raw task
             }
         });

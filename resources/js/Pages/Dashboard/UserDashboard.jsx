@@ -4,7 +4,6 @@ import SideMenuBar from "@/components/Navbar/SideMenuBar";
 export default function UserDashboard({ tasks, monthly_stats }) {
     const { auth } = usePage().props;
 
-    console.log(monthly_stats);
     return (
         <div className="antialiased bg-gray-50 dark:bg-gray-900">
             <SideMenuBar />

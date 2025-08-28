@@ -40,7 +40,6 @@ export default function TodosPage({ todos }) {
     }
 
     function requestDeleteTodo() {
-        // console.log(data)
         destroy(`/dashboard/manage/todos/${currentSelectedTodo.id}`, {
             onSuccess: () => {
                 setData({});

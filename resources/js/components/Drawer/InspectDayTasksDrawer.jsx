@@ -85,7 +85,6 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
     }
 
     function addTaskToDate(date) {
-        console.log(date)
         const newTasks = [
             {
                 users: [],
@@ -121,8 +120,6 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
         return itemColor;
     }
 
-    // console.log(tasks)
-
     return (
         <Drawer open={isOpen} onOpenChange={setOpen}>
             <DrawerContent className="bg-white">
@@ -134,7 +131,6 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                 <div className="w-full px-4">
                     <div className="max-h-[70dvh] overflow-y-auto">
                         {data.tasks.map((taskEntry, taskInd) => {
-                            // console.log(taskEntry)
                             // Get today’s date in YYYY-MM-DD format
                             const today = dayjs().format("YYYY-MM-DD");
 
@@ -172,7 +168,6 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                                                                 time_start: timeReformatted
                                                             };
 
-                                                            console.log(updatedTasks[taskInd])
                                                             setData({
                                                                 ...data,
                                                                 tasks: updatedTasks,
@@ -193,7 +188,6 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                                                                 time_end: timeReformatted
                                                             };
 
-                                                            console.log(updatedTasks[taskInd])
                                                             setData({
                                                                 ...data,
                                                                 tasks: updatedTasks,

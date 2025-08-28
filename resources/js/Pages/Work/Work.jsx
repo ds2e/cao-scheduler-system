@@ -2,7 +2,6 @@ import WorkLayout from "../../Layouts/WorkLayout";
 import Timer from "./Timer";
 
 const WorkWorkPage = ({ works }) => {
-    console.log(works)
     if (works.length <= 0) {
         return <div className="h-screen flex items-center justify-center">
             <h2>Niemand ist gerade in Arbeit!</h2>

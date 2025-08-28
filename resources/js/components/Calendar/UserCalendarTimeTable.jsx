@@ -119,8 +119,6 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
             }, {})
         );
 
-        // console.log(tasksForTheDayGroupedByCategory)
-
         return (
             <div className="day-grid-item-header h-full p-1 flex flex-col items-start">
                 <div className='w-full px-1 flex flex-col sm:flex-row items-center justify-between gap-y-1'>

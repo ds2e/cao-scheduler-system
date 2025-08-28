@@ -140,7 +140,6 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
     }
 
     function handleAssignRecordsDate() {
-        // console.log(data)
         post('/dashboard/schedule/report', {
             onSuccess: () => {
                 setOpen(false);

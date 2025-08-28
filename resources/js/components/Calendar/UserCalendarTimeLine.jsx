@@ -131,8 +131,6 @@ export default function UserCalendarTimeLine({
 
     const todayTodoJobs = todoJobs.filter(todo => todo.date === dayjs(date).format('YYYY-MM-DD'));
 
-    // console.log(todayTasks)
-
     const hourNum = 24
 
     const hours = Array.from({ length: hourNum }, (_, i) => String(i).padStart(2, '0') + ':00');

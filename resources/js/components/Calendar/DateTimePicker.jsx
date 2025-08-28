@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 export function DateTimePicker({ dataTime, confirmSetDataTime }) {
-    // console.log(dataTime)
     const [date, setDate] = useState(dayjs(dataTime));
     const [isOpen, setIsOpen] = useState(false);
 
@@ -29,7 +28,6 @@ export function DateTimePicker({ dataTime, confirmSetDataTime }) {
                 .set("year", selectedDate.getFullYear())
                 .set("month", selectedDate.getMonth())
                 .set("date", selectedDate.getDate());
-            console.log(updated)
             setDate(updated);
         }
     };

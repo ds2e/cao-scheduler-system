@@ -20,7 +20,6 @@ const maxDate = dayjs(today).add(1, 'month').endOf('month').toDate();
 
 const timeToColIndex = (timeStr) => {
     const [hour, minute] = timeStr.split(":").map(Number);
-    // console.log([hour, minute])
     if (minute >= 30) {
         return hour * 2 + 1;
     }
@@ -112,8 +111,6 @@ export default function CalendarTimeLine({
         };
     }, []);
 
-    // console.log(todayTasks)
-
     const groupedUsers = {};
 
     dayTasks.forEach(task => {
@@ -137,7 +134,6 @@ export default function CalendarTimeLine({
 
     // Final array result
     const result = Object.values(groupedUsers);
-    // console.log(result)
 
     const hourNum = 24
 
