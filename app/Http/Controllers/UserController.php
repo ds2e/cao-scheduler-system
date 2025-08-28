@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\UserRoles;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\ReportRecord;
 use App\Models\Role;
 use App\Models\Task;
 use App\Models\Todo;
@@ -59,7 +60,7 @@ class UserController extends Controller
                 $query->where('users.id', $user->id);
             })
             ->get();
-        
+
         return inertia('Users/Index/Index', [
             'user' => $user,
             'tasks' => $tasks
@@ -186,13 +187,100 @@ class UserController extends Controller
         return match ($role) {
             // View specific to Mitarbeiter and Moderator
             UserRoles::Mitarbeiter, UserRoles::Moderator => (function () use ($user) {
-                // $tasks_num = Task::where('user_id', $user->id)->count();
+                $today = Carbon::today();
+
+                $thisWeekStart = $today->copy()->startOfWeek();
+                $thisWeekEnd   = $today->copy()->endOfWeek();
+
+                $lastWeekStart = $thisWeekStart->copy()->subWeek();
+                $lastWeekEnd   = $thisWeekEnd->copy()->subWeek();
+
+                $nextWeekStart = $thisWeekStart->copy()->addWeek();
+                $nextWeekEnd   = $thisWeekEnd->copy()->addWeek();
+
+                // This week
+                $tasksThisWeekCount = $user->tasks()
+                    ->whereBetween('date_start', [$thisWeekStart->toDateString(), $thisWeekEnd->toDateString()])
+                    ->count();
+
+                $daysThisWeekCount = $user->tasks()
+                    ->whereBetween('date_start', [$thisWeekStart->toDateString(), $thisWeekEnd->toDateString()])
+                    ->select('date_start')
+                    ->distinct()
+                    ->count('date_start');
+
+                // Last week
+                $tasksLastWeekCount = $user->tasks()
+                    ->whereBetween('date_start', [$lastWeekStart->toDateString(), $lastWeekEnd->toDateString()])
+                    ->count();
+
+                $daysLastWeekCount = $user->tasks()
+                    ->whereBetween('date_start', [$lastWeekStart->toDateString(), $lastWeekEnd->toDateString()])
+                    ->select('date_start')
+                    ->distinct()
+                    ->count('date_start');
+
+                // Next week
+                $tasksNextWeekCount = $user->tasks()
+                    ->whereBetween('date_start', [$nextWeekStart->toDateString(), $nextWeekEnd->toDateString()])
+                    ->count();
+
+                $daysNextWeekCount = $user->tasks()
+                    ->whereBetween('date_start', [$nextWeekStart->toDateString(), $nextWeekEnd->toDateString()])
+                    ->select('date_start')
+                    ->distinct()
+                    ->count('date_start');
+
+                $currentYear = Carbon::now()->year;
+
+                // Fetch monthly stats from DB
+                $monthlyStatsRaw = ReportRecord::where('user_id', $user->id)
+                    ->whereRaw("YEAR(STR_TO_DATE(date, '%Y-%m-%d')) = ?", [$currentYear])
+                    ->selectRaw("
+        MONTH(STR_TO_DATE(date, '%Y-%m-%d')) as month,
+        SUM(duration) as total_duration,
+        COUNT(DISTINCT date) as work_days
+    ")
+                    ->groupBy('month')
+                    ->get();
+
+                // Pre-fill all 12 months
+                $monthlyStats = collect(range(1, 12))->mapWithKeys(function ($month) use ($monthlyStatsRaw) {
+                    $row = $monthlyStatsRaw->firstWhere('month', $month);
+
+                    $hours = $row ? round($row->total_duration / 3600, 2) : 0; // assume duration stored in seconds
+                    $avgPerDay = ($row && $row->work_days > 0)
+                        ? round($hours / $row->work_days, 2)
+                        : 0;
+
+                    return [
+                        Carbon::create()->month($month)->format('F') => [
+                            'total_hours' => $hours,
+                            'avg_hours_per_day' => $avgPerDay,
+                        ]
+                    ];
+                });
+
                 return inertia('Dashboard/UserDashboard', [
-                    // 'tasks_num' => $tasks_num,
+                    'tasks' => [
+                        'this_week' => [
+                            'count' => $tasksThisWeekCount,
+                            'days'  => $daysThisWeekCount,
+                        ],
+                        'last_week' => [
+                            'count' => $tasksLastWeekCount,
+                            'days'  => $daysLastWeekCount,
+                        ],
+                        'next_week' => [
+                            'count' => $tasksNextWeekCount,
+                            'days'  => $daysNextWeekCount,
+                        ],
+                    ],
+                    'monthly_stats' => $monthlyStats
                 ]);
             })(),
 
-            
+
             // View specific to Admin and SuperAdmin
             UserRoles::Admin, UserRoles::SuperAdmin => (function () use ($user) {
                 $users_num = User::count();

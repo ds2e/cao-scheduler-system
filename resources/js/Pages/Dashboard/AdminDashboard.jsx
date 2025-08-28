@@ -8,7 +8,7 @@ export default function AdminDashboard({ users_num, tasks_num, todos_num, avg_hp
         <div className="antialiased bg-gray-50 dark:bg-gray-900">
             <SideMenuBar />
 
-            <section className="p-4 md:ml-64 h-auto pt-20">
+            <section className="p-4 md:ml-64 min-h-screen pt-20">
                 <h1 className="mb-4">Willkommen <span className="text-theme-secondary">{auth.user.name}</span> ({auth.user.role.name})</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                     <Link
@@ -40,9 +40,6 @@ export default function AdminDashboard({ users_num, tasks_num, todos_num, avg_hp
                         std/Tag
                     </div>
                 </div>
-                <div
-                    className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"
-                ></div>
             </section>
         </div>
     )

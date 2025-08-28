@@ -8,6 +8,7 @@ use App\Models\Master;
 use App\Models\Schedule;
 use App\Models\Todo;
 use App\Models\User;
+use App\Models\Work;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -73,6 +74,11 @@ class HandleInertiaRequests extends Middleware
                                     'title' => 'Todos',
                                     'viewAny' => $request->user()->can('viewAny', Todo::class),
                                     'href' => '/dashboard/manage/todos'
+                                ],
+                                'work' => [
+                                    'title' => 'Arbeit',
+                                    'viewAny' => $request->user()->can('viewAny', Work::class),
+                                    'href' => '/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/work'
                                 ],
                                 'menu' => [
                                     'title' => 'Menu',

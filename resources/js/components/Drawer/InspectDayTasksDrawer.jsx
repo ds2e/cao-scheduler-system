@@ -85,6 +85,7 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
     }
 
     function addTaskToDate(date) {
+        console.log(date)
         const newTasks = [
             {
                 users: [],
@@ -133,16 +134,25 @@ export default function InspectDayTasksDrawer({ isOpen, setOpen, users, tasks, c
                 <div className="w-full px-4">
                     <div className="max-h-[70dvh] overflow-y-auto">
                         {data.tasks.map((taskEntry, taskInd) => {
-                            const startDateTime = `${taskEntry.date_start} ${taskEntry.time_start}`;
-                            const endDateTime = `${taskEntry.date_end} ${taskEntry.time_end}`;
+                            // console.log(taskEntry)
+                            // Get today’s date in YYYY-MM-DD format
+                            const today = dayjs().format("YYYY-MM-DD");
+
+                            // Fallbacks for date_start and date_end
+                            const dateStart = taskEntry.date_start || today;
+                            const dateEnd = taskEntry.date_end || today;
+
+                            // Build full datetime strings
+                            const startDateTime = `${dateStart} ${taskEntry.time_start || "00:00:00"}`;
+                            const endDateTime = `${dateEnd} ${taskEntry.time_end || "23:59:59"}`;
 
                             return (
-                                <div 
-                                key={taskInd} 
-                                className={`mb-8 border p-4 rounded-lg`}
-                                style={{
-                                    backgroundColor: renderTaskCategoryBackground(taskInd)
-                                }}
+                                <div
+                                    key={taskInd}
+                                    className={`mb-8 border p-4 rounded-lg`}
+                                    style={{
+                                        backgroundColor: renderTaskCategoryBackground(taskInd)
+                                    }}
                                 >
                                     <div className="mb-5">
                                         <div className="flex flex-col md:flex-row items-center justify-between mb-4">

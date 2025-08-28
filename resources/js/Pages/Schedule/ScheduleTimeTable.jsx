@@ -27,12 +27,12 @@ export default function ScheduleTimeTable({ tasks, users, todos, todoJobs, viewY
     })
 
     function requestPrevDay(date) {
-        const prevDate = dayjs(date).subtract(1, "day").toDate();
+        const prevDate = dayjs(date).subtract(1, "day").format("YYYY-MM-DD");
         setDate(prevDate);
     }
 
     function requestNextDay(date) {
-        const nextDate = dayjs(date).add(1, "day").toDate();
+        const nextDate = dayjs(date).add(1, "day").format("YYYY-MM-DD");
         setDate(nextDate);
     }
 

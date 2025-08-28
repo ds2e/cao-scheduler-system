@@ -8,6 +8,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;
+use App\Http\Controllers\WorkController;
 use App\Models\TaskCategory;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Route;
@@ -85,6 +86,11 @@ Route::middleware('auth')->group(function () {
         return back()->with('status', 'verification-link-sent');
     })->middleware('throttle:5,1')->name('verification.send');
 });
+
+Route::get('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls', [WorkController::class, 'show'])->name('show.workHome');
+Route::post('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/login', [WorkController::class, 'loginWork'])->name('login.work');
+Route::post('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/logout', [WorkController::class, 'logoutWork'])->name('logout.work');
+Route::get('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/work', [WorkController::class, 'showWork'])->name('show.work');
 
 // Custom Handle verification links
 Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {

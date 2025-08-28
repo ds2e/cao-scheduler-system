@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             TodoJobSeeder::class,
             ReservationSeeder::class,
             MasterSeeder::class,
-            MenuSeeder::class
+            // MenuSeeder::class
         ]);
     }
 }

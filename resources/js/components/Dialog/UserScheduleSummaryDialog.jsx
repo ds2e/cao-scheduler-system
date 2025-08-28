@@ -72,32 +72,33 @@ export default function UserScheduleSummaryDialog({ isOpen, setOpen, tasks, task
                 </DialogHeader>
                 <Tabs value={String(weekOffset)} onValueChange={setWeekOffset} className="w-full">
                     <TabsList className="w-full">
-                        <TabsTrigger value="-1">letzte Woche</TabsTrigger>
-                        <TabsTrigger value="0">aktuelle Woche</TabsTrigger>
+                        <TabsTrigger value="-1">lzt. Woche</TabsTrigger>
+                        <TabsTrigger value="0">akt. Woche</TabsTrigger>
                         <TabsTrigger value="1">n&auml;chste Woche</TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value={String(weekOffset)}>
+                    <TabsContent value={String(weekOffset)}
+                        className="max-h-[50vh] overflow-y-auto"
+                    >
                         {
                             Object.entries(visibleTasks).map(([weekday, tasks]) => {
-
                                 return (
-                                    <div key={weekday} className="flex sm:flex-row flex-col gap-x-1 sm:items-start items-center">
-                                        <b className={`${weekOffset == 0 && weekday == dayjs().format('dddd') ? "text-red-500": ""}`}>{weekday}:</b>
-                                        <div className="flex flex-wrap items-center justify-center sm:justify-start divide-x-1 divide-theme">
+                                    <div key={weekday} className="flex flex-col gap-y-1 items-center">
+                                        <b className={`${weekOffset == 0 && weekday == dayjs().format('dddd') ? "text-red-500" : ""}`}>{weekday}</b>
+                                        <div className="flex flex-col items-center justify-center border-2 border-gray-200">
                                             {
                                                 tasks.map((task, taskInd) => {
                                                     const taskDisplay = `${taskCategories.find((ele) => ele.id == task.task_category_id).name} ${dayjs(`${task.date_start} ${task.time_start}`).format('HH:mm')} - ${dayjs(`${task.date_start} ${task.time_end}`).format('HH:mm')}`;
                                                     return (
-                                                        <span 
-                                                        key={weekday + taskInd} 
-                                                        className={`px-2`}
-                                                        style={{
-                                                            color: renderTaskCategoryTextColor(task.task_category_id)
-                                                        }}
+                                                        <div
+                                                            key={weekday + taskInd}
+                                                            className={`px-2`}
+                                                            style={{
+                                                                color: renderTaskCategoryTextColor(task.task_category_id)
+                                                            }}
                                                         >
                                                             {taskDisplay}
-                                                        </span>
+                                                        </div>
                                                     )
                                                 })
                                             }

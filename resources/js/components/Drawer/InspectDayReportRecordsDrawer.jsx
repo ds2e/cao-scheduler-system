@@ -33,8 +33,6 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
         date: ''
     });
 
-    // console.log(reportRecords)
-
     useEffect(() => {
         const records = reportRecords;
 
@@ -60,8 +58,6 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
         });
 
         const result = Object.values(groupedUsers);
-
-        console.log(result)
 
         setData({
             reportRecords: result,
@@ -152,8 +148,6 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
             }
         });
     }
-
-    // console.log(tasks)
 
     return (
         <Drawer open={isOpen} onOpenChange={setOpen}>
