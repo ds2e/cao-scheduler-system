@@ -76,7 +76,7 @@ class HandleInertiaRequests extends Middleware
                                     'href' => '/dashboard/manage/todos'
                                 ],
                                 'work' => [
-                                    'title' => 'Arbeit',
+                                    'title' => 'Arbeitszeit',
                                     'viewAny' => $request->user()->can('viewAny', Work::class),
                                     'href' => '/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/work'
                                 ],

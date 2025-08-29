@@ -1,4 +1,4 @@
-import { Link, router, useForm } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import mainLogo from '+/images/Cao_Laura_ohneText.png'
 
 export default function WorkLogoutPage() {
@@ -10,22 +10,21 @@ export default function WorkLogoutPage() {
         e.preventDefault();
         post('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/logout', {
             onSuccess: () => {
-                reset();
-                router.get('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/work');
+                setData("pin", '');
             },
         });
     }
 
     return (
         <div className="flex flex-1 flex-col justify-center p-6 bg-theme">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <img
                     alt="Your Company"
                     src={mainLogo}
                     className="mx-auto h-36 w-auto"
                 />
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-theme-secondary">
-                    Sign out to stop working
+                    Ausloggen zum Abschließen der Arbeit
                 </h2>
             </div>
 

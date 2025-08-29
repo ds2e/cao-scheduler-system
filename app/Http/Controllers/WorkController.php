@@ -44,7 +44,8 @@ class WorkController extends Controller
      */
     public function show(Work $work)
     {
-        return inertia('Work/Home');
+        $works = Work::with('user:id,name')->get();
+        return inertia('Work/Home', ['works' => $works]);
     }
 
     public function showWork(Work $work)
@@ -62,18 +63,13 @@ class WorkController extends Controller
 
         return match ($role) {
             UserRoles::Admin, UserRoles::SuperAdmin => (function () use ($works) {
-                // $today = Carbon::today()->toDateString();
                 $users = User::whereIn('role_id', UserRoles::taskAssignable())->get();
-                // Eager load tasks for today to reduce DB hits
-                // $users->load(['tasks' => function ($query) use ($today) {
-                //     $query->whereDate('date_start', $today);
-                // }]);
                 return inertia('Work/AdminWork', [
                     'users' => $users,
                     'works' => $works
                 ]);
             })(),
-            default => inertia('Work/Work', ['works' => $works])
+            default => inertia('Work/Home', ['works' => $works])
         };
     }
 
@@ -99,22 +95,22 @@ class WorkController extends Controller
             return back()->withErrors(['pin' => 'Ungültige PIN.']);
         }
 
-        // 3. Check if user has any task assigned for today
-        $today = Carbon::today()->toDateString();
+        // // 3. Check if user has any task assigned for today
+        // $today = Carbon::today()->toDateString();
 
-        $hasTaskToday = $user->tasks()
-            ->whereDate('date_start', $today)
-            ->exists();
+        // $hasTaskToday = $user->tasks()
+        //     ->whereDate('date_start', $today)
+        //     ->exists();
 
-        // who is making the request (authority user)
-        $authorityUser = Auth::user();
-        $authorityUserRole = $authorityUser ? UserRoles::fromId($authorityUser->role_id) : null;
+        // // who is making the request (authority user)
+        // $authorityUser = Auth::user();
+        // $authorityUserRole = $authorityUser ? UserRoles::fromId($authorityUser->role_id) : null;
 
-        $bypassLoginCheck = in_array($authorityUserRole, [UserRoles::Admin, UserRoles::SuperAdmin]);
+        // $bypassLoginCheck = in_array($authorityUserRole, [UserRoles::Admin, UserRoles::SuperAdmin]);
 
-        if (!$hasTaskToday && !$bypassLoginCheck) {
-            return back()->withErrors(['pin' => 'Das Einloggen für diesen Nutzer ist nicht erlaubt.']);
-        }
+        // if (!$hasTaskToday && !$bypassLoginCheck) {
+        //     return back()->withErrors(['pin' => 'Das Einloggen für diesen Nutzer ist nicht erlaubt.']);
+        // }
 
         // 4. Check if already has a work entry today
         $today = Carbon::today()->format('Y-m-d');

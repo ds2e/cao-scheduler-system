@@ -1,5 +1,4 @@
 import { usePage } from "@inertiajs/react";
-import WorkNavbar from "../components/Navbar/WorkNavbar";
 import DashboardNavbar from "../components/Navbar/DashboardNavbar";
 
 export default function WorkLayout({ children }) {
@@ -11,7 +10,7 @@ export default function WorkLayout({ children }) {
                     auth && auth.user?.role?.rank > 2 ?
                         <DashboardNavbar auth={auth} />
                         :
-                        <WorkNavbar />
+                        null
                 }
             </header>
             <main>

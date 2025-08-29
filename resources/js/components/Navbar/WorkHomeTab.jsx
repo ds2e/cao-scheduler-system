@@ -4,7 +4,7 @@ export default function WorkHomeTab({ activeTab, requestSwitchTab }) {
         { name: "Logout" }
     ];
     return (
-        <div className="flex w-full rounded-full bg-white p-1 my-4">
+        <div className="flex w-full rounded-full bg-white p-1 mb-4">
             {tabs.map((tab, ind) => {
                 const isActive = activeTab === tab.name; // handles query params
                 return (

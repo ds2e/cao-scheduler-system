@@ -103,6 +103,8 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                     acc[categoryId] = {
                         task_category_id: categoryId,
                         users: [],
+                        time_start: task.time_start,
+                        time_end: task.time_end
                     };
                 }
 
@@ -119,6 +121,8 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
             }, {})
         );
 
+        const tasksForTheDayGroupedByCategorySortAfterTime = tasksForTheDayGroupedByCategory.sort((a, b) => a.time_start.localeCompare(b.time_start));
+
         return (
             <div className="day-grid-item-header h-full p-1 flex flex-col items-start">
                 <div className='w-full px-1 flex flex-col sm:flex-row items-center justify-between gap-y-1'>
@@ -127,9 +131,9 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                     </p>
                     {
                         todoJobs.find((job) => job.date === day.dateString) ?
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={20} height={20} 
-                            onClick={() => inspectDayTodoJobs(day.dateString)}
-                            className="fill-theme-secondary animate-pulse me-0 sm:me-1 cursor-pointer"
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width={20} height={20}
+                                onClick={() => inspectDayTodoJobs(day.dateString)}
+                                className="fill-theme-secondary animate-pulse me-0 sm:me-1 cursor-pointer"
                             >
                                 <path d="M152.1 38.2c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 113C-2.3 103.6-2.3 88.4 7 79s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zm0 160c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 273c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zM224 96c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zm0 160c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zM160 416c0-17.7 14.3-32 32-32l288 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-288 0c-17.7 0-32-14.3-32-32zM48 368a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
                             </svg>
@@ -141,7 +145,7 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                     onClick={tasks.some(task => task.date_start === day.dateString) ? () => requestSwitchView(day.dateString) : undefined}
                     className={`${tasks.some(task => task.date_start === day.dateString) ? 'hover:bg-gray-200 cursor-pointer' : ''} h-full w-full p-1`}
                 >
-                    {tasksForTheDayGroupedByCategory.map((task, taskInd) => (
+                    {tasksForTheDayGroupedByCategorySortAfterTime.map((task, taskInd) => (
                         <div
                             key={task.task_category_id + taskInd}
                             className={`text-xs my-1 text-white rounded-sm p-1`}
@@ -149,7 +153,19 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                                 backgroundColor: renderTaskCategoryBackground(task)
                             }}
                         >
-                            {task.task_category_id && <div className='grid place-content-center mb-1'><TaskCategoriesIcon categoryId={task.task_category_id} /></div>}
+                            {task.task_category_id &&
+                                <div className='flex flex-col md:flex-row items-center justify-center mb-1 md:gap-x-1'>
+                                    <TaskCategoriesIcon categoryId={task.task_category_id} />
+                                    <span className='text-center sm:text-start'>
+                                        {task.time_start.slice(0, 5)} </span>
+                                    <span className='text-center sm:text-start'>
+                                        -
+                                    </span>
+                                    <span className='text-center sm:text-start'>
+                                        {task.time_end.slice(0, 5)}
+                                    </span>
+                                </div>
+                            }
                             {
                                 (task.users.some(user => user.id === userID)) ?
                                     <div className='sm:hidden block bg-theme-secondary rounded-sm text-theme border-[1px] border-black text-center font-bold'>+{task.users.length}</div>
@@ -266,7 +282,7 @@ const UserCalendarTimeTable = memo(function UserCalendarComponent({
                 taskCategories={taskCategories}
             />
 
-            <UserTodoJobsSummaryDialog 
+            <UserTodoJobsSummaryDialog
                 isOpen={isOpenUserTodoJobsSummary}
                 setOpen={setOpenUserTodoJobsSummary}
                 todoJobs={todoJobs}

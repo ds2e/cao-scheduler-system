@@ -12,7 +12,7 @@ export default function DashboardNavbar({ auth }) {
 
     const navigationItems = [
         { title: 'Zeitplan', href: '/dashboard/schedule' },
-        { title: 'Reservierung', href: '/dashboard/reservation' }
+        // { title: 'Reservierung', href: '/dashboard/reservation' }
     ]
 
     const navigation = [...navigationItems]

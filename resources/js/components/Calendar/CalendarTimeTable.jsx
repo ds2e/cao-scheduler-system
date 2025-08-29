@@ -14,6 +14,7 @@ import dayjs from 'dayjs';
 import UserTodoJobsSummaryDialog from '@/components/Dialog/UserTodoJobsSummaryDialog';
 import { router } from "@inertiajs/react";
 import ReportRecordsSummaryDialog from '@/components/Dialog/ReportRecordsSummaryDialog';
+import AdminScheduleSummaryDialog from '../Dialog/AdminScheduleSummaryDialog';
 
 function parseYearMonth(viewStr) {
     if (!viewStr) return [new Date().getFullYear(), new Date().getMonth() + 1];
@@ -42,8 +43,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
     const [isOpenUserTodoJobsSummary, setOpenUserTodoJobsSummary] = useState(false);
     const [isOpenReportRecordsSummary, setOpenReportRecordsSummary] = useState(false);
     const [currentSelectedDate, setCurrentSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
-
-    // const yearAndMonth = parseYearMonth(viewYearAndMonthInterval);
+    const [isOpenAdminScheduleSummary, setOpenAdminScheduleSummary] = useState(false);
 
     function onYearAndMonthChange(interval) {
         const formattedView = `${interval[0]}-${String(interval[1]).padStart(2, '0')}`;
@@ -130,6 +130,8 @@ const CalendarTimeTable = memo(function CalendarComponent({
                     acc[categoryId] = {
                         task_category_id: categoryId,
                         users: [],
+                        time_start: task.time_start,
+                        time_end: task.time_end
                     };
                 }
 
@@ -146,13 +148,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
             }, {})
         );
 
-        // const recordsForTheDay = reportRecords
-        //     .filter(task => task.date_start === day.dateString)
-        //     .sort((a, b) => {
-        //         const [aHour, aMin] = a.time_start.split(':').map(Number);
-        //         const [bHour, bMin] = b.time_start.split(':').map(Number);
-        //         return aHour !== bHour ? aHour - bHour : aMin - bMin;
-        //     });
+        const tasksForTheDayGroupedByCategorySortAfterTime = tasksForTheDayGroupedByCategory.sort((a, b) => a.time_start.localeCompare(b.time_start));
 
         return (
             <div className="day-grid-item-header h-full p-1 flex flex-col items-start min-h-34">
@@ -175,25 +171,40 @@ const CalendarTimeTable = memo(function CalendarComponent({
                     onClick={() => requestSwitchView(day.dateString)}
                     className='h-full w-full p-1 hover:bg-gray-200 cursor-pointer'
                 >
-                    {tasksForTheDayGroupedByCategory.map((task, taskInd) => (
-                        <div
-                            key={task.task_category_id + taskInd}
-                            className={`text-xs my-1 text-white rounded-sm p-1`}
-                            style={{
-                                backgroundColor: renderTaskCategoryBackground(task)
-                            }}
-                        >
-                            {task.task_category_id && <div className='grid place-content-center mb-1'><TaskCategoriesIcon categoryId={task.task_category_id} /></div>}
-                            <div className='sm:hidden block bg-gray-100 rounded-sm text-black text-center font-semibold'>+{task.users.length}</div>
-                            <div className='hidden sm:grid gap-1'>
-                                {task.users.map(user => {
-                                    return (
-                                        <div key={user.id} className='rounded-sm px-2 py-1 bg-gray-100 text-center text-black'>{user.name}</div>
-                                    )
-                                })}
+                    {tasksForTheDayGroupedByCategorySortAfterTime.map((task, taskInd) => {
+                        return (
+                            <div
+                                key={String(task.task_category_id) + String(taskInd)}
+                                className={`text-xs my-1 text-white rounded-sm p-1`}
+                                style={{
+                                    backgroundColor: renderTaskCategoryBackground(task)
+                                }}
+                            >
+                                {
+                                    task.task_category_id &&
+                                    <div className='flex flex-col md:flex-row items-center justify-center mb-1 md:gap-x-1'>
+                                        <TaskCategoriesIcon categoryId={task.task_category_id} />
+                                        <span className='text-center sm:text-start'>
+                                            {task.time_start.slice(0, 5)} </span>
+                                        <span className='text-center sm:text-start'>
+                                            -
+                                        </span>
+                                        <span className='text-center sm:text-start'>
+                                            {task.time_end.slice(0, 5)}
+                                        </span>
+                                    </div>
+                                }
+                                <div className='sm:hidden block bg-gray-100 rounded-sm text-black text-center font-semibold'>+{task.users.length}</div>
+                                <div className='hidden sm:grid gap-1'>
+                                    {task.users.map(user => {
+                                        return (
+                                            <div key={user.id + taskInd} className='rounded-sm px-2 py-1 bg-gray-100 text-center text-black'>{user.name}</div>
+                                        )
+                                    })}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
                 <div className='w-full px-1 flex items-center justify-center'>
                     {
@@ -229,7 +240,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
                                 onChange={handleMonthSelect}
                             >
                                 {getMonthDropdownOptions().map(({ label, value }) => (
-                                    <option value={value} key={value} className='text-black'>
+                                    <option value={value} key={String(label + value)} className='text-black'>
                                         {label}
                                     </option>
                                 ))}
@@ -245,7 +256,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
                                 onChange={handleYearSelect}
                             >
                                 {getYearDropdownOptions(year).map(({ label, value }) => (
-                                    <option value={value} key={value} className='text-black'>
+                                    <option value={value} key={String(label + value)} className='text-black'>
                                         {label}
                                     </option>
                                 ))}
@@ -255,7 +266,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
                     <div className="days-of-week grid grid-cols-7 w-full border-y-[1px] border-white py-2 mt-2">
                         {daysOfWeek.map((day, index) => (
                             <div
-                                key={day}
+                                key={day + index}
                                 className={`day-grid-item-container border-x border-white text-center ${[5, 6].includes(index) ? "text-theme-secondary-highlight" : "text-white"}`}
                             >
                                 {day}
@@ -265,10 +276,10 @@ const CalendarTimeTable = memo(function CalendarComponent({
                 </div>
 
                 <div className="days-grid grid grid-cols-7 min-h-screen w-full">
-                    {calendarGridDayObjects.map((day) => {
+                    {calendarGridDayObjects.map((day, ind) => {
                         return (
                             <div
-                                key={day.dateString}
+                                key={day.dateString + String(ind) + day.dayOfMonth}
                                 className={`day-grid-item-container border-[1px] border-theme bg-gray-50`}
                             >
                                 <div
@@ -281,6 +292,27 @@ const CalendarTimeTable = memo(function CalendarComponent({
                     })}
                 </div>
             </div>
+
+            <div className='fixed flex gap-x-2 bottom-2 right-2 sm:right-4 sm:bottom-4 lg:bottom-8 lg:right-8 bg-white rounded-full shadow-sm shadow-black'>
+                <button type="button"
+                    onClick={() => setOpenAdminScheduleSummary(true)}
+                    className="cursor-pointer p-2"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width={20} height={20} className='fill-theme'>
+                        <path d="M512 80c8.8 0 16 7.2 16 16l0 320c0 8.8-7.2 16-16 16L64 432c-8.8 0-16-7.2-16-16L48 96c0-8.8 7.2-16 16-16l448 0zM64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l448 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM208 256a64 64 0 1 0 0-128 64 64 0 1 0 0 128zm-32 32c-44.2 0-80 35.8-80 80c0 8.8 7.2 16 16 16l192 0c8.8 0 16-7.2 16-16c0-44.2-35.8-80-80-80l-64 0zM376 144c-13.3 0-24 10.7-24 24s10.7 24 24 24l80 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-80 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l80 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-80 0z" />
+                    </svg>
+                </button>
+            </div>
+
+            <AdminScheduleSummaryDialog
+                month={month}
+                year={year}
+                currentSelectedDate={currentSelectedDate}
+                isOpen={isOpenAdminScheduleSummary}
+                setOpen={setOpenAdminScheduleSummary}
+                tasks={tasks}
+            />
+
             <UserTodoJobsSummaryDialog
                 isOpen={isOpenUserTodoJobsSummary}
                 setOpen={setOpenUserTodoJobsSummary}
