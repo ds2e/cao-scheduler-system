@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MasterController;
+use App\Http\Controllers\ReportRecordController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RestaurantMenuController;
 use App\Http\Controllers\ScheduleController;
@@ -43,6 +44,7 @@ Route::middleware('auth')->group(function () {
                         return Inertia::render('Maintainance');
                     })->where('any', '.*');
                 });
+                Route::resource('records', ReportRecordController::class)->except(['create', 'edit', 'show']);
                 Route::resource('devices', MasterController::class)->except(['create', 'edit', 'show']);
                 Route::resource('taskCategories', TaskCategory::class)->except(['create', 'edit', 'show']);
             });

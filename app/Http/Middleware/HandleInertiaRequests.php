@@ -80,6 +80,11 @@ class HandleInertiaRequests extends Middleware
                                     'viewAny' => $request->user()->can('viewAny', Work::class),
                                     'href' => '/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/work'
                                 ],
+                                'records' => [
+                                    'title' => 'Statistik',
+                                    'viewAny' => $request->user()->can('viewAny', Work::class),
+                                    'href' => '/dashboard/manage/records'
+                                ],
                                 'menu' => [
                                     'title' => 'Menu',
                                     'viewAny' => $request->user()->can('viewAny', Item::class),

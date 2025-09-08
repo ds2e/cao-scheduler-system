@@ -11,9 +11,13 @@ class ReportRecordPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user): Response
     {
-        return false;
+        if ($user->isAdmin()) {
+            return Response::allow();
+        }
+
+        return Response::denyWithStatus(403);
     }
 
     /**
