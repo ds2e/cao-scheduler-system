@@ -1,9 +1,9 @@
 import { usePage, Link } from "@inertiajs/react";
 
 const tabs = [
-    { name: "Items", path: "/dashboard/manage/menu/items" },
-    { name: "Categories", path: "/dashboard/manage/menu/categories" },
-    { name: "Tables", path: "/dashboard/manage/menu/tables" },
+    { name: "Artikel", path: "/dashboard/manage/menu/items" },
+    { name: "Kategorie", path: "/dashboard/manage/menu/categories" },
+    { name: "Tisch", path: "/dashboard/manage/menu/tables" },
 ];
 
 export default function RestaurantMenuNavTab() {

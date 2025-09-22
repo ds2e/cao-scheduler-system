@@ -1,31 +1,57 @@
-import { Link, useForm, router } from "@inertiajs/react";
+import { Link, useForm, router, usePage } from "@inertiajs/react";
 import RestaurantMenuNavTab from "../../components/Navbar/RestaurantMenuNavTab";
 import SideMenuBar from "../../components/Navbar/SideMenuBar";
 import { useState } from "react";
 import ItemDialog from "../../components/Dialog/ItemDialog";
+import GenericDeletionDialog from "../../components/Dialog/GenericDeletionConfirmationDialog";
 
-export default function ItemsTab({ items, allCats }) {
-    const { data, setData, post, patch, delete: destroy, processing, errors, transform } = useForm({
+export default function ItemsTab({ items, allCats, filters }) {
+    const { data, setData, post, patch, delete: destroy, processing, errors, transform, setError, clearErrors, reset } = useForm({
         currentSelectedItemData: {},
         mode: ''
     });
+
+    const { url } = usePage();
+    const [search, setSearch] = useState(filters?.search || "")
+
+    // Manual search (on click)
+    function confirmSearch() {
+        router.get('/dashboard/manage/menu/items', { search: search }, { preserveState: true, replace: true })
+    }
+
+    function resetSearch() {
+        if (url.includes("search")) {
+            router.get('/dashboard/manage/menu/items');
+            return;
+        }
+
+        if (search !== "") {
+            setSearch("");
+        }
+    }
+
     const [currentPage, setCurrentPage] = useState(items.current_page);
 
     const [isOpenDeleteItemDialog, setOpenDeleteItemDialog] = useState(false);
     const [isOpenItemDialog, setOpenItemDialog] = useState(false);
 
     const goToPage = (page) => {
-        // Inertia automatically handles page requests
         setCurrentPage(page);
-        router.get(`/dashboard/manage/menu/items?page=${page}`);
+
+        const params = { page }; // always include page
+        if (search && search.trim() !== "") {
+            params.search = search;
+        }
+
+        router.get(`/dashboard/manage/menu/items`, params, {
+            preserveState: true,
+            replace: true,
+        });
     };
 
     function requestEditItem(item) {
-        const ItemData = {
-            ...item,
-        }
         setData({
-            currentSelectedItemData: ItemData,
+            currentSelectedItemData: item,
             mode: 'update'
         });
         setOpenItemDialog(true);
@@ -42,39 +68,70 @@ export default function ItemsTab({ items, allCats }) {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const payload = Object.fromEntries(formData.entries());
+        clearErrors();
 
-        if (data.mode == "create") {
+        // Data validation frontend
+        if (!payload.price_euro || !payload.price_cent) {
+            setError("price", "ungültiges Preis.");
+            return;
         }
 
-        console.log(payload)
-        // console.log(data)
-        // patch(`/dashboard/manage/users/${data.currentSelectedItemData.id}`, {
-        //     onSuccess: () => {
-        //         setData({
-        //             ...data,
-        //             currentSelectedItemData: {}
-        //         });
-        //     }
-        // });
+        if (payload.name == "" || payload.name.trim() == "") {
+            setError("name", "erforderliches Feld ist nicht ausgefüllt.");
+            return;
+        }
+
+        if (!payload.category_id) {
+            setError("category_id", "Eine Kategorie muss unbedingt ausgewählt werden.");
+            return;
+        }
+
+        // preparing price to store
+        const price =
+            (Number(payload.price_euro) || 0) + (Number(payload.price_cent) || 0) / 100;
+
+        const updatedData = {
+            ...data.currentSelectedItemData, // keeps id and anything else
+            ...payload, // overwrite with incoming fields (name, category_id, etc.)
+            price: price.toFixed(2), // new price in float with 2 decimals
+        };
+
+        transform((data) => ({
+            ...data,
+            currentSelectedItemData: updatedData,
+        }));
+
+        if (data.mode == "create") {
+            post(`/dashboard/manage/menu/items`, {
+                onSuccess: () => {
+                    clearErrors();
+                    reset();
+                    setOpenItemDialog(false);
+                }
+            })
+        } else if (data.mode == "update") {
+            patch(`/dashboard/manage/menu/items/${data.currentSelectedItemData.id}`, {
+                onSuccess: () => {
+                    clearErrors();
+                    reset();
+                    setOpenItemDialog(false);
+                }
+            });
+        }
     }
 
     function requestDeleteItem(item) {
-        const ItemData = {
-            ...item,
-        }
         setData({
-            currentSelectedItemData: ItemData,
+            currentSelectedItemData: item,
             mode: 'delete'
         });
         setOpenDeleteItemDialog(true);
     }
 
     function confirmDeleteItem() {
-        destroy(`/dashboard/manage/users/${data.currentSelectedItemData.id}`, {
+        destroy(`/dashboard/manage/menu/items/${data.currentSelectedItemData.id}`, {
             onSuccess: () => {
-                setData({
-                    currentSelectedItemData: {}
-                });
+                reset();
                 setOpenDeleteItemDialog(false);
             }
         })
@@ -85,34 +142,46 @@ export default function ItemsTab({ items, allCats }) {
             <div className="antialiased bg-gray-50 dark:bg-gray-900">
                 <SideMenuBar />
                 <section className="relative p-4 md:ml-64 h-auto pt-20 bg-theme min-h-screen place-content-center">
-                    <div className="absolute inset-0 bg-black/75 flex items-center justify-center z-2">
+                    {/* <div className="absolute inset-0 bg-black/75 flex items-center justify-center z-2">
                         <span className="text-white text-lg font-bold">Diese Funktion befindet sich im Aufbau</span>
-                    </div>
+                    </div> */}
                     <RestaurantMenuNavTab />
                     <div className="relative overflow-x-auto rounded-md mt-4">
                         <div className="flex items-center justify-between rounded-tl-md rounded-tr-md bg-white dark:bg-gray-900 overflow-x-clip">
-                            <div>
-                                {
-                                    Object.keys(errors).length > 0 ?
-                                        <div className="space-y-1 overflow-y-scroll h-10 px-6 py-2">
-                                            {Object.entries(errors).map(([field, message]) => (
-                                                <p className="text-red-500 font-semibold" key={field + "password"}>
-                                                    {message}
-                                                </p>
-                                            ))}
-                                        </div>
-                                        :
-                                        <></>
-                                }
+                            <div className="px-4">
+                                <span className="text-theme-secondary font-bold">{items.total}</span> Artikel(n)
                             </div>
                             <div className="relative translate-x-0.5 -translate-y-0.5">
-                                <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <div
+                                    onClick={confirmSearch}
+                                    className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 cursor-pointer">
+
+                                    <svg
+                                        className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 20 20"
+                                    >
                                         <path stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                     </svg>
                                 </div>
+                                <div
+                                    onClick={resetSearch}
+                                    className="absolute inset-y-0 rtl:inset-l-0 end-0 flex items-center pe-3 cursor-pointer">
+                                    <svg
+                                        fill="#fff"
+                                        aria-hidden="true"
+                                        className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                                        <path d="M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z" />
+                                    </svg>
+                                </div>
                                 <label htmlFor="table-search" className="sr-only">Search</label>
-                                <input type="text" id="table-search-users" className="h-10 rounded-tr-sm rounded-bl-sm p-2 ps-10 text-sm text-white w-80 bg-theme focus:ring-blue-500 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500" placeholder="Search for users" />
+                                <input
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    type="text" id="table-search-users" className="h-10 rounded-tr-sm rounded-bl-sm p-2 px-10 text-sm text-white w-80 bg-theme focus:ring-blue-500 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500"
+                                    placeholder="Search for item"
+                                />
                             </div>
                         </div>
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -200,10 +269,12 @@ export default function ItemsTab({ items, allCats }) {
                 setOpen={setOpenItemDialog}
                 itemData={data.mode == "create" ? null : data.currentSelectedItemData}
                 allCats={allCats}
+                clearErrors={clearErrors}
                 requestSubmitData={requestSubmitData}
                 errors={errors}
                 processing={processing}
             />
+            <GenericDeletionDialog isOpen={isOpenDeleteItemDialog} setOpen={setOpenDeleteItemDialog} confirmDelete={confirmDeleteItem} />
         </>
     )
 }

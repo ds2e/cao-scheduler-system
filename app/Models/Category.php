@@ -10,16 +10,31 @@ class Category extends Model
     /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory;
 
-    protected $connection = 'mysql_waiter';
+    public $timestamps = false;
+
+    protected $connection = 'mysql_waiter'; // since you’re using a custom connection
 
     protected $fillable = [
         'name',
         'icon',
-        'priority'
+        'priority',
+        'sub_category_from',
     ];
 
-    public function subCategories()
+    // Parent category (belongsTo itself)
+    public function parent()
     {
-        return $this->hasMany(SubCategory::class, 'category_id');
+        return $this->belongsTo(Category::class, 'sub_category_from');
+    }
+
+    // Subcategories (hasMany of itself)
+    public function subcategories()
+    {
+        return $this->hasMany(Category::class, 'sub_category_from');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(Item::class, 'category_id');
     }
 }

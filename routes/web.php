@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\ReportRecordController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RestaurantMenuController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\StorageResourceController;
+use App\Http\Controllers\TableController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;
@@ -39,14 +43,24 @@ Route::middleware('auth')->group(function () {
                 Route::resource('users', UserController::class)->except(['create', 'edit', 'show']);
                 Route::resource('todos', TodoController::class)->except(['create', 'edit', 'show']);
                 Route::prefix('menu')->name('menu.')->group(function () {
-                    // Route::get('items', [RestaurantMenuController::class, 'showItemManageMenu']);
-                    Route::any('{any}', function () {
-                        return Inertia::render('Maintainance');
-                    })->where('any', '.*');
+                    Route::get('/', function () {
+                        return redirect('/dashboard/manage/menu/items');
+                    });
+
+                    Route::resource('items', ItemController::class)->except(['create', 'edit', 'show']);
+                    Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+                    Route::resource('tables', TableController::class)->except(['create', 'edit', 'show']);
+                    // Route::any('{any}', function () {
+                    //     return Inertia::render('Maintainance');
+                    // })->where('any', '.*');
                 });
                 Route::resource('records', ReportRecordController::class)->except(['create', 'edit', 'show']);
                 Route::resource('devices', MasterController::class)->except(['create', 'edit', 'show']);
-                Route::resource('taskCategories', TaskCategory::class)->except(['create', 'edit', 'show']);
+                // Route::resource('taskCategories', TaskCategory::class)->except(['create', 'edit', 'show']);
+
+                // Super Admin Route for managing storage and database
+                Route::get('storage', [StorageResourceController::class, 'index']);
+                Route::post('storage', [StorageResourceController::class, 'handleStorageResourceAction']);
             });
 
             // Profile

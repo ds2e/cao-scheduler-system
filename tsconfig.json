@@ -6,7 +6,8 @@
     "moduleResolution": "node",
     "baseUrl": "./resources/js",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "+/*": ["../assets/*"]
     },
     "strict": true,                 // Enable strict type-checking options
     "skipLibCheck": true,           // Skip type checking of declaration files

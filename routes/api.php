@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ApiAuthController;
+use App\Http\Controllers\Api\ApiRestaurantController;
 use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Api\ApiWorkController;
 use Illuminate\Http\Request;
@@ -20,3 +21,4 @@ Route::apiResource('users', ApiUserController::class)->middleware('auth:sanctum'
 
 // API for communicating with cao work manager
 Route::apiResource('work', ApiWorkController::class)->except(['show', 'update', 'destroy']);
+Route::get('restaurant', [ApiRestaurantController::class, 'index']);

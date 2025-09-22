@@ -10,6 +10,8 @@ class Item extends Model
     /** @use HasFactory<\Database\Factories\ItemFactory> */
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $connection = 'mysql_waiter';
 
     protected $fillable = [
@@ -17,11 +19,15 @@ class Item extends Model
         'name',
         'price',
         'class',
-        'sub_category_id'
+        'category_id'
     ];
 
-    public function subCategory()
+    protected $casts = [
+        'price' => 'decimal:2',
+    ];
+
+    public function category()
     {
-        return $this->belongsTo(SubCategory::class, 'sub_category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 }

@@ -11,22 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // if (!Schema::connection('mysql_waiter')->hasTable('items')) {
-        //     Schema::connection('mysql_waiter')->create('items', function (Blueprint $table) {
-        //         $table->id();
-        //         $table->string('code')->nullable();
-        //         $table->string('name');
-        //         $table->decimal('price', 10, 2);
-        //         $table->string('class')->nullable();
+        if (!Schema::connection('mysql_waiter')->hasTable('items')) {
+            Schema::connection('mysql_waiter')->create('items', function (Blueprint $table) {
+                $table->id();
+                $table->string('code')->nullable();
+                $table->string('name');
+                $table->decimal('price', 10, 2);
+                $table->string('class')->nullable();
 
-        //         // foreign key
-        //         $table->foreignId('sub_category_id')
-        //             ->nullable()
-        //             ->constrained('sub_categories')
-        //             ->nullOnDelete()
-        //             ->cascadeOnUpdate();
-        //     });
-        // }
+                // foreign key
+                $table->foreignId('category_id')
+                    ->nullable()
+                    ->constrained('categories')
+                    ->nullOnDelete()
+                    ->cascadeOnUpdate();
+            });
+        }
     }
 
     /**
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Schema::connection('mysql_waiter')->dropIfExists('items');
+        Schema::connection('mysql_waiter')->dropIfExists('items');
     }
 };

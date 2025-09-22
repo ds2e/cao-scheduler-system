@@ -113,10 +113,10 @@ class WorkController extends Controller
         // }
 
         // 4. Check if already has a work entry today
-        $today = Carbon::today()->format('Y-m-d');
+        // $today = Carbon::today()->format('Y-m-d');
 
         $alreadyAtWork = Work::where('user_id', $user->id)
-            ->where('date', $today)
+            // ->where('date', $today)
             ->exists();
 
         if ($alreadyAtWork) {
@@ -158,10 +158,10 @@ class WorkController extends Controller
         }
 
         // 3. Check if user has a work entry today
-        $today = Carbon::today()->format('Y-m-d');
+        // $today = Carbon::today()->format('Y-m-d');
 
         $work = Work::where('user_id', $user->id)
-            ->where('date', $today)
+            // ->where('date', $today)
             ->first();
 
         if (!$work) {
@@ -174,7 +174,7 @@ class WorkController extends Controller
         $durationInSeconds = $timeEnd->diffInSeconds($timeStart, true);
 
         // 5. Save ReportRecord
-        $savedRecord = ReportRecord::create([
+        ReportRecord::create([
             'user_id'    => $user->id,
             'date'       => $work->date,
             'time_start' => $work->time_start,
@@ -185,7 +185,7 @@ class WorkController extends Controller
 
         // 6. Delete Work entry
         Work::where('user_id', $user->id)
-            ->where('date', $today)
+            // ->where('date', $today)
             ->delete();
 
         return back()->with('success', 'Work ended successfully!');

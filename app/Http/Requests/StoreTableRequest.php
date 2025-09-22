@@ -9,10 +9,10 @@ class StoreTableRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
-        return false;
-    }
+    // public function authorize(): bool
+    // {
+    //     return false;
+    // }
 
     /**
      * Get the validation rules that apply to the request.
@@ -22,7 +22,8 @@ class StoreTableRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'currentSelectedTableData.name' => ['required', 'string', 'max:255'],
+            'currentSelectedTableData.type' => ['nullable','integer', 'min:0']
         ];
     }
 }

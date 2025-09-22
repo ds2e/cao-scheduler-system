@@ -10,6 +10,8 @@ class Table extends Model
     /** @use HasFactory<\Database\Factories\TableFactory> */
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $connection = 'mysql_waiter';
 
     protected $fillable = [

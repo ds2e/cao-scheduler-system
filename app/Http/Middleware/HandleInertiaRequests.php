@@ -6,6 +6,7 @@ use App\Enums\UserRoles;
 use App\Models\Item;
 use App\Models\Master;
 use App\Models\Schedule;
+use App\Models\StorageResource;
 use App\Models\Todo;
 use App\Models\User;
 use App\Models\Work;
@@ -88,13 +89,19 @@ class HandleInertiaRequests extends Middleware
                                 'menu' => [
                                     'title' => 'Menu',
                                     'viewAny' => $request->user()->can('viewAny', Item::class),
-                                    'href' => '/dashboard/manage/menu/items'
+                                    'href' => '/dashboard/manage/menu'
                                 ],
                                 'devices' => [
                                     'title' => 'Geräte',
                                     'viewAny' => $request->user()->can('viewAny', Master::class),
                                     'href' => '/dashboard/manage/devices'
+                                ],
+                                'storage' => [
+                                    'title' => 'Verwaltung',
+                                    'viewAny' => $request->user()->can('viewAny', StorageResource::class),
+                                    'href' => '/dashboard/manage/storage'
                                 ]
+
                             ],
                         ] : null
                     ] : null
