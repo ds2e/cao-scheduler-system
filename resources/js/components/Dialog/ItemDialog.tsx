@@ -2,6 +2,7 @@ import {
     Dialog,
     DialogContent,
     DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -19,23 +20,25 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import * as React from "react"
-import { CategoryData, ItemDataBackend, ItemDataFrontend } from "@/lib/types"
+import { CategoryData, ItemClassData, ItemDataBackend, ItemDataFrontend } from "@/lib/types"
 
 type ItemDialogProps = {
     isOpen: boolean,
     setOpen: VoidFunction,
     itemData: ItemDataBackend,
     allCats: Array<CategoryData>,
+    allItemClasses: Array<ItemClassData>,
     requestSubmitData: VoidFunction,
     errors: Record<keyof ItemDataBackend, string>,
     clearErrors: VoidFunction,
     processing: boolean
 }
 
-export default function ItemDialog({ isOpen, setOpen, itemData, allCats, requestSubmitData, errors, clearErrors, processing }: ItemDialogProps) {
+export default function ItemDialog({ isOpen, setOpen, itemData, allCats, allItemClasses, requestSubmitData, errors, clearErrors, processing }: ItemDialogProps) {
     const [data, setData] = useState<Partial<ItemDataFrontend>>({
         name: '',
         code: "",
+        item_class: null,
         price_euro: "",
         price_cent: "",
         category_id: -1
@@ -48,6 +51,13 @@ export default function ItemDialog({ isOpen, setOpen, itemData, allCats, request
         )?.id
         : -1;
 
+    const [selectedItemClass, setSelectedItemClass] = useState<number | null>(-1);
+    const originalItemClass = itemData?.item_class
+        ? allItemClasses.find((itemClass) =>
+            (itemClass.id === itemData.item_class)
+        )?.id
+        : null;
+
     useEffect(() => {
         if (itemData !== null) {
             const price = Number(itemData.price) ?? 0; // fallback if null/undefined
@@ -56,6 +66,7 @@ export default function ItemDialog({ isOpen, setOpen, itemData, allCats, request
             setData({
                 name: itemData.name,
                 code: itemData.code,
+                item_class: itemData.item_class !== null ? Number(itemData.item_class) : null,
                 price_euro: price_euro,
                 price_cent: price_cent,
                 category_id: itemData.category_id !== null ? Number(itemData.category_id) : -1
@@ -64,13 +75,19 @@ export default function ItemDialog({ isOpen, setOpen, itemData, allCats, request
             setSelectedCategory((prev) => {
                 return itemData.category_id !== null ? Number(itemData.category_id) : -1
             })
+
+            setSelectedItemClass((prev) => {
+                return itemData.item_class !== null ? Number(itemData.item_class) : null
+            })
         }
 
         return () => {
             setSelectedCategory(-1);
+            setSelectedItemClass(-1);
             setData({
                 name: '',
                 code: "",
+                item_class: null,
                 price_euro: "",
                 price_cent: "",
                 category_id: -1
@@ -82,22 +99,22 @@ export default function ItemDialog({ isOpen, setOpen, itemData, allCats, request
 
     return (
         <Dialog open={isOpen} onOpenChange={setOpen}>
-            <DialogContent className="bg-theme">
-                <DialogHeader>
-                    <DialogDescription>
-                        <img
-                            alt="Your Company"
-                            src={mainLogo}
-                            className="mx-auto h-18 sm:h-36 w-auto"
-                        />
-                    </DialogDescription>
-                    <DialogTitle className="mt-4 text-center text-2xl/9 font-bold tracking-tight text-theme-secondary">
-                        {itemData == null ? "Add Item" : "Edit Item"}
-                    </DialogTitle>
-                </DialogHeader>
+            <DialogContent className="bg-theme max-h-[95%] items-center">
+                <form onSubmit={requestSubmitData} className="space-y-6">
+                    <DialogHeader>
+                        <DialogDescription>
+                            <img
+                                alt="Your Company"
+                                src={mainLogo}
+                                className="mx-auto h-18 sm:h-36 w-auto"
+                            />
+                        </DialogDescription>
+                        <DialogTitle className="mt-4 text-center text-2xl/9 font-bold tracking-tight text-theme-secondary">
+                            {itemData == null ? "Artikel hinzufügen" : "Artikel ändern"}
+                        </DialogTitle>
+                    </DialogHeader>
 
-                <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form onSubmit={requestSubmitData} className="space-y-6">
+                    <div className="mt-4 overflow-y-scroll space-y-6">
                         <div className="flex items-center justify-between gap-x-2">
                             <div className="flex-1/2">
                                 <label htmlFor="code" className="block text-sm/6 font-medium text-white">
@@ -145,7 +162,7 @@ export default function ItemDialog({ isOpen, setOpen, itemData, allCats, request
                         <div className="flex items-center justify-between gap-x-2">
                             <div className="flex-1/2">
                                 <label htmlFor="price_euro" className="block text-sm/6 font-medium text-white">
-                                    Price (Euro) <span className="text-theme-secondary">*</span>
+                                    Preis (Euro) <span className="text-theme-secondary">*</span>
                                 </label>
                                 <div className="mt-2">
                                     <input
@@ -171,7 +188,7 @@ export default function ItemDialog({ isOpen, setOpen, itemData, allCats, request
                             </div>
                             <div className="flex-1/2">
                                 <label htmlFor="price_cent" className="block text-sm/6 font-medium text-white">
-                                    Price (Cent) <span className="text-theme-secondary">*</span>
+                                    Preis (Cent) <span className="text-theme-secondary">*</span>
                                 </label>
                                 <div className="mt-2">
                                     <input
@@ -199,61 +216,128 @@ export default function ItemDialog({ isOpen, setOpen, itemData, allCats, request
                         </div>
                         {errors.price && <p className="mt-2 text-red-500">{errors.price}</p>}
 
-                        <div>
-                            <label htmlFor="category_id" className="block text-sm/6 font-medium text-white">
-                                Category <span className="text-theme-secondary">*</span>
-                            </label>
-                            <div className="mt-2">
+                        <div className="flex items-center justify-between gap-x-2">
+                            <div className="flex-1/2">
+                                <label htmlFor="item_class" className="block text-sm/6 font-medium text-white">
+                                    Steuersatz
+                                </label>
+                                <div className="mt-2">
 
-                                {/* Category */}
-                                <Select
-                                    name="category_id"
-                                    required
-                                    value={String(selectedCategory)}
-                                    onValueChange={(val) => {
-                                        const catId = Number(val)
-                                        setSelectedCategory(catId)
-                                        setData((prev) => ({ ...prev, category_id: catId }))
-                                    }}
-                                    disabled={processing}
-                                >
-                                    <SelectTrigger
-                                        className={`w-1/2 ${selectedCategory !== originalCategoryId && itemData
-                                            ? "bg-theme-secondary text-white" // changed
-                                            : "bg-gray-700 text-white" // unchanged
-                                            } ${errors.category_id && "border-theme-secondary"}`}
+                                    {/* Category */}
+                                    <Select
+                                        name="item_class"
+                                        value={selectedItemClass === null ? "null" : String(selectedItemClass)}
+                                        onValueChange={(val) => {
+                                            const itemClassId = (val === "null") ? null : Number(val);
+                                            setSelectedItemClass(itemClassId)
+                                            setData((prev) => ({ ...prev, item_class: itemClassId }))
+                                        }}
+                                        disabled={processing}
                                     >
-                                        <SelectValue placeholder="Select Category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Categories</SelectLabel>
-                                            <SelectItem value="-1" disabled>
-                                                Select a category
-                                            </SelectItem>
-                                            {allCats
-                                                .sort((a, b) => {
-                                                    return a.name.localeCompare(b.name);
-                                                })
-                                                .map((cat) => (
-                                                    <SelectItem
-                                                        key={cat.id}
-                                                        value={String(cat.id)}
-                                                        className={
-                                                            cat.id === originalCategoryId
-                                                                ? "text-theme-secondary font-semibold"
-                                                                : ""
-                                                        }
-                                                    >
-                                                        {cat.name}
-                                                    </SelectItem>
-                                                ))}
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
+                                        <SelectTrigger
+                                            className={`w-full ${selectedItemClass !== originalItemClass && itemData
+                                                ? "bg-theme-secondary text-white" // changed
+                                                : "bg-gray-700 text-white" // unchanged
+                                                } ${errors.item_class && "border-theme-secondary"}`}
+                                        >
+                                            <SelectValue placeholder="Select Category" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Steuersatz</SelectLabel>
+                                                <SelectItem value="-1" disabled>
+                                                    Steuersatz auswählen
+                                                </SelectItem>
+                                                <SelectItem key={'Tax-null'} value="null" className={
+                                                    originalItemClass == null && itemData
+                                                        ? "text-theme-secondary font-semibold"
+                                                        : ""
+                                                }>
+                                                    None
+                                                </SelectItem>
+                                                {allItemClasses
+                                                    .sort((a, b) => {
+                                                        return a.name.localeCompare(b.name);
+                                                    })
+                                                    .map((itemClass) => (
+                                                        <SelectItem
+                                                            key={itemClass.id}
+                                                            value={String(itemClass.id)}
+                                                            className={
+                                                                itemClass.id === originalItemClass
+                                                                    ? "text-theme-secondary font-semibold"
+                                                                    : ""
+                                                            }
+                                                        >
+                                                            {itemClass.name} ({itemClass.rate}%)
+                                                        </SelectItem>
+                                                    ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                {errors.item_class && <p className="mt-2 text-red-500">{errors.item_class}</p>}
                             </div>
+                            <div className="flex-1/2">
+                                <label htmlFor="category_id" className="block text-sm/6 font-medium text-white">
+                                    Kategorie <span className="text-theme-secondary">*</span>
+                                </label>
+                                <div className="mt-2">
+
+                                    {/* Category */}
+                                    <Select
+                                        name="category_id"
+                                        required
+                                        value={String(selectedCategory)}
+                                        onValueChange={(val) => {
+                                            const catId = Number(val)
+                                            setSelectedCategory(catId)
+                                            setData((prev) => ({ ...prev, category_id: catId }))
+                                        }}
+                                        disabled={processing}
+                                    >
+                                        <SelectTrigger
+                                            className={`w-full ${selectedCategory !== originalCategoryId && itemData
+                                                ? "bg-theme-secondary text-white" // changed
+                                                : "bg-gray-700 text-white" // unchanged
+                                                } ${errors.category_id && "border-theme-secondary"}`}
+                                        >
+                                            <SelectValue placeholder="Select Category" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Kategorien</SelectLabel>
+                                                <SelectItem value="-1" disabled>
+                                                    Kategorie auswählen
+                                                </SelectItem>
+                                                {allCats
+                                                    .sort((a, b) => {
+                                                        return a.name.localeCompare(b.name);
+                                                    })
+                                                    .map((cat) => (
+                                                        <SelectItem
+                                                            key={cat.id}
+                                                            value={String(cat.id)}
+                                                            className={
+                                                                cat.id === originalCategoryId
+                                                                    ? "text-theme-secondary font-semibold"
+                                                                    : ""
+                                                            }
+                                                        >
+                                                            {cat.name}
+                                                        </SelectItem>
+                                                    ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                {errors.category_id && <p className="mt-2 text-red-500">{errors.category_id}</p>}
+                            </div>
+
                         </div>
-                        {errors.category_id && <p className="mt-2 text-red-500">{errors.category_id}</p>}
+
+
+
                         {
                             Object.keys(errors).length > 0 ?
                                 <div className="space-y-1 overflow-y-scroll h-10 py-2">
@@ -266,21 +350,21 @@ export default function ItemDialog({ isOpen, setOpen, itemData, allCats, request
                                 :
                                 <></>
                         }
-                        <div>
-                            <button
-                                type="submit"
-                                disabled={processing}
-                                className="cursor-pointer flex w-full justify-center rounded-md bg-theme-secondary px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-theme-secondary-highlight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                                {
-                                    processing
-                                        ? (itemData == null ? "Adding..." : "Editing...")
-                                        : (itemData == null ? "Add" : "Edit")
-                                }
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <DialogFooter>
+                        <button
+                            type="submit"
+                            disabled={processing}
+                            className="cursor-pointer flex w-full justify-center rounded-md bg-theme-secondary px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-theme-secondary-highlight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            {
+                                processing
+                                    ? (itemData == null ? "Laden..." : "Laden...")
+                                    : (itemData == null ? "Addieren" : "Ändern")
+                            }
+                        </button>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     )

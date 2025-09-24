@@ -5,7 +5,7 @@ import { useState } from "react";
 import ItemDialog from "../../components/Dialog/ItemDialog";
 import GenericDeletionDialog from "../../components/Dialog/GenericDeletionConfirmationDialog";
 
-export default function ItemsTab({ items, allCats, filters }) {
+export default function ItemsTab({ items, allCats, allItemClasses, filters }) {
     const { data, setData, post, patch, delete: destroy, processing, errors, transform, setError, clearErrors, reset } = useForm({
         currentSelectedItemData: {},
         mode: ''
@@ -94,6 +94,7 @@ export default function ItemsTab({ items, allCats, filters }) {
             ...data.currentSelectedItemData, // keeps id and anything else
             ...payload, // overwrite with incoming fields (name, category_id, etc.)
             price: price.toFixed(2), // new price in float with 2 decimals
+            item_class: payload.item_class !== "null" ? payload.item_class : null
         };
 
         transform((data) => ({
@@ -146,7 +147,7 @@ export default function ItemsTab({ items, allCats, filters }) {
                         <span className="text-white text-lg font-bold">Diese Funktion befindet sich im Aufbau</span>
                     </div> */}
                     <RestaurantMenuNavTab />
-                    <div className="relative overflow-x-auto rounded-md mt-4">
+                    <div className="relative overflow-x-auto rounded-md">
                         <div className="flex items-center justify-between rounded-tl-md rounded-tr-md bg-white dark:bg-gray-900 overflow-x-clip">
                             <div className="px-4">
                                 <span className="text-theme-secondary font-bold">{items.total}</span> Artikel(n)
@@ -216,7 +217,7 @@ export default function ItemsTab({ items, allCats, filters }) {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="font-normal text-gray-500">{item.price} &euro;</div>
+                                                <div className="font-normal text-gray-500">{item.price} &euro; {item.item_class && <span className="text-black font-bold">({allItemClasses.find((c) => c.id === item.item_class).name})</span>}</div>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <button type="button" onClick={() => requestEditItem(item)} className="cursor-pointer p-2">
@@ -269,6 +270,7 @@ export default function ItemsTab({ items, allCats, filters }) {
                 setOpen={setOpenItemDialog}
                 itemData={data.mode == "create" ? null : data.currentSelectedItemData}
                 allCats={allCats}
+                allItemClasses={allItemClasses}
                 clearErrors={clearErrors}
                 requestSubmitData={requestSubmitData}
                 errors={errors}

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ItemClassController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\ReportRecordController;
@@ -48,6 +49,7 @@ Route::middleware('auth')->group(function () {
                     });
 
                     Route::resource('items', ItemController::class)->except(['create', 'edit', 'show']);
+                    Route::resource('items/tax', ItemClassController::class)->except(['create', 'edit', 'show']);
                     Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
                     Route::resource('tables', TableController::class)->except(['create', 'edit', 'show']);
                     // Route::any('{any}', function () {

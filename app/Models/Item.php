@@ -18,7 +18,7 @@ class Item extends Model
         'code',
         'name',
         'price',
-        'class',
+        'item_class',
         'category_id'
     ];
 
@@ -29,5 +29,10 @@ class Item extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function itemClass()
+    {
+        return $this->belongsTo(ItemClass::class, 'item_class');
     }
 }

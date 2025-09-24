@@ -10,7 +10,7 @@ import { useForm } from "@inertiajs/react"
 import mainLogo from '+/images/Cao_Laura_ohneText.png'
 import { useEffect } from "react"
 
-export default function UserDeleteDialog({ isOpen, setOpen }) {
+export default function UserRegisterDialog({ isOpen, setOpen }) {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         email: '',

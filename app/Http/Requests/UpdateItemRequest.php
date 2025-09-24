@@ -26,7 +26,7 @@ class UpdateItemRequest extends FormRequest
             'currentSelectedItemData.id' => ['required', 'integer', Rule::exists('mysql_waiter.items', 'id')],
             'currentSelectedItemData.code' => ['nullable','string', 'max:255'],
             'currentSelectedItemData.name' => ['required', 'string', 'max:255'],
-            'currentSelectedItemData.class' => ['nullable','string', 'max:255'],
+            'currentSelectedItemData.item_class' => ['nullable','integer', Rule::exists('mysql_waiter.item_classes', 'id')],
             'currentSelectedItemData.price' => ['required', 'decimal:0,2'],
             'currentSelectedItemData.category_id' => ['required', 'integer', Rule::exists('mysql_waiter.categories', 'id')],
         ];

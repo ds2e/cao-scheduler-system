@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Models\Category;
+use App\Models\ItemClass;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -21,8 +22,10 @@ class ItemController extends Controller
     {
         $this->authorize('viewAny', Item::class);
 
+        // $query = Item::with('itemClass');
         $query = Item::query();
         $allCats = Category::all();
+        $allItemClasses = ItemClass::all();
 
         if ($request->input('search')) {
             $search = trim($request->input('search', ''));
@@ -34,15 +37,20 @@ class ItemController extends Controller
             return inertia('Menu/Items', [
                 'items' => $items,
                 'allCats' => $allCats,
+                'allItemClasses' => $allItemClasses,
                 'filters' => $request->only('search'),
             ]);
         }
 
+        // $items = Item::with('itemClass')
+        //     ->orderBy('name', 'asc')
+        //     ->paginate(10);
         $items = Item::orderBy('name', 'asc')->paginate(10);
 
         return inertia('Menu/Items', [
             'items' => $items,
-            'allCats' => $allCats
+            'allCats' => $allCats,
+            'allItemClasses' => $allItemClasses
         ]);
     }
 
@@ -101,7 +109,7 @@ class ItemController extends Controller
 
         $item->name = $itemData['name'];
         $item->code = $itemData['code'];
-        $item->class = $itemData['class'];
+        $item->item_class = $itemData['item_class'];
         $item->price = $itemData['price'];
         $item->category_id = $itemData['category_id'];
 

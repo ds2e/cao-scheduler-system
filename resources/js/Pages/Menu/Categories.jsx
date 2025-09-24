@@ -130,7 +130,7 @@ export default function CategoriesTab({ allCats }) {
                         <span className="text-white text-lg font-bold">Diese Funktion befindet sich im Aufbau</span>
                     </div> */}
                     <RestaurantMenuNavTab />
-                    <div className="relative overflow-x-auto mt-4">
+                    <div className="relative overflow-x-auto">
                         <div className="space-y-6">
                             {/* Breadcrumb Navigation */}
                             <div className="flex items-center space-x-2">

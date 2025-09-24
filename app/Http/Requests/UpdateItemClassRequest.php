@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreItemRequest extends FormRequest
+class UpdateItemClassRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +23,15 @@ class StoreItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'currentSelectedItemData.code' => ['nullable','string', 'max:255'],
-            'currentSelectedItemData.name' => ['required', 'string', 'max:255'],
-            'currentSelectedItemData.item_class' => ['nullable','integer', Rule::exists('mysql_waiter.item_classes', 'id')],
-            'currentSelectedItemData.price' => ['required', 'decimal:0,2'],
-            'currentSelectedItemData.category_id' => ['required', 'integer', Rule::exists('mysql_waiter.categories', 'id')],
+            'currentSelectedTaxClassData.id' => ['required', 'integer', Rule::exists('mysql_waiter.item_classes', 'id')],
+            'currentSelectedTaxClassData.name' => ['required', 'string', 'max:255'],
+            'currentSelectedTaxClassData.rate' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                'max:100',
+                'regex:/^\d{1,3}(\.\d{1,2})?$/'
+            ]
         ];
     }
 }

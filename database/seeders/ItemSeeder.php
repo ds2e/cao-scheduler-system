@@ -11,13 +11,14 @@ class ItemSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-        private $defaultItems = [
+    private $defaultItems = [
         // SALATE
         [
             "id" => 1,
             "code" => "1",
             "name" => "Konfetti (nur Grünzeug)",
             "category_id" => 14,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -25,6 +26,7 @@ class ItemSeeder extends Seeder
             "code" => "2",
             "name" => "Konfetti (Bio Tofu)",
             "category_id" => 14,
+            "item_class" => 2,
             "price" => 7.5
         ],
         [
@@ -32,6 +34,7 @@ class ItemSeeder extends Seeder
             "code" => "3",
             "name" => "Konfetti (gegrilltes Hähnchen)",
             "category_id" => 14,
+            "item_class" => 2,
             "price" => 9.5
         ],
         [
@@ -39,6 +42,7 @@ class ItemSeeder extends Seeder
             "code" => "4",
             "name" => "Konfetti (Lachs)",
             "category_id" => 14,
+            "item_class" => 2,
             "price" => 15
         ],
         [
@@ -46,6 +50,7 @@ class ItemSeeder extends Seeder
             "code" => "5",
             "name" => "Der Gewickelte (Bio Tofu)",
             "category_id" => 14,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -53,6 +58,7 @@ class ItemSeeder extends Seeder
             "code" => "6",
             "name" => "Der Gewickelte (Hähnchenbrust)",
             "category_id" => 14,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -60,6 +66,7 @@ class ItemSeeder extends Seeder
             "code" => "7",
             "name" => "Der Gewickelte (Garnelen)",
             "category_id" => 14,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -67,6 +74,7 @@ class ItemSeeder extends Seeder
             "code" => "8",
             "name" => "Der Gewickelte (Wakame)",
             "category_id" => 14,
+            "item_class" => 2,
             "price" => 7
         ],
         // Süppchen
@@ -75,6 +83,7 @@ class ItemSeeder extends Seeder
             "code" => "11",
             "name" => "Miso",
             "category_id" => 15,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -82,6 +91,7 @@ class ItemSeeder extends Seeder
             "code" => "12",
             "name" => "Sauer - Scharf",
             "category_id" => 15,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -89,6 +99,7 @@ class ItemSeeder extends Seeder
             "code" => "13",
             "name" => "Teigtasche Suppe (Gemüse | Vegan)",
             "category_id" => 15,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -96,6 +107,7 @@ class ItemSeeder extends Seeder
             "code" => "14",
             "name" => "Teigtasche Suppe (Hähnchen)",
             "category_id" => 15,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -103,6 +115,7 @@ class ItemSeeder extends Seeder
             "code" => "15",
             "name" => "Teigtasche Suppe (Garnelen)",
             "category_id" => 15,
+            "item_class" => 2,
             "price" => 6.5
         ],
         // TAPAS
@@ -111,6 +124,7 @@ class ItemSeeder extends Seeder
             "code" => "20",
             "name" => "Gemüse Stick",
             "category_id" => 16,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -118,6 +132,7 @@ class ItemSeeder extends Seeder
             "code" => "21",
             "name" => "Cha Gio Chay",
             "category_id" => 16,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -125,6 +140,7 @@ class ItemSeeder extends Seeder
             "code" => "22",
             "name" => "Dreiecken",
             "category_id" => 16,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -132,6 +148,7 @@ class ItemSeeder extends Seeder
             "code" => "23",
             "name" => "vegane Teigtaschen",
             "category_id" => 16,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -139,6 +156,7 @@ class ItemSeeder extends Seeder
             "code" => "24",
             "name" => "Hähnchen Teigtaschen",
             "category_id" => 16,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -146,6 +164,7 @@ class ItemSeeder extends Seeder
             "code" => "25",
             "name" => "Garnelen Teigtaschen",
             "category_id" => 16,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -153,6 +172,7 @@ class ItemSeeder extends Seeder
             "code" => "26",
             "name" => "Ebi Fry",
             "category_id" => 16,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -160,6 +180,7 @@ class ItemSeeder extends Seeder
             "code" => "27",
             "name" => "Cha Gio",
             "category_id" => 16,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -167,6 +188,7 @@ class ItemSeeder extends Seeder
             "code" => "28",
             "name" => "Money Bags",
             "category_id" => 16,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -174,6 +196,7 @@ class ItemSeeder extends Seeder
             "code" => "29",
             "name" => "Spiessee",
             "category_id" => 16,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -181,6 +204,7 @@ class ItemSeeder extends Seeder
             "code" => "30",
             "name" => "Erdapffel",
             "category_id" => 16,
+            "item_class" => 2,
             "price" => 8
         ],
         // BAO BUNS
@@ -189,6 +213,7 @@ class ItemSeeder extends Seeder
             "code" => "31",
             "name" => "Vegan Cáo",
             "category_id" => 17,
+            "item_class" => 2,
             "price" => 15
         ],
         [
@@ -196,6 +221,7 @@ class ItemSeeder extends Seeder
             "code" => "32",
             "name" => "Cheeky Buns",
             "category_id" => 17,
+            "item_class" => 2,
             "price" => 17
         ],
         [
@@ -203,6 +229,7 @@ class ItemSeeder extends Seeder
             "code" => "33",
             "name" => "Nice To Meat You",
             "category_id" => 17,
+            "item_class" => 2,
             "price" => 19
         ],
         [
@@ -210,6 +237,7 @@ class ItemSeeder extends Seeder
             "code" => "34",
             "name" => "Shrimply Tempura",
             "category_id" => 17,
+            "item_class" => 2,
             "price" => 17
         ],
         [
@@ -217,6 +245,7 @@ class ItemSeeder extends Seeder
             "code" => "35",
             "name" => "Fish Lover",
             "category_id" => 17,
+            "item_class" => 2,
             "price" => 16
         ],
         // REIS - NUDELN
@@ -225,6 +254,7 @@ class ItemSeeder extends Seeder
             "code" => "40",
             "name" => "Curry (Bio Tofu | Vegan)",
             "category_id" => 18,
+            "item_class" => 2,
             "price" => 15
         ],
         [
@@ -232,6 +262,7 @@ class ItemSeeder extends Seeder
             "code" => "41",
             "name" => "Curry (Hähnchen)",
             "category_id" => 18,
+            "item_class" => 2,
             "price" => 16
         ],
         [
@@ -239,6 +270,7 @@ class ItemSeeder extends Seeder
             "code" => "42",
             "name" => "Canh Chua (Lachs)",
             "category_id" => 18,
+            "item_class" => 2,
             "price" => 22
         ],
         [
@@ -246,6 +278,7 @@ class ItemSeeder extends Seeder
             "code" => "43",
             "name" => "Canh Chua (Garnelen in weizen Teigmantel)",
             "category_id" => 18,
+            "item_class" => 2,
             "price" => 17
         ],
         [
@@ -253,6 +286,7 @@ class ItemSeeder extends Seeder
             "code" => "44",
             "name" => "Nudelsalat - Lauwarm (Bio Tofu)",
             "category_id" => 18,
+            "item_class" => 2,
             "price" => 15
         ],
         [
@@ -260,6 +294,7 @@ class ItemSeeder extends Seeder
             "code" => "45",
             "name" => "gegrilltes Hähnchen",
             "category_id" => 18,
+            "item_class" => 2,
             "price" => 17
         ],
         [
@@ -267,6 +302,7 @@ class ItemSeeder extends Seeder
             "code" => "46",
             "name" => "Bun Nem (Gemüse | Vegan | Glutenhaltig)",
             "category_id" => 18,
+            "item_class" => 2,
             "price" => 15
         ],
         [
@@ -274,6 +310,7 @@ class ItemSeeder extends Seeder
             "code" => "47",
             "name" => "Bun Nem (Schweinefleisch - Gemüse)",
             "category_id" => 18,
+            "item_class" => 2,
             "price" => 18
         ],
         [
@@ -281,6 +318,7 @@ class ItemSeeder extends Seeder
             "code" => "48",
             "name" => "Yaki Udon",
             "category_id" => 18,
+            "item_class" => 2,
             "price" => 17
         ],
         [
@@ -288,6 +326,7 @@ class ItemSeeder extends Seeder
             "code" => "49",
             "name" => "Bun Cha",
             "category_id" => 18,
+            "item_class" => 2,
             "price" => 19
         ],
         // SUPPEN
@@ -296,6 +335,7 @@ class ItemSeeder extends Seeder
             "code" => "50",
             "name" => "Bun Tom Yum (Bio Tofu)",
             "category_id" => 19,
+            "item_class" => 2,
             "price" => 15
         ],
         [
@@ -303,6 +343,7 @@ class ItemSeeder extends Seeder
             "code" => "51",
             "name" => "Bun Tom Yum (mit Garnelen)",
             "category_id" => 19,
+            "item_class" => 2,
             "price" => 17
         ],
         [
@@ -310,6 +351,7 @@ class ItemSeeder extends Seeder
             "code" => "52",
             "name" => "Coco Easy (Bio Tofu | Vegan)",
             "category_id" => 19,
+            "item_class" => 2,
             "price" => 15
         ],
         [
@@ -317,6 +359,7 @@ class ItemSeeder extends Seeder
             "code" => "53",
             "name" => "Coco Easy (Hähnchen)",
             "category_id" => 19,
+            "item_class" => 2,
             "price" => 16
         ],
         [
@@ -324,6 +367,7 @@ class ItemSeeder extends Seeder
             "code" => "54",
             "name" => "Coco Easy (Garnelen)",
             "category_id" => 19,
+            "item_class" => 2,
             "price" => 17
         ],
         [
@@ -331,6 +375,7 @@ class ItemSeeder extends Seeder
             "code" => "55",
             "name" => "Ramen (mariniertes Schweinefleisch)",
             "category_id" => 19,
+            "item_class" => 2,
             "price" => 18
         ],
         [
@@ -338,6 +383,7 @@ class ItemSeeder extends Seeder
             "code" => "56",
             "name" => "Ramen (mariniertes Schweinefleisch)",
             "category_id" => 19,
+            "item_class" => 2,
             "price" => 22
         ],
         [
@@ -345,6 +391,7 @@ class ItemSeeder extends Seeder
             "code" => "57",
             "name" => "Phö (Bio Tofu | Gemüse | Vegan)",
             "category_id" => 19,
+            "item_class" => 2,
             "price" => 16
         ],
         [
@@ -352,6 +399,7 @@ class ItemSeeder extends Seeder
             "code" => "58",
             "name" => "Phö (Hähnchen)",
             "category_id" => 19,
+            "item_class" => 2,
             "price" => 16
         ],
         [
@@ -359,6 +407,7 @@ class ItemSeeder extends Seeder
             "code" => "59",
             "name" => "Phö (Rindfleisch)",
             "category_id" => 19,
+            "item_class" => 2,
             "price" => 18
         ],
         // SÜSSES
@@ -367,6 +416,7 @@ class ItemSeeder extends Seeder
             "code" => "61",
             "name" => "Die Leberwurst (Vegan)",
             "category_id" => 20,
+            "item_class" => 2,
             "price" => 6.5
         ],
         [
@@ -374,6 +424,7 @@ class ItemSeeder extends Seeder
             "code" => "62",
             "name" => "Reimaco (Vegan)",
             "category_id" => 20,
+            "item_class" => 2,
             "price" => 7
         ],
         [
@@ -381,6 +432,7 @@ class ItemSeeder extends Seeder
             "code" => "63",
             "name" => "Green Soul",
             "category_id" => 20,
+            "item_class" => 2,
             "price" => 7
         ],
         [
@@ -388,6 +440,7 @@ class ItemSeeder extends Seeder
             "code" => "64",
             "name" => "Tropi-Call (Vegan)",
             "category_id" => 20,
+            "item_class" => 2,
             "price" => 6.5
         ],
         // GETRÄNKE
@@ -397,6 +450,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Wasser (0.25l)",
             "category_id" => 5,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -404,6 +458,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Wasser (0.75l)",
             "category_id" => 5,
+            "item_class" => 2,
             "price" => 7
         ],
         // HAUSGEMACHT
@@ -413,6 +468,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Gurke-Basilikum",
             "category_id" => 26,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -420,6 +476,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Hibiskus",
             "category_id" => 26,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -427,6 +484,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Minze - Limetten",
             "category_id" => 26,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -434,6 +492,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Safran - Mango - Chili",
             "category_id" => 26,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -441,6 +500,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Zitronengras - Ingwer",
             "category_id" => 26,
+            "item_class" => 2,
             "price" => 6
         ],
         // EISTEE
@@ -449,6 +509,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Granatapfel",
             "category_id" => 27,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -456,6 +517,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Himbeere",
             "category_id" => 27,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -463,6 +525,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Holunder",
             "category_id" => 27,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -470,6 +533,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Litchi",
             "category_id" => 27,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -477,6 +541,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Mango",
             "category_id" => 27,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -484,6 +549,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Pfirsich",
             "category_id" => 27,
+            "item_class" => 2,
             "price" => 6
         ],
         // SOFTDRINK
@@ -492,6 +558,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Pepsi / Pepsi Zero",
             "category_id" => 7,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -499,6 +566,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "7Up",
             "category_id" => 7,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -506,6 +574,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Orange Schwip Schwap",
             "category_id" => 7,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -513,6 +582,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Bitter Lemon",
             "category_id" => 7,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -520,6 +590,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Ginger Ale",
             "category_id" => 7,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -527,6 +598,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Spicy Ginger",
             "category_id" => 7,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -534,6 +606,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Tonic Water",
             "category_id" => 7,
+            "item_class" => 2,
             "price" => 3
         ],
         // MOCK TAILS
@@ -542,6 +615,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Cori's F.S.C",
             "category_id" => 8,
+            "item_class" => 2,
             "price" => 7.5
         ],
         [
@@ -549,6 +623,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Lindas Unschuld",
             "category_id" => 8,
+            "item_class" => 2,
             "price" => 7.5
         ],
         [
@@ -556,6 +631,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Mingwar",
             "category_id" => 8,
+            "item_class" => 2,
             "price" => 7.5
         ],
         [
@@ -563,6 +639,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Thyme On Ice",
             "category_id" => 8,
+            "item_class" => 2,
             "price" => 7.5
         ],
         [
@@ -570,6 +647,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Tweetea",
             "category_id" => 8,
+            "item_class" => 2,
             "price" => 7.5
         ],
         // SÄFTE
@@ -578,6 +656,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Ananassaft",
             "category_id" => 9,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -585,6 +664,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Apfelsaft-Naturtrüb",
             "category_id" => 9,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -592,6 +672,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Bananen Nektar",
             "category_id" => 9,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -599,6 +680,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Cranberry Nektar",
             "category_id" => 9,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -606,6 +688,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Grapefruitsaft",
             "category_id" => 9,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -613,6 +696,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Mango Nektar",
             "category_id" => 9,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -620,6 +704,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Maracuja Nektar",
             "category_id" => 9,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -627,6 +712,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Orangensaft",
             "category_id" => 9,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -634,6 +720,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Sauerkirsch Nektar",
             "category_id" => 9,
+            "item_class" => 2,
             "price" => 3
         ],
         [
@@ -641,6 +728,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Kiba",
             "category_id" => 9,
+            "item_class" => 2,
             "price" => 5.5
         ],
         // HEIße GETRÄNKE
@@ -650,6 +738,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Vietnamesischer Filterkaffee (ohne Kondensmilch)",
             "category_id" => 28,
+            "item_class" => 2,
             "price" => 4.5
         ],
         [
@@ -657,6 +746,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Vietnamesischer Filterkaffee (mit Kondensmilch)",
             "category_id" => 28,
+            "item_class" => 2,
             "price" => 5.5
         ],
         [
@@ -664,6 +754,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Ca Phe Muoi",
             "category_id" => 28,
+            "item_class" => 2,
             "price" => 6.5
         ],
         // TEE
@@ -672,6 +763,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Grüner Tee (normal)",
             "category_id" => 29,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -679,6 +771,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Grüner Tee (Jasmin)",
             "category_id" => 29,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -686,6 +779,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Grüner Tee (Apfel-Cocos)",
             "category_id" => 29,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -693,6 +787,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Grüner Tee (Orange-Zimt)",
             "category_id" => 29,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -700,6 +795,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Grüner Tee (gerösteter Reis)",
             "category_id" => 29,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -707,6 +803,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Schwazer Tee (normal)",
             "category_id" => 29,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -714,6 +811,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Schwazer Tee (normal)",
             "category_id" => 29,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -721,6 +819,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Schwazer Tee (Rose)",
             "category_id" => 29,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -728,6 +827,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Schwazer Tee (Minze)",
             "category_id" => 29,
+            "item_class" => 2,
             "price" => 5
         ],
         // AUF GÜSSE
@@ -736,6 +836,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Ingwer-Limette-Minze",
             "category_id" => 30,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -743,6 +844,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Minze",
             "category_id" => 30,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -750,6 +852,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Salbei-Orange",
             "category_id" => 30,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -757,6 +860,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Zitronengras-Limette",
             "category_id" => 30,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -764,6 +868,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Yuzu",
             "category_id" => 30,
+            "item_class" => 2,
             "price" => 5
         ],
         // BIERE
@@ -772,6 +877,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Allgäuer Büble (helles)",
             "category_id" => 11,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -779,6 +885,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Allgäuer Büble (weizen)",
             "category_id" => 11,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -786,6 +893,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Ritterguts Gose (ohne Sirup)",
             "category_id" => 11,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -793,6 +901,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Ritterguts Gose (mit Sirup)",
             "category_id" => 11,
+            "item_class" => 2,
             "price" => 6
         ],
         [
@@ -800,6 +909,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Staropramen (Lager)",
             "category_id" => 11,
+            "item_class" => 2,
             "price" => 4
         ],
         [
@@ -807,6 +917,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Staropramen (Dark)",
             "category_id" => 11,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -814,6 +925,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Allgäuer Büble (weizen | Alkoholfrei)",
             "category_id" => 11,
+            "item_class" => 2,
             "price" => 5
         ],
         [
@@ -821,6 +933,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Jever Fun (Alkoholfrei)",
             "category_id" => 11,
+            "item_class" => 2,
             "price" => 4
         ],
         // WEIN
@@ -829,6 +942,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Rivaner-Grauer Burgunder",
             "category_id" => 12,
+            "item_class" => 2,
             "price" => 7
         ],
         [
@@ -836,6 +950,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Riesling",
             "category_id" => 12,
+            "item_class" => 2,
             "price" => 7
         ],
         [
@@ -843,6 +958,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Oppenheimer Krötenbrunnen",
             "category_id" => 12,
+            "item_class" => 2,
             "price" => 7
         ],
         [
@@ -850,6 +966,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Spätburgunder",
             "category_id" => 12,
+            "item_class" => 2,
             "price" => 7
         ],
         [
@@ -857,6 +974,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Rose D'Anjou",
             "category_id" => 12,
+            "item_class" => 2,
             "price" => 7
         ],
         // PROSECCO
@@ -865,6 +983,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Valdobbiadene Superiore",
             "category_id" => 13,
+            "item_class" => 2,
             "price" => 6
         ],
         // SONSTIGES 
@@ -874,6 +993,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Bar-Snacks",
             "category_id" => 31,
+            "item_class" => 2,
             "price" => 7
         ],
         // COCKTAILS
@@ -883,6 +1003,7 @@ class ItemSeeder extends Seeder
             "code" => "A",
             "name" => "Set A",
             "category_id" => 21,
+            "item_class" => 2,
             "price" => 15
         ],
         [
@@ -890,6 +1011,7 @@ class ItemSeeder extends Seeder
             "code" => "B",
             "name" => "Set B",
             "category_id" => 21,
+            "item_class" => 2,
             "price" => 15
         ],
         [
@@ -897,6 +1019,7 @@ class ItemSeeder extends Seeder
             "code" => "AB",
             "name" => "Set AB",
             "category_id" => 21,
+            "item_class" => 2,
             "price" => 15
         ],
         [
@@ -904,6 +1027,7 @@ class ItemSeeder extends Seeder
             "code" => "0",
             "name" => "Set 0",
             "category_id" => 21,
+            "item_class" => 2,
             "price" => 15
         ],
         // SPRITZ/SPIZZ
@@ -912,6 +1036,7 @@ class ItemSeeder extends Seeder
             "code" => "Aperol",
             "name" => "Spritz",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 9
         ],
         [
@@ -919,6 +1044,7 @@ class ItemSeeder extends Seeder
             "code" => "Campari",
             "name" => "Amalfi",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 9
         ],
         [
@@ -926,6 +1052,7 @@ class ItemSeeder extends Seeder
             "code" => "Campari",
             "name" => "Spritz",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 9.5
         ],
         [
@@ -933,6 +1060,7 @@ class ItemSeeder extends Seeder
             "code" => "Crondino",
             "name" => "Spritz",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 7.5
         ],
         [
@@ -940,6 +1068,7 @@ class ItemSeeder extends Seeder
             "code" => "Limoncello",
             "name" => "Basillino",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 9
         ],
         [
@@ -947,6 +1076,7 @@ class ItemSeeder extends Seeder
             "code" => "Limoncello",
             "name" => "Spritz",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 9
         ],
         [
@@ -954,6 +1084,7 @@ class ItemSeeder extends Seeder
             "code" => "Limoncello",
             "name" => "Tonic",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 9
         ],
         [
@@ -961,6 +1092,7 @@ class ItemSeeder extends Seeder
             "code" => "Pampelle",
             "name" => "Rose",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 9
         ],
         [
@@ -968,6 +1100,7 @@ class ItemSeeder extends Seeder
             "code" => "Pampelle",
             "name" => "Spritz",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 9
         ],
         [
@@ -975,6 +1108,7 @@ class ItemSeeder extends Seeder
             "code" => "Pampelle",
             "name" => "Tonic",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 9
         ],
         [
@@ -982,6 +1116,7 @@ class ItemSeeder extends Seeder
             "code" => "Solrosa",
             "name" => "Spritz",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 9
         ],
         [
@@ -989,6 +1124,7 @@ class ItemSeeder extends Seeder
             "code" => "Solrosa",
             "name" => "Tonic",
             "category_id" => 22,
+            "item_class" => 2,
             "price" => 9
         ],
         // NEGRONI
@@ -997,6 +1133,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Der Grossvater",
             "category_id" => 23,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1004,6 +1141,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Der Klassiker",
             "category_id" => 23,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1011,6 +1149,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Der Mexikaner",
             "category_id" => 23,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1018,6 +1157,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Der Sanfte",
             "category_id" => 23,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1025,6 +1165,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Der Schokoladen Twist",
             "category_id" => 23,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1032,6 +1173,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Der Seltsame",
             "category_id" => 23,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1039,6 +1181,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Der Spritzige",
             "category_id" => 23,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1046,6 +1189,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Der Würzige",
             "category_id" => 23,
+            "item_class" => 2,
             "price" => 11
         ],
         // ALTE UND NEUE KLASSIKER
@@ -1054,6 +1198,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Alt Modisch",
             "category_id" => 24,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1061,6 +1206,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "ErwachsenenFilm-Darsteller Martini",
             "category_id" => 24,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1068,6 +1214,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Gänseblümchen",
             "category_id" => 24,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1075,6 +1222,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Wachmacher Martini",
             "category_id" => 24,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1082,6 +1230,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Saures Wasser Des Lebens",
             "category_id" => 24,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1089,6 +1238,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Schmerztöter",
             "category_id" => 24,
+            "item_class" => 2,
             "price" => 12
         ],
         // SIGNATURE
@@ -1097,6 +1247,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "A Bitter Longing",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1104,6 +1255,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Basis Bitch",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1111,6 +1263,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Beischlaf am Strand",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1118,6 +1271,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Bitter Boris",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1125,6 +1279,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Bose Winter Traum",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1132,6 +1287,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Breakfast Gang",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1139,6 +1295,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Briegelinho",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1146,6 +1303,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Bürohengst",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1153,6 +1311,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Cocoyashi Village",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1160,6 +1319,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Cold Hand Warm Heart",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1167,6 +1327,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Danger Kitty",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1174,6 +1335,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Das Versprechen",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1181,6 +1343,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Der C.T.",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1188,6 +1351,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Der Gelbe Bikini",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1195,6 +1359,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Die E-Feee",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1202,6 +1367,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Disorder",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1209,6 +1375,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Domino",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1216,6 +1383,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Donauwelle",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1223,6 +1391,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Dr. Wolle's Hustensaft",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1230,6 +1399,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Dừa",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1237,6 +1407,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Duftmarke",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1244,6 +1415,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Dugong",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1251,6 +1423,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Einhornblut",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1258,6 +1431,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Electric Lilac",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1265,6 +1439,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Feierabend Fanta",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1272,6 +1447,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Fette Elfe",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1279,6 +1455,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Garfield hates Mondays",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1286,6 +1463,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Glitzil - Litzil",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1293,6 +1471,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Grün ist meine Lieblingsfarbe",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1300,6 +1479,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Gurkensalat",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1307,6 +1487,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Gute Aussicht",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1314,6 +1495,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Herrgottbescheisserle",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1321,6 +1503,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Hubba Bubba",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1328,6 +1511,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Iris lässt dich bluten",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1335,6 +1519,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Isaac",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 13
         ],
         [
@@ -1342,6 +1527,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "K.T.N.",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 15
         ],
         [
@@ -1349,6 +1535,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Kanginsky",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1356,6 +1543,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Kräuter Thomas",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1363,6 +1551,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Läster Schwester",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1370,6 +1559,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Lindas Einstieg",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1377,6 +1567,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Lindas Melone",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1384,6 +1575,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Lindas Untergang",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1391,6 +1583,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Litch mir einen Punkt",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1398,6 +1591,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Lotterleben",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1405,6 +1599,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Milchreis",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1412,6 +1607,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Milenka",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1419,6 +1615,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Moody Morals",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1426,6 +1623,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Muh Porn",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1433,6 +1631,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Nee, Mach mal ohne Creme, sonst kotz ich",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1440,6 +1639,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Nika Dynamite",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1447,6 +1647,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Paradies of broken Dreams",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1454,6 +1655,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Perfect Angel",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1461,6 +1663,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Pilzrisotto",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1468,6 +1671,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Ponyo",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1475,6 +1679,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Q, weil es noch fehlte",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1482,6 +1687,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Rosee Pamplemousse",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1489,6 +1695,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Schoko Katze",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1496,6 +1703,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Shiso Smash",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1503,6 +1711,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Spanish Rose",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1510,6 +1719,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Sparky on the Beach",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1517,6 +1727,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Soft Cake",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1524,6 +1735,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "The Smile of Josephine",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1531,6 +1743,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Tiramisu",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1538,6 +1751,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Toxic Parent",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1545,6 +1759,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Trauma",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
         [
@@ -1552,6 +1767,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Uliiiii",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 10
         ],
         [
@@ -1559,6 +1775,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Vanilla Cat",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1566,6 +1783,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Von Pferd und Bär",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1573,6 +1791,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Von Rin",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 13
         ],
         [
@@ -1580,6 +1799,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Wanna Play",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1587,6 +1807,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Wrong Way to make Pina Colada",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 11
         ],
         [
@@ -1594,6 +1815,7 @@ class ItemSeeder extends Seeder
             "code" => "-",
             "name" => "Xi Muoi",
             "category_id" => 25,
+            "item_class" => 2,
             "price" => 12
         ],
     ];

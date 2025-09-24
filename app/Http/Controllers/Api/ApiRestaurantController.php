@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Item;
+use App\Models\ItemClass;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -19,11 +20,13 @@ class ApiRestaurantController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        $taxClasses = ItemClass::all();
         $items = Item::all();
         $categories = Category::all();
         $tables = Table::all();
 
         return response()->json([
+            'taxClasses' => $taxClasses,
             'items' => $items,
             'categories' => $categories,
             'tables' => $tables

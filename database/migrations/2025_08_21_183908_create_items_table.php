@@ -17,7 +17,11 @@ return new class extends Migration
                 $table->string('code')->nullable();
                 $table->string('name');
                 $table->decimal('price', 10, 2);
-                $table->string('class')->nullable();
+                $table->foreignId('item_class')
+                    ->nullable()
+                    ->constrained('item_classes')
+                    ->nullOnDelete()
+                    ->cascadeOnUpdate();
 
                 // foreign key
                 $table->foreignId('category_id')

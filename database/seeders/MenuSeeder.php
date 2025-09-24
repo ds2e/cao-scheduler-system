@@ -15,6 +15,7 @@ class MenuSeeder extends Seeder
     public function run(): void
     { 
         $this->call([
+            ItemClassSeeder::class,
             TableSeeder::class,
             CategorySeeder::class,
             ItemSeeder::class

@@ -21,17 +21,29 @@ class StorageResourceController extends Controller
 
         $databaseName = env('DB_DATABASE');
 
-        $tables = DB::select("
-    SELECT 
-        table_name,
-        ROUND((data_length + index_length) / 1024 / 1024, 2) AS table_size_mb
-    FROM information_schema.tables
-    WHERE table_schema = ?
-    ORDER BY table_size_mb DESC
-", [$databaseName]);
+        //         $tables = DB::select("
+        //     SELECT 
+        //         table_name,
+        //         ROUND((data_length + index_length) / 1024 / 1024, 2) AS table_size_mb
+        //     FROM information_schema.tables
+        //     WHERE table_schema = ?
+        //     ORDER BY table_size_mb DESC
+        // ", [$databaseName]);
+
+        //         return inertia('StorageResource/StorageResource', [
+        //             'storage_tables' => $tables
+        //         ]);
+        $tables = DB::select("SHOW TABLE STATUS FROM `$databaseName`");
+
+        $results = collect($tables)->map(function ($table) {
+            return [
+                'table_name' => $table->Name,
+                'table_size_mb' => round(($table->Data_length + $table->Index_length) / 1024 / 1024, 2),
+            ];
+        })->sortByDesc('table_size_mb')->values();
 
         return inertia('StorageResource/StorageResource', [
-            'storage_tables' => $tables
+            'storage_tables' => $results
         ]);
     }
 
