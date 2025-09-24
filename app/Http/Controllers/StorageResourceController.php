@@ -33,7 +33,8 @@ class StorageResourceController extends Controller
         //         return inertia('StorageResource/StorageResource', [
         //             'storage_tables' => $tables
         //         ]);
-        $tables = DB::select("SHOW TABLE STATUS FROM `$databaseName`");
+        // $tables = DB::select("SHOW TABLE STATUS FROM `$databaseName`");
+        $tables = DB::select("SHOW TABLE STATUS");
 
         $results = collect($tables)->map(function ($table) {
             return [
