@@ -19,12 +19,12 @@ env:
 jobs:
 # Please do not rename this job
   build-project:
-    name: build cao-scheduler-system
+    name: build cao-cms
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-      # if you add permissions here this needs to be done in the cao-scheduler-system-orchestration.yaml as well
+      # if you add permissions here this needs to be done in the cao-cms-orchestration.yaml as well
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
         uses: ionos-deploy-now/template-renderer-action@v2
         id: template
         with:
-          input-directory: .deploy-now/cao-scheduler-system
+          input-directory: .deploy-now/cao-cms
           output-directory: ${{ env.DEPLOYMENT_FOLDER }}
           intermediate-data-file: ${{ env.DEPLOYMENT_FOLDER }}/.template-renderer-data
 
@@ -74,5 +74,5 @@ jobs:
           branch-id: ${{ inputs.branch-id }}
           version: ${{ github.sha }}
           folder: ${{ env.DEPLOYMENT_FOLDER }}
-          config-file: .deploy-now/cao-scheduler-system/config.yaml
+          config-file: .deploy-now/cao-cms/config.yaml
           action: upload
