@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ItemTypes;
 use App\Models\Item;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
@@ -45,7 +46,10 @@ class ItemController extends Controller
         // $items = Item::with('itemClass')
         //     ->orderBy('name', 'asc')
         //     ->paginate(10);
-        $items = Item::orderBy('name', 'asc')->paginate(10);
+        // $items = Item::orderBy('name', 'asc')->paginate(10);
+        $items = Item::where('type', ItemTypes::Normal)
+             ->orderBy('name', 'asc')
+             ->paginate(10);
 
         return inertia('Menu/Items', [
             'items' => $items,

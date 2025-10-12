@@ -19,21 +19,6 @@ class StorageResourceController extends Controller
     {
         $this->authorize('viewAny', StorageResource::class);
 
-        $databaseName = env('DB_DATABASE');
-
-        //         $tables = DB::select("
-        //     SELECT 
-        //         table_name,
-        //         ROUND((data_length + index_length) / 1024 / 1024, 2) AS table_size_mb
-        //     FROM information_schema.tables
-        //     WHERE table_schema = ?
-        //     ORDER BY table_size_mb DESC
-        // ", [$databaseName]);
-
-        //         return inertia('StorageResource/StorageResource', [
-        //             'storage_tables' => $tables
-        //         ]);
-        // $tables = DB::select("SHOW TABLE STATUS FROM `$databaseName`");
         $tables = DB::select("SHOW TABLE STATUS");
 
         $results = collect($tables)->map(function ($table) {

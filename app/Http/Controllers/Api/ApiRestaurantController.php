@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ItemTypes;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Item;
@@ -21,7 +22,7 @@ class ApiRestaurantController extends Controller
         }
 
         $taxClasses = ItemClass::all();
-        $items = Item::all();
+        $items = Item::where('type', ItemTypes::Normal)->get();
         $categories = Category::all();
         $tables = Table::all();
 

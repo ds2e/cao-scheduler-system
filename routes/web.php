@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemClassController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MasterController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReportRecordController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RestaurantMenuController;
@@ -109,6 +111,15 @@ Route::get('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls', [WorkController::class, 'show'])->name(
 Route::post('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/login', [WorkController::class, 'loginWork'])->name('login.work');
 Route::post('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/logout', [WorkController::class, 'logoutWork'])->name('logout.work');
 Route::get('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/work', [WorkController::class, 'showWork'])->name('show.work');
+
+Route::get('/ZGF0YV9lbmNvZGVkX2hlcmU', [OrderController::class, 'index'])->name('waiter');
+Route::prefix('/ZGF0YV9lbmNvZGVkX2hlcmU')->name('waiter.')->group(function () {
+    Route::resource('/order', OrderController::class)->except(['index','create', 'edit', 'show']);
+    Route::resource('/payment', BillController::class)->except(['index', 'create', 'edit', 'show']);
+    Route::get('/history', [BillController::class, 'showHistory']);
+    Route::delete('/history', [BillController::class, 'deleteHistory']);
+});
+
 
 // Custom Handle verification links
 Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {

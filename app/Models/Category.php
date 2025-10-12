@@ -28,9 +28,9 @@ class Category extends Model
     }
 
     // Subcategories (hasMany of itself)
-    public function subcategories()
+    public function subCategories()
     {
-        return $this->hasMany(Category::class, 'sub_category_from');
+        return $this->hasMany(Category::class, 'sub_category_from')->with(['subCategories', 'items'])->orderBy('priority', 'asc');;
     }
 
     public function items()

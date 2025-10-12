@@ -18,7 +18,8 @@ export default defineConfig({
     resolve:{
         alias:{
             '@':'/resources/js',
-            '+':'/resources/assets'
+            '+':'/resources/assets',
+            '~font' : '/resources/assets/fonts/'
         }
     }
 });

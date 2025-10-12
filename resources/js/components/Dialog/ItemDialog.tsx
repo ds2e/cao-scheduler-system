@@ -114,7 +114,7 @@ export default function ItemDialog({ isOpen, setOpen, itemData, allCats, allItem
                         </DialogTitle>
                     </DialogHeader>
 
-                    <div className="mt-4 overflow-y-scroll space-y-6">
+                    <div className="mt-4 overflow-y-auto space-y-6">
                         <div className="flex items-center justify-between gap-x-2">
                             <div className="flex-1/2">
                                 <label htmlFor="code" className="block text-sm/6 font-medium text-white">

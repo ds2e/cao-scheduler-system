@@ -91,6 +91,7 @@ return [
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_CHARSET', 'utf8mb4'),
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            // 'collation' => env('DB_COLLATION', 'utf8mb4_0900_ai_ci'), // or the appropriate collation for your MySQL version
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,

@@ -21,7 +21,14 @@
 @source inline("{hover:,}bg-cyan-{50,{100..900..100},950}");
 @source inline("{hover:,}bg-purple-{50,{100..900..100},950}");
 
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('~font/Inconsolata/static/Inconsolata_Condensed-Regular.ttf');
+}
+
 @theme {
+    --font-inconsolata: Inconsolata;
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
     --color-theme: rgb(37,49,100);
