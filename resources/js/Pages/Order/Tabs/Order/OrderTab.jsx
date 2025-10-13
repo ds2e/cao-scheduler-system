@@ -165,7 +165,6 @@ export default function OrderTab({ categories, tables, taxClasses, requestChange
                 const newItem = {
                     ...storedItem,
                     amount: 1,
-                    notice: '',
                     type: 'normal'
                 };
                 updatedTableOrders = [...tableOrders, newItem];
@@ -210,6 +209,43 @@ export default function OrderTab({ categories, tables, taxClasses, requestChange
                 [data.tableId]: updatedTableOrders
             };
         });
+    }
+
+    function saveNoticeItem(itemId, notice) {
+
+        // console.log(itemId, notice)
+        if (!data.tableId) return;
+
+        setCurrentOrders(prevOrders => {
+            const tableOrders = prevOrders[data.tableId] || [];
+
+            // Check if item already exists in the table's orders
+            const existingIndex = tableOrders.findIndex(i => i.id === itemId);
+
+            let updatedTableOrders;
+            if (existingIndex !== -1) {
+                // Item exists: increase amount
+                updatedTableOrders = tableOrders.map((i, index) =>
+                    index === existingIndex
+                        ? { ...i, notice: notice }
+                        : i
+                );
+            }
+            else {
+                updatedTableOrders = [...tableOrders];
+            }
+
+            console.log(updatedTableOrders);
+
+            setData("itemsList", updatedTableOrders)
+
+            return {
+                ...prevOrders,
+                [data.tableId]: updatedTableOrders
+            };
+        });
+
+        return null;
     }
 
     function submitAddRogueItemToOrder(e) {
@@ -358,6 +394,7 @@ export default function OrderTab({ categories, tables, taxClasses, requestChange
                         requestRemoveItemAmountFromOrder={requestRemoveItemAmountFromOrder}
                         requestResetChangeOrderItemList={requestResetChangeOrderItemList}
                         requestSubmitOrderItemList={requestSubmitOrderItemList}
+                        saveNoticeItem={saveNoticeItem}
 
                         submitAddRogueItemToOrder={submitAddRogueItemToOrder}
                     />

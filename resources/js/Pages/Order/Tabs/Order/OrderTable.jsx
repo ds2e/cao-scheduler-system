@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import RogueItemDialog from "../../../../components/Dialog/RogueItemDialog";
 
 export default function OrderTable({
@@ -17,10 +17,12 @@ export default function OrderTable({
     requestRemoveItemAmountFromOrder,
     requestResetChangeOrderItemList,
     requestSubmitOrderItemList,
+    saveNoticeItem,
 
     submitAddRogueItemToOrder
 }) {
     const [selectedItem, setSelectedItem] = useState(null);
+    const noticeRef = useRef(null);
     const [isOpenRogueItemModal, setIsOpenRogueItemModal] = useState(false);
 
     const table = tables.find(t => t.id === currentSelectedTableId);
@@ -64,6 +66,10 @@ export default function OrderTable({
     }, [currentOrders, currentSelectedTableId]);
 
     function switchSelectedItem(item) {
+        if (selectedItem && noticeRef.current) {
+            noticeRef.current.value = item.notice ?? '';
+        }
+
         if (selectedItem == null) {
             // Nothing selected → select this one
             setSelectedItem(item);
@@ -112,7 +118,16 @@ export default function OrderTable({
                         );
 
                         const isStored = !!storedItem;
-                        const amountChanged = storedItem && storedItem.amount !== o_item.amount;
+
+                        // Amount difference
+                        const oldAmount = storedItem ? storedItem.amount : 0;
+                        const newAmount = o_item.amount;
+                        const amountDiff = newAmount - oldAmount;
+
+                        // Notice difference
+                        const oldNotice = storedItem ? storedItem.notice || "" : "";
+                        const newNotice = o_item.notice || "";
+                        const noticeChanged = oldNotice !== newNotice;
 
                         let bgClass = '';
                         if (o_item._removed) {
@@ -131,16 +146,42 @@ export default function OrderTable({
                                 >
                                     <div className="flex gap-x-2 items-center">
                                         {o_item.code && <span className="text-sm text-gray-200">{o_item.code}</span>}
-                                        <span className="text-white">{o_item.name}</span>
+                                        <span className="text-white text-start">{o_item.name}</span>
+                                        {o_item.notice &&
+                                            <div className="flex flex-col items-start">
+                                                <span className="text-white text-sm italic text-start">{oldNotice}</span>
+                                                {noticeChanged && <span className="text-theme-secondary text-sm text-start">{newNotice}</span>}
+                                            </div>
+                                        }
+                                        {/* {noticeChanged && (
+                                            <span className="text-xs text-theme-secondary italic">
+                                                (Bemerkung geändert)
+                                            </span>
+                                        )}
+                                        {newNotice && (
+                                            <span className="text-white text-sm">[{newNotice}]</span>
+                                        )} */}
                                     </div>
 
                                     <div className="flex gap-x-2 items-center">
                                         <span className="text-sm text-white">{o_item.price}&euro;</span>
-                                        <span
-                                            className={`font-bold ${amountChanged ? 'text-theme-secondary' : 'text-white'}`}
-                                        >
-                                            x{o_item.amount}
-                                        </span>
+                                        {/* If new item → show only xAmount */}
+                                        {!storedItem ? (
+                                            <span className="font-bold text-white">x{newAmount}</span>
+                                        ) : (
+                                            <>
+                                                {/* Show old + diff */}
+                                                <span className="font-bold text-white">x{oldAmount}</span>
+                                                {amountDiff !== 0 && (
+                                                    <span
+                                                        className={`font-bold ${amountDiff > 0 ? 'text-green-400' : 'text-red-400'
+                                                            } text-sm`}
+                                                    >
+                                                        {amountDiff > 0 ? `+${amountDiff}` : `${amountDiff}`}
+                                                    </span>
+                                                )}
+                                            </>
+                                        )}
                                     </div>
                                 </button>
                                 {selectedItem && selectedItem.id === o_item.id &&
@@ -153,8 +194,21 @@ export default function OrderTable({
                                                     <path d="M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM231 231C240.4 221.6 255.6 221.6 264.9 231L319.9 286L374.9 231C384.3 221.6 399.5 221.6 408.8 231C418.1 240.4 418.2 255.6 408.8 264.9L353.8 319.9L408.8 374.9C418.2 384.3 418.2 399.5 408.8 408.8C399.4 418.1 384.2 418.2 374.9 408.8L319.9 353.8L264.9 408.8C255.5 418.2 240.3 418.2 231 408.8C221.7 399.4 221.6 384.2 231 374.9L286 319.9L231 264.9C221.6 255.5 221.6 240.3 231 231z" />
                                                 </svg>
                                             </button>
-                                            <input placeholder="Bemerkung..." className="border-2 border-gray-500 text-white placeholder:text-gray-500 rounded p-1" />
-                                            <button>
+                                            <input
+                                                ref={noticeRef}
+                                                defaultValue={o_item.notice}
+                                                // value={itemNotices[o_item.id] || ""}
+                                                // onChange={e =>
+                                                //     setItemNotices(prev => ({
+                                                //         ...prev,
+                                                //         [o_item.id]: e.target.value
+                                                //     }))
+                                                // }
+                                                placeholder="Bemerkung..." className="border-2 border-gray-500 text-white placeholder:text-gray-500 rounded p-1"
+                                            />
+                                            <button
+                                                onClick={() => saveNoticeItem(o_item.id, noticeRef.current.value)}
+                                            >
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width={28} height={28} className="fill-green-500">
                                                     <path d="M320 576C178.6 576 64 461.4 64 320C64 178.6 178.6 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576zM438 209.7C427.3 201.9 412.3 204.3 404.5 215L285.1 379.2L233 327.1C223.6 317.7 208.4 317.7 199.1 327.1C189.8 336.5 189.7 351.7 199.1 361L271.1 433C276.1 438 282.9 440.5 289.9 440C296.9 439.5 303.3 435.9 307.4 430.2L443.3 243.2C451.1 232.5 448.7 217.5 438 209.7z" />
                                                 </svg>
@@ -245,9 +299,9 @@ export default function OrderTable({
                 setOpen={setIsOpenRogueItemModal}
                 allItemClasses={taxClasses}
                 requestSubmitData={requestSubmitData}
-                // errors={undefined}
-                // clearErrors={}
-                // processing
+            // errors={undefined}
+            // clearErrors={}
+            // processing
             />
         </>
     );
