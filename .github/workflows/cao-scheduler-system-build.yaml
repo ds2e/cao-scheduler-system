@@ -1,0 +1,90 @@
+# To better understand this file read this:
+# https://docs.ionos.space/docs/github-actions-customization/
+
+name: "Deploy Now: Execute Build"
+
+on:
+  workflow_call:
+    inputs:
+      site-url:
+        required: true
+        type: string
+      branch-id:
+        required: true
+        type: string
+
+env:
+  DEPLOYMENT_FOLDER: ./
+
+jobs:
+# Please do not rename this job
+  build-project:
+    name: build cao-scheduler-system
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # if you add permissions here this needs to be done in the cao-scheduler-system-orchestration.yaml as well
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Render templates
+        uses: ionos-deploy-now/template-renderer-action@v2
+        id: template
+        with:
+          input-directory: .deploy-now/cao-scheduler-system
+          output-directory: ${{ env.DEPLOYMENT_FOLDER }}
+          intermediate-data-file: ${{ env.DEPLOYMENT_FOLDER }}/.template-renderer-data
+
+      - name: Setup composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:2
+
+      - name: Run composer install
+        env:
+          DB_DATABASE_WAITER: ${{ secrets.DB_DATABASE_WAITER }}
+          DB_HOST_WAITER: ${{ secrets.DB_HOST_WAITER }}
+          DB_PASSWORD_WAITER: ${{ secrets.DB_PASSWORD_WAITER }}
+          DB_USERNAME_WAITER: ${{ secrets.DB_USERNAME_WAITER }}
+          WORK_API_KEY: ${{ secrets.WORK_API_KEY }}
+        run: composer install --optimize-autoloader --no-dev
+
+      - name: Build PHP assets
+        env:
+          DB_DATABASE_WAITER: ${{ secrets.DB_DATABASE_WAITER }}
+          DB_HOST_WAITER: ${{ secrets.DB_HOST_WAITER }}
+          DB_PASSWORD_WAITER: ${{ secrets.DB_PASSWORD_WAITER }}
+          DB_USERNAME_WAITER: ${{ secrets.DB_USERNAME_WAITER }}
+          WORK_API_KEY: ${{ secrets.WORK_API_KEY }}
+        run: php artisan key:generate --force -n
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: v22.x
+
+      - name: Build Node assets
+        env:
+          CI: true
+          SITE_URL: ${{ inputs.site-url }}
+        run: |
+          npm ci
+          npm run build
+
+# Please do not touch the following action
+      - name: Store deployment content
+        uses: ionos-deploy-now/artifact-action@v1
+        with:
+          api-key: ${{ secrets.IONOS_API_KEY }}
+          service-host: api-eu.ionos.space
+          project-id: 067ffb46-463c-4b87-99ab-bf4cba52f378
+          branch-id: ${{ inputs.branch-id }}
+          version: ${{ github.sha }}
+          folder: ${{ env.DEPLOYMENT_FOLDER }}
+          config-file: .deploy-now/cao-scheduler-system/config.yaml
+          action: upload
