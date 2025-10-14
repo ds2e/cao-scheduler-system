@@ -49,6 +49,10 @@ jobs:
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
           WORK_API_KEY: ${{ secrets.WORK_API_KEY }}
+          DB_HOST_WAITER: ${{ secrets.DB_HOST_WAITER }}
+          DB_DATABASE_WAITER: ${{ secrets.DB_DATABASE_WAITER }}
+          DB_USERNAME_WAITER: ${{ secrets.DB_USERNAME_WAITER }}
+          DB_PASSWORD_WAITER: ${{ secrets.DB_PASSWORD_WAITER }}
         run: composer install --optimize-autoloader --no-dev
 
       - name: Setup Node
