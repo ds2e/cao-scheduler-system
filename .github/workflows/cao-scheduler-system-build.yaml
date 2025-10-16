@@ -16,6 +16,7 @@ on:
 env:
   DEPLOYMENT_FOLDER: ./
 
+
 jobs:
 # Please do not rename this job
   build-project:
