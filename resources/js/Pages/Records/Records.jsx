@@ -6,13 +6,20 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import SideMenuBar from "../../components/Navbar/SideMenuBar";
-import { getYearDropdownOptions } from "../../components/Calendar/helpers";
+import SideMenuBar from "@/components/Navbar/SideMenuBar";
+import { getYearDropdownOptions } from "@/components/Calendar/helpers";
 import { router } from "@inertiajs/react";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts"
 
-const currentDate = new Date();
-const currentMonth = currentDate.getMonth() + 1; // 0-based → 1-based
-const currentYear = currentDate.getFullYear();
+import {
+    ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
+    ChartTooltip,
+    ChartTooltipContent,
+} from "@/components/ui/chart";
+import { useState } from "react";
+import dayjs from "dayjs";
 
 export default function RecordsPage({ users, user, year, months }) {
     const requestViewUser = (userId) => {
@@ -23,10 +30,18 @@ export default function RecordsPage({ users, user, year, months }) {
         router.visit(`/dashboard/manage/records?userID=${user.id}&interval=${e.target.value}`)
     };
 
-    const monthNames = [
-        "Januar", "Februar", "März", "April", "Mai", "Juni",
-        "Juli", "August", "September", "Oktober", "November", "Dezember"
-    ];
+    const [selectedMonth, setSelectedMonth] = useState(months[0].details)
+
+    const chartConfig = {
+        tasks_hours: {
+            label: "Soll",
+            color: "#2563eb",
+        },
+        records_hours: {
+            label: "Ist",
+            color: "#60a5fa",
+        },
+    };
 
     return (
         <>
@@ -68,32 +83,64 @@ export default function RecordsPage({ users, user, year, months }) {
                             </select>
                         </div>
                     </div>
-                    <div className="min-w-full border border-gray-200 rounded-t-xl shadow-sm">
-                        <div className="grid grid-cols-3 bg-gray-100 text-gray-700 font-semibold text-sm rounded-t-xl">
-                            <div className="px-4 py-2 border-r">Monat</div>
-                            <div className="px-4 py-2 border-r text-center">Geplante Arbeitszeit (h) (Soll)</div>
-                            <div className="px-4 py-2 text-center">Gespeicherte Leistung (h) (Ist)</div>
+                    <div className="w-full flex lg:flex-row flex-col items-center border border-gray-200 rounded-t-xl shadow-sm">
+                        <ChartContainer config={chartConfig} className="min-h-[50dvh] max-h-[500px] w-full lg:w-2/3">
+                            <BarChart onClick={(e) => setSelectedMonth(e.activePayload[0].payload.details)} accessibilityLayer data={months}>
+                                <CartesianGrid vertical={false} />
+                                <XAxis
+                                    dataKey="monthName"
+                                    tickLine={false}
+                                    tickMargin={10}
+                                    axisLine={false}
+                                    tickFormatter={(value) => value.slice(0, 3)}
+                                />
+                                <ChartTooltip content={<ChartTooltipContent />} />
+                                <ChartLegend content={<ChartLegendContent />} />
+                                <Bar dataKey="tasks_hours" fill="var(--color-theme)" radius={4}>
+                                    <LabelList
+                                        position="top"
+                                        className="fill-foreground"
+                                        fontSize={10}
+                                    />
+                                </Bar>
+                                <Bar dataKey="records_hours" fill="var(--color-theme-secondary)" radius={4}>
+                                    <LabelList
+                                        position="top"
+                                        className="fill-foreground"
+                                        fontSize={10}
+                                    />
+                                </Bar>
+                            </BarChart>
+                        </ChartContainer>
+
+                        <div className="min-h-[50dvh] max-h-[500px] relative overflow-auto w-full lg:w-1/3">
+                            <div className="sticky top-0 grid grid-cols-3 bg-gray-100 text-gray-700 font-semibold text-sm rounded-t-xl lg:rounded-t-none">
+                                <div className="px-4 py-2 border-r">Tag</div>
+                                <div className="px-4 py-2 border-r text-center">Geplant<span className="xl:inline-block hidden">e Arbeitszeit</span> (h) <span className="text-theme">(Soll)</span></div>
+                                <div className="px-4 py-2 text-center"><span className="xl:inline-block hidden">Gespeicherte </span>Leistung (h) <span className="text-theme-secondary">(Ist)</span></div>
+                            </div>
+                            {selectedMonth?.map((data, idx) => {
+                                const plan_hour = Number(data.task_hours).toFixed(2);
+                                const record_hour = Number(data.record_hours).toFixed(2);
+                                // const isCurrentMonth = parseInt(month) === currentMonth && year === currentYear;
+                                // console.log(data)
+                                return (
+                                    <div
+                                        key={String(data.dateString) + idx}
+                                        className={`grid grid-cols-3 text-sm ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
+                                    >
+                                        <div className={`px-4 py-2 border-r font-medium ${dayjs().format('DD.MM.YYYY') === data.dateString ? "text-theme-secondary" : ""
+                                            }`}>{data.dateString}</div>
+                                        <div className="px-4 py-2 border-r text-center">
+                                            {plan_hour}
+                                        </div>
+                                        <div className="px-4 py-2 text-center">
+                                            {record_hour}
+                                        </div>
+                                    </div>
+                                )
+                            })}
                         </div>
-                        {Object.entries(months).map(([month, data], idx) => {
-                            const plan_hour = Number(data.tasks_hours).toFixed(2);
-                            const record_hour = Number(data.records_hours).toFixed(2);
-                            const isCurrentMonth = parseInt(month) === currentMonth && year === currentYear;
-                            return (
-                                <div
-                                    key={month}
-                                    className={`grid grid-cols-3 text-sm ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
-                                >
-                                    <div className={`px-4 py-2 border-r font-medium ${isCurrentMonth ? "text-theme-secondary" : ""
-                                        }`}>{monthNames[month - 1]}</div>
-                                    <div className="px-4 py-2 border-r text-center">
-                                        {plan_hour}
-                                    </div>
-                                    <div className="px-4 py-2 text-center">
-                                        {record_hour}
-                                    </div>
-                                </div>
-                            )
-                        })}
                     </div>
                 </div>
             </div>

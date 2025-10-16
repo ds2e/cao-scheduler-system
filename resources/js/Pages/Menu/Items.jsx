@@ -237,7 +237,7 @@ export default function ItemsTab({ items, allCats, allItemClasses, filters }) {
                             </tbody>
                         </table>
                     </div>
-                    <div className="my-4 flex justify-between">
+                    <div className="sticky bottom-0 py-4 flex justify-between bg-theme">
                         <button type="button" onClick={() => requestAddItem()} className="transition-all duration-200 px-2 py-1 cursor-pointer rounded-sm shadow-md shadow-black bg-theme-secondary text-white hover:bg-theme-secondary-highlight focus-within:bg-theme-secondary-highlight text-lg hover:scale-90 focus-within:scale-90">
                             + Artikel
                         </button>
