@@ -107,11 +107,13 @@ Route::middleware('auth')->group(function () {
     })->middleware('throttle:5,1')->name('verification.send');
 });
 
+// Work (Report Records)
 Route::get('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls', [WorkController::class, 'show'])->name('show.workHome');
 Route::post('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/login', [WorkController::class, 'loginWork'])->name('login.work');
 Route::post('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/logout', [WorkController::class, 'logoutWork'])->name('logout.work');
 Route::get('/dQ7mZ-pT9wKx2jR~aY3nF_6Ls/work', [WorkController::class, 'showWork'])->name('show.work');
 
+// Kellner Block
 Route::get('/ZGF0YV9lbmNvZGVkX2hlcmU', [OrderController::class, 'index'])->name('waiter');
 Route::prefix('/ZGF0YV9lbmNvZGVkX2hlcmU')->name('waiter.')->group(function () {
     Route::resource('/order', OrderController::class)->except(['index','create', 'edit', 'show']);

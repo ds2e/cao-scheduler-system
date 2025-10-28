@@ -169,8 +169,8 @@ class WorkController extends Controller
         }
 
         // 4. Calculate time_end and duration
-        $timeStart = Carbon::parse($work->time_start);
-        $timeEnd = Carbon::now();
+        $timeStart = Carbon::parse("{$work->date} {$work->time_start}", config('app.timezone'));
+        $timeEnd = Carbon::now(config('app.timezone'));
         $durationInSeconds = $timeEnd->diffInSeconds($timeStart, true);
 
         // 5. Save ReportRecord
