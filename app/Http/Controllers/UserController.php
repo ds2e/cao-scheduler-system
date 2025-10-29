@@ -235,11 +235,11 @@ class UserController extends Controller
 
                 // Fetch monthly stats from DB
                 $monthlyStatsRaw = ReportRecord::where('user_id', $user->id)
-                    ->whereRaw("YEAR(STR_TO_DATE(date, '%Y-%m-%d')) = ?", [$currentYear])
+                    ->whereRaw("YEAR(STR_TO_DATE(date_start, '%Y-%m-%d')) = ?", [$currentYear])
                     ->selectRaw("
-        MONTH(STR_TO_DATE(date, '%Y-%m-%d')) as month,
+        MONTH(STR_TO_DATE(date_start, '%Y-%m-%d')) as month,
         SUM(duration) as total_duration,
-        COUNT(DISTINCT date) as work_days
+        COUNT(DISTINCT date_start) as work_days
     ")
                     ->groupBy('month')
                     ->get();

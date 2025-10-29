@@ -84,14 +84,18 @@ class ScheduleController extends Controller
         $taskCategories = TaskCategory::all();
         $todos = Todo::all();
 
+        // Tasks
         $tasks = Task::with('users')
             ->whereBetween('date_start', [$startDate, $endDate])
             ->get();
 
+        // Todos
         $todoJobs = TodoJob::whereBetween('date', [$startDate, $endDate])
             ->get();
+
+        // Records 
         $reportRecords = ReportRecord::with('user')
-            ->whereBetween('date', [$startDate, $endDate])
+            ->whereBetween('date_start', [$startDate, $endDate])
             ->get();
 
         // show all users for admin to assign task
@@ -231,19 +235,52 @@ class ScheduleController extends Controller
     {
         $this->authorize('update', Schedule::class);
 
-        // Validate the main structure
         $validated = Validator::make($request->all(), [
             'reportRecords' => 'nullable|array',
             'reportRecords.*.id' => 'required|integer|exists:users,id',
             'reportRecords.*.records' => 'required|array|min:1',
             'reportRecords.*.records.*.id' => 'nullable|integer|exists:report_records,id',
-            'reportRecords.*.records.*.date' => 'required|date',
+            'reportRecords.*.records.*.date_start' => 'required|date',
             'reportRecords.*.records.*.time_start' => 'required|date_format:H:i:s',
-            'reportRecords.*.records.*.time_end' => 'required|date_format:H:i:s|after:reportRecords.*.records.*.time_start',
+            'reportRecords.*.records.*.date_end' => 'required|date',
+            'reportRecords.*.records.*.time_end' => 'required|date_format:H:i:s',
             'reportRecords.*.records.*.duration' => 'required|integer|min:0',
             'reportRecords.*.records.*.notice' => 'nullable|string',
-            'date' => 'required|date'
-        ])->validate();
+            'date' => 'required|date',
+        ])->after(function ($validator) {
+            $data = $validator->getData();
+
+            if (!isset($data['reportRecords'])) {
+                return;
+            }
+
+            foreach ($data['reportRecords'] as $userIndex => $userData) {
+                foreach ($userData['records'] as $recordIndex => $record) {
+                    $dateStart = Carbon::parse($record['date_start']);
+                    $dateEnd = Carbon::parse($record['date_end']);
+
+                    // Combine date + time
+                    $startDateTime = Carbon::parse($record['date_start'] . ' ' . $record['time_start']);
+                    $endDateTime = Carbon::parse($record['date_end'] . ' ' . $record['time_end']);
+
+                    // 1️⃣ date_end must be same or after date_start
+                    if ($dateEnd->lt($dateStart)) {
+                        $validator->errors()->add(
+                            "reportRecords.$userIndex.records.$recordIndex.date_end",
+                            'The date_end must be the same or after date_start.'
+                        );
+                    }
+
+                    // 2️⃣ end datetime must be strictly after start datetime
+                    if ($endDateTime->lte($startDateTime)) {
+                        $validator->errors()->add(
+                            "reportRecords.$userIndex.records.$recordIndex.time_end",
+                            'The end date/time must be after the start date/time.'
+                        );
+                    }
+                }
+            }
+        })->validate();
 
         $reportDate = $validated['date'];
         $reportRecords = $validated['reportRecords'];
@@ -255,7 +292,7 @@ class ScheduleController extends Controller
             $incomingUserIds = collect($reportRecords)->pluck('id')->all();
 
             // Step 2: Get all users who have records for the given date
-            $usersWithRecordsOnDate = ReportRecord::whereDate('date', $reportDate)
+            $usersWithRecordsOnDate = ReportRecord::whereDate('date_start', $reportDate)
                 ->pluck('user_id')
                 ->unique()
                 ->all();
@@ -266,7 +303,7 @@ class ScheduleController extends Controller
             // Step 4: Delete all records for users not included in the new data
             if (!empty($usersToDelete)) {
                 ReportRecord::whereIn('user_id', $usersToDelete)
-                    ->whereDate('date', $reportDate)
+                    ->whereDate('date_start', $reportDate)
                     ->delete();
             }
 
@@ -281,7 +318,7 @@ class ScheduleController extends Controller
                 }
 
                 $existingRecords = ReportRecord::where('user_id', $userId)
-                    ->whereDate('date', $reportDate)
+                    ->whereDate('date_start', $reportDate)
                     ->get()
                     ->keyBy('id');
 
@@ -296,8 +333,9 @@ class ScheduleController extends Controller
 
                         $record = $existingRecords->get($recordId);
                         $record->update([
-                            'date' => $recordData['date'],
+                            'date_start' => $recordData['date_start'],
                             'time_start' => $recordData['time_start'],
+                            'date_end' => $recordData['date_end'],
                             'time_end' => $recordData['time_end'],
                             'duration' => $recordData['duration'],
                             'notice' => $recordData['notice'] ?? null,
@@ -306,8 +344,9 @@ class ScheduleController extends Controller
                     } else {
                         $newRecord = ReportRecord::create([
                             'user_id' => $userId,
-                            'date' => $recordData['date'],
+                            'date_start' => $recordData['date_start'],
                             'time_start' => $recordData['time_start'],
+                            'date_end' => $recordData['date_end'],
                             'time_end' => $recordData['time_end'],
                             'duration' => $recordData['duration'],
                             'notice' => $recordData['notice'] ?? null,

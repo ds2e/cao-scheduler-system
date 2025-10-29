@@ -11,7 +11,7 @@ import { formatDurationFromSecond } from "@/lib/utils.ts"
 
 export default function ReportRecordsSummaryDialog({ isOpen, setOpen, records, currentSelectedDate }) {
     const dayRecords = records
-        .filter((record) => record.date == currentSelectedDate)
+        .filter((record) => record.date_start == currentSelectedDate)
         .sort((a, b) => {
             const [aHour, aMin] = a.time_start.split(':').map(Number);
             const [bHour, bMin] = b.time_start.split(':').map(Number);

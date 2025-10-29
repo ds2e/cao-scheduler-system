@@ -18,44 +18,34 @@ class ReportRecordFactory extends Factory
      */
     public function definition(): array
     {
-        // Generate a date within a reasonable range
-        $date = fake()->dateTimeBetween('-3 days', '+5 days')->format('Y-m-d');
-
-        // Define boundaries
+        // Define limits for generation
         $earliestStart = Carbon::createFromTime(7, 0);  // 07:00
-        $latestStart = Carbon::createFromTime(15, 0);   // 15:00 (so 8h doesn't go past 23:00)
+        $latestStart = Carbon::createFromTime(23, 0);   // latest start possible
+        $minDuration = 30;                              // in minutes
+        $maxDuration = 2 * 24 * 60;                     // 2 days = 2880 minutes
 
-        // Random time_start between 07:00 and 15:00
-        $timeStart = Carbon::createFromTime(
-            fake()->numberBetween($earliestStart->hour, $latestStart->hour),
-            fake()->numberBetween(0, 59),
-            0
-        );
+        // Generate a random start datetime (between -3 and +5 days)
+        $dateStart = fake()->dateTimeBetween('-3 days', '+5 days');
+        $timeStart = Carbon::instance($dateStart)
+            ->setTime(
+                fake()->numberBetween($earliestStart->hour, $latestStart->hour),
+                fake()->numberBetween(0, 59),
+                0
+            );
 
-        // Calculate maximum duration to not exceed 23:00
-        $maxEndTime = Carbon::createFromTime(23, 0);
-        $maxDurationMinutes = $maxEndTime->diffInMinutes($timeStart, true);
-
-        // Constrain duration between 30 minutes and max allowed (480 = 8h)
-        $minDuration = 60;
-        $maxDuration = min(480, $maxDurationMinutes);
-
-        // Generate duration
+        // Generate duration between 30 minutes and 2 days
         $durationMinutes = fake()->numberBetween($minDuration, $maxDuration);
 
-        // Set time_end
-        $timeEnd = (clone $timeStart)->addMinutes($durationMinutes);
-
-        // Compute duration in seconds
-        $diffInSeconds = $timeStart->diffInSeconds($timeEnd, true);
-        $duration = fake()->numberBetween(0, $diffInSeconds);
+        // Compute end datetime
+        $endDateTime = (clone $timeStart)->addMinutes($durationMinutes);
 
         return [
-            'user_id' => User::factory(), // Will create a user if one isn't passed
-            'date' => $date,
+            'user_id' => User::factory(),
+            'date_start' => $timeStart->format('Y-m-d'),
             'time_start' => $timeStart->format('H:i:s'),
-            'time_end' => $timeEnd->format('H:i:s'),
-            'duration' => $duration,
+            'date_end' => $endDateTime->format('Y-m-d'),
+            'time_end' => $endDateTime->format('H:i:s'),
+            'duration' => $durationMinutes * 60, // store duration in seconds
             'notice' => fake()->optional()->sentence(),
         ];
     }

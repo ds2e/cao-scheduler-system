@@ -208,7 +208,7 @@ const CalendarTimeTable = memo(function CalendarComponent({
                 </div>
                 <div className='w-full px-1 flex items-center justify-center'>
                     {
-                        reportRecords.find((record) => record.date === day.dateString) ?
+                        reportRecords.find((record) => record.date_start === day.dateString) ?
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width={25} height={25}
                                 onClick={() => inspectDayReportRecords(day.dateString)}
                                 className='cursor-pointer fill-theme hover:fill-theme-secondary-highlight transition-all duration-200'

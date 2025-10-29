@@ -70,25 +70,6 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
         }
     }, [currentSelectedDate, isOpen])
 
-    function assignUserToTask(userEntry, existedTaskID, taskID) {
-        if (!existedTaskID) {
-            const newDayTasks = data.reportRecords.map((task, ind) =>
-                ind === taskID
-                    ? { ...task, users: [...task.users, userEntry] }
-                    : task
-            )
-            setData('tasks', newDayTasks);
-        }
-        else {
-            const newDayTasks = data.reportRecords.map(task =>
-                task.id === existedTaskID
-                    ? { ...task, users: [...task.users, userEntry] }
-                    : task
-            )
-            setData('tasks', newDayTasks);
-        }
-    }
-
     function removeRecordFromUser(userEntry, record) {
         const newReportRecords = data.reportRecords.map(recordUserEntry =>
             recordUserEntry.id === userEntry.id
@@ -103,11 +84,12 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
 
     function addRecordToUser(userEntry) {
         const newRecordEntry = {
-            date: currentSelectedDate,
+            date_start: currentSelectedDate,
+            date_end: currentSelectedDate,
             notice: '',
             duration: 0,
             time_start: '00:00:00',
-            time_end: '00:00:01'
+            time_end: '00:00:30'
         }
 
         const newReportRecords = data.reportRecords.map(recordUserEntry =>
@@ -179,12 +161,13 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
                                         <div className="flex flex-col gap-y-4">
                                             {
                                                 recordEntryUser.records.map((record, recordInd) => {
-                                                    const startDateTime = `${record.date} ${record.time_start}`;
-                                                    const endDateTime = `${record.date} ${record.time_end}`;
+                                                    const startDateTime = `${record.date_start} ${record.time_start}`;
+                                                    const endDateTime = `${record.date_end} ${record.time_end}`;
 
                                                     return (
                                                         <div key={String(recordUserInd + '-' + recordInd)} className="flex items-center justify-between flex-row gap-x-4">
                                                             <div className="flex flex-row items-center justify-center gap-x-2 px-2 rounded-full bg-theme">
+                                                                {/* Start Time */}
                                                                 <DateTimePicker
                                                                     dataTime={startDateTime}
                                                                     confirmSetDataTime={(dataStartTime) => {
@@ -200,7 +183,7 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
                                                                         // Update the specific record
                                                                         updatedUserRecords[recordInd] = {
                                                                             ...updatedUserRecords[recordInd],
-                                                                            date: dateReformatted,
+                                                                            date_start: dateReformatted,
                                                                             time_start: timeReformatted
                                                                         };
 
@@ -218,11 +201,12 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
                                                                     }}
                                                                 />
                                                                 <span className="text-white">-</span>
+                                                                {/* End Time */}
                                                                 <DateTimePicker
                                                                     dataTime={endDateTime}
-                                                                    confirmSetDataTime={(dataStartTime) => {
-                                                                        const dateReformatted = dayjs(dataStartTime).format('YYYY-MM-DD');
-                                                                        const timeReformatted = dayjs(dataStartTime).format('HH:mm:ss');
+                                                                    confirmSetDataTime={(dataEndTime) => {
+                                                                        const dateReformatted = dayjs(dataEndTime).format('YYYY-MM-DD');
+                                                                        const timeReformatted = dayjs(dataEndTime).format('HH:mm:ss');
 
                                                                         // Clone the user-level reportRecords array
                                                                         const updatedReportRecords = [...data.reportRecords];
@@ -233,7 +217,7 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
                                                                         // Update the specific record
                                                                         updatedUserRecords[recordInd] = {
                                                                             ...updatedUserRecords[recordInd],
-                                                                            date: dateReformatted,
+                                                                            date_end: dateReformatted,
                                                                             time_end: timeReformatted
                                                                         };
 
@@ -251,8 +235,9 @@ export default function InspectDayReportRecordsDrawer({ isOpen, setOpen, users, 
                                                                     }}
                                                                 />
                                                             </div>
+
+                                                            {/* Duration */}
                                                             <div className="text-theme-secondary">
-                                                                {/* {formatDurationFromSecond(record.duration)} */}
                                                                 <TimePicker dataTime={record.duration} confirmSetDataTime={(dataDuration) => {
                                                                     // Clone the user-level reportRecords array
                                                                     const updatedReportRecords = [...data.reportRecords];

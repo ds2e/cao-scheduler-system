@@ -29,7 +29,7 @@ export default function ScheduleTimeLine({
     const dayTodoJobs = todoJobs.filter(todo => todo.date === dayjs(date).format('YYYY-MM-DD'));
 
     const dayReportRecords = reportRecords
-        .filter(record => record.date === dayjs(date).format('YYYY-MM-DD'))
+        .filter(record => record.date_start === dayjs(date).format('YYYY-MM-DD'))
         .sort((a, b) => {
             const [aHour, aMin] = a.time_start.split(':').map(Number);
             const [bHour, bMin] = b.time_start.split(':').map(Number);

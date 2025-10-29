@@ -12,8 +12,9 @@ class ReportRecord extends Model
 
     protected $fillable = [
         'user_id',
-        'date',
+        'date_start',
         'time_start',
+        'date_end',
         'time_end',
         'duration',
         'notice'

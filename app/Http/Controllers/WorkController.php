@@ -176,8 +176,9 @@ class WorkController extends Controller
         // 5. Save ReportRecord
         ReportRecord::create([
             'user_id'    => $user->id,
-            'date'       => $work->date,
+            'date_start' => $work->date,
             'time_start' => $work->time_start,
+            'date_end'   => $timeEnd->toDateString(),
             'time_end'   => $timeEnd->format('H:i:s'),
             'duration'   => $durationInSeconds,
             'notice'     => $work->notice,

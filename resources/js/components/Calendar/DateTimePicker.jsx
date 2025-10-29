@@ -67,7 +67,6 @@ export function DateTimePicker({ dataTime, confirmSetDataTime }) {
                     <Calendar
                         mode="single"
                         selected={date?.toDate()}
-                        disabled={true}
                         onSelect={handleDateSelect}
                         initialFocus
                     />
