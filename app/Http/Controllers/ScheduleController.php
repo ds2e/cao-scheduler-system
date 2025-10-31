@@ -36,11 +36,11 @@ class ScheduleController extends Controller
         };
     }
 
-    private static function isValidYearMonth(string $view): bool
+    private static function isValidYearMonth(string $value): bool
     {
         try {
-            $date = Carbon::createFromFormat('Y-m', $view);
-            return $date && $date->format('Y-m') === $view;
+            $date = Carbon::createFromFormat('!Y-m', $value);
+            return $date && $date->format('Y-m') === $value;
         } catch (\Exception $e) {
             return false;
         }
@@ -55,10 +55,11 @@ class ScheduleController extends Controller
         $validator = Validator::make(['view' => $view], [
             'view' => [
                 'nullable',
-                'regex:/^\d{4}-\d{2}$/',
-                function ($attribute, $value, $fail) use ($view) {
-                    if (!self::isValidYearMonth($view)) {
-                        $fail('The ' . $attribute . ' is not a valid year-month.');
+                'date_format:Y-m', // built-in check for "YYYY-MM"
+                function ($attribute, $value, $fail) {
+                    // use $value (validator parameter) — not outer scope
+                    if ($value !== null && !self::isValidYearMonth($value)) {
+                        $fail("The {$attribute} is not a valid year-month.");
                     }
                 },
             ],

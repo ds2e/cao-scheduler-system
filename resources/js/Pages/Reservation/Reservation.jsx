@@ -17,7 +17,6 @@ const maxDate = dayjs(today).add(1, 'month').endOf('month').toDate();
 
 const timeToColIndex = (timeStr) => {
     const [hour, minute] = timeStr.split(":").map(Number);
-    // console.log([hour, minute])
     if (minute >= 30) {
         return hour * 2 + 1;
     }
@@ -109,8 +108,6 @@ export default function ReservationPage({ reservations }) {
 
     const minDate = dayjs().subtract(2, 'day').toDate();
     const maxDate = dayjs().add(3, 'day').toDate();
-
-    console.log(todayReservations)
 
     const hourNum = 24
 

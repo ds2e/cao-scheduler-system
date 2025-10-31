@@ -148,8 +148,6 @@ export default function RecordsPage({ users, user, year, months }) {
                             {selectedMonth?.details.map((data, idx) => {
                                 const plan_hour = Number(data.task_hours).toFixed(2);
                                 const record_hour = Number(data.record_hours).toFixed(2);
-                                // const isCurrentMonth = parseInt(month) === currentMonth && year === currentYear;
-                                // console.log(data)
                                 return (
                                     <div
                                         key={String(data.dateString) + idx}

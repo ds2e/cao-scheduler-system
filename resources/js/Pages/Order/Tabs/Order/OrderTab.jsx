@@ -212,8 +212,6 @@ export default function OrderTab({ categories, tables, taxClasses, requestChange
     }
 
     function saveNoticeItem(itemId, notice) {
-
-        // console.log(itemId, notice)
         if (!data.tableId) return;
 
         setCurrentOrders(prevOrders => {
@@ -234,8 +232,6 @@ export default function OrderTab({ categories, tables, taxClasses, requestChange
             else {
                 updatedTableOrders = [...tableOrders];
             }
-
-            console.log(updatedTableOrders);
 
             setData("itemsList", updatedTableOrders)
 
