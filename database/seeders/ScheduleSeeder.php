@@ -37,9 +37,11 @@ class ScheduleSeeder extends Seeder
 
             foreach ($assignedUsers as $user) {
                 $date = fake()->dateTimeBetween('-3 days', '+5 days')->format('Y-m-d');
+
                 // Generate valid time_start and time_end
                 $earliestStart = Carbon::createFromTime(7, 0);
                 $latestStart = Carbon::createFromTime(15, 0);
+
                 $timeStart = Carbon::createFromTime(
                     fake()->numberBetween($earliestStart->hour, $latestStart->hour),
                     fake()->numberBetween(0, 59)
@@ -50,16 +52,32 @@ class ScheduleSeeder extends Seeder
                 $durationMinutes = fake()->numberBetween(60, $maxDuration);
                 $timeEnd = (clone $timeStart)->addMinutes($durationMinutes);
 
-                // Compute duration in seconds
+                // Convert to actual duration in seconds
                 $diffInSeconds = $timeStart->diffInSeconds($timeEnd, true);
                 $duration = fake()->numberBetween(0, $diffInSeconds);
 
+                // -------------------------------------------------------
+                // ✅ NEW: Calculate date_end using date_start + time_start + duration
+                // -------------------------------------------------------
+
+                // Combine date_start + time_start into a single Carbon instance
+                $dateStartCarbon = Carbon::parse($date . ' ' . $timeStart->format('H:i:s'));
+
+                // Apply duration to get the exact end datetime
+                $dateEndCarbon = $dateStartCarbon->copy()->addSeconds($duration);
+
+                // Split out the resulting date_end
+                $dateEnd = $dateEndCarbon->format('Y-m-d');
+
+                // -------------------------------------------------------
+
                 ReportRecord::create([
                     'user_id' => $user->id,
-                    'date' => $date,
+                    'date_start' => $date,
                     'time_start' => $timeStart->format('H:i:s'),
                     'time_end' => $timeEnd->format('H:i:s'),
                     'duration' => $duration,
+                    'date_end' => $dateEnd,
                     'notice' => "Task ID {$task->id} - " . fake()->optional()->sentence(),
                 ]);
             }

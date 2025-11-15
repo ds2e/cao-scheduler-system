@@ -21,7 +21,6 @@ return new class extends Migration
             $table->integer('duration');
             $table->text('notice')->nullable();
             $table->timestamps();
-            $table->check('date_end >= date_start');
         });
     }
 
