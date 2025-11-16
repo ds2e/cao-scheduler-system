@@ -50,5 +50,6 @@ deploy:
 # uncomment the following lines to configure cron jobs
 runtime:
   cron-jobs:
-    - command: /usr/bin/php8.3-cli $HOME/htdocs/public/artisan schedule:run # the deployment is located at $HOME/htdocs/ to execute a deployed script just prefix it accordingly
+    # - command: /usr/bin/php8.3-cli $HOME/htdocs/public/artisan schedule:run # the deployment is located at $HOME/htdocs/ to execute a deployed script just prefix it accordingly
+    - command: /usr/bin/php8.3-cli $HOME/htdocs/cao-scheduler-system/send-test-email.php
       schedule: 0 * * * * # run every hour
