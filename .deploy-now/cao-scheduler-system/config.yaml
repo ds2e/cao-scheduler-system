@@ -50,5 +50,5 @@ deploy:
 runtime:
   cron-jobs:
     # - command: /usr/bin/php8.5-cli $HOME/htdocs/artisan schedule:run #/usr/bin/php8.3-cli $HOME/htdocs/"path/to/your/script"
-    - command: php $HOME/htdocs/send-test-email.php
+    - command: php $HOME/htdocs/cao-scheduler-system/preview/send-test-email.php
       schedule: 0 * * * *
