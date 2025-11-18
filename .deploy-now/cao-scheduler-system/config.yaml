@@ -49,5 +49,5 @@ deploy:
 
 runtime:
   cron-jobs:
-    - command: /usr/bin/php8.3-cli artisan schedule:run # /usr/bin/php8.3-cli $HOME/htdocs/"path/to/your/script"
+    - command: /usr/bin/php8.5-cli $HOME/htdocs/artisan schedule:run # /usr/bin/php8.3-cli $HOME/htdocs/"path/to/your/script"
       schedule: 0 * * * *
