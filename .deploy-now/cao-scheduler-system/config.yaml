@@ -46,7 +46,7 @@ deploy:
       - php artisan storage:link
       - php artisan optimize
       - php artisan up
-
+# /usr/bin/php8.3-cli $HOME/htdocs/"path/to/your/script"
 runtime:
   cron-jobs:
     - command: php artisan schedule:run
